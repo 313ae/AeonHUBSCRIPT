@@ -1,7 +1,7 @@
 {
   "5c335b2a947e6b3f2040c4a99bac87637d3222cf7e4cf2f09356feadd51053ae": {
     "expires": 1790336976,
-    "banned": false,
+    "banned": true,
     "hwidHash": "d223dc8fb8a9ae98c130ee34c3de90bf0b5fb2303828d0311f189e0d7a512a1a",
     "note": "",
     "created": 1789472976,
