@@ -1,7 +1,9 @@
 -- I hate my lifeeeeee
 
 
-local passKey = (function() return _G.Key or Key end)()
+local passKey = nil
+pcall(function() passKey = rawget(_G, "Key") end)
+if not passKey then pcall(function() passKey = Key end) end
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
