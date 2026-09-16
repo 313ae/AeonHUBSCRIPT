@@ -8,5 +8,15 @@
     "note": "",
     "created": 1789554164,
     "lastReset": 0
+  },
+  "0ea71f4a075cf24acaf77f85d5827a8b19438974347e2b65c469b77652b73bc8": {
+    "key": "AEON-0F82BE-CB6EA5-CD8C6A",
+    "expires": null,
+    "banned": false,
+    "hwidHash": null,
+    "discordId": null,
+    "note": "",
+    "created": 1789555893,
+    "lastReset": 0
   }
 }
