@@ -9,5 +9,15 @@
     "discordId": "1502752758971895918",
     "bannedAt": null,
     "expiredAt": null
+  },
+  "fddd9b17cf71299364aac46b240724399df313bde598a762a786b8a5b5b16725": {
+    "key": "AEON-EC35DD-D268D6-215736",
+    "expires": null,
+    "banned": false,
+    "hwidHash": null,
+    "discordId": null,
+    "note": "",
+    "created": 1789548386,
+    "lastReset": 0
   }
 }
