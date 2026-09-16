@@ -1,1 +1,12 @@
-{}
+{
+  "e2ea6dcc5693df7e7b0323caa73e287232729d3bc097b1630ccd8ae55c1bce9f": {
+    "key": "AEON-617D6A-ACD6F1-844E23",
+    "expires": null,
+    "banned": false,
+    "hwidHash": null,
+    "discordId": null,
+    "note": "",
+    "created": 1789548978,
+    "lastReset": 0
+  }
+}
