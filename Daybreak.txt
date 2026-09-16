@@ -3652,19 +3652,6 @@ local function setFullbright(state)
     applyFullbright()
 end
 
-local lightingConn
-pcall(function()
-    lightingConn = game:GetService("Lighting").ChildAdded:Connect(function(child)
-        if fullbrightEnabled then
-            task.wait()
-            if child:IsA("PostEffect") then
-                child.Enabled = false
-            end
-            applyFullbright()
-        end
-    end)
-end)
-
 local fullbrightRow = CreateToggle(tabPanels["Misc"], "Fullbright", false, setFullbright)
 table.insert(featureRows, fullbrightRow)
 tipFor(fullbrightRow, "Fullbright", "Brighten the entire map")
