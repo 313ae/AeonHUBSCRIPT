@@ -1,7 +1,7 @@
 -- I hate my lifeeeeee
 
 
-local passKey = ...
+local passKey = (function() return _G.Key or Key end)()
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
