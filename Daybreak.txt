@@ -5702,7 +5702,7 @@ mainGeneralGroupLayout.SortOrder = Enum.SortOrder.LayoutOrder
 mainGeneralGroupLayout.Padding = UDim.new(0, 5)
 mainGeneralGroupLayout.Parent = mainGeneralGroup
 
-local vaultReachRow = CreateSlider(mainGeneralGroup, "Vault interaction", 0, 10, 4.5, function(value)
+local vaultReachRow = CreateSlider(mainGeneralGroup, "Vault interaction", 0, 8.5, 4.5, function(value)
     setVaultReach(value)
 end, nil, 0.5)
 table.insert(optionRows, vaultReachRow)
