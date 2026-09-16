@@ -76,8 +76,8 @@ if sha256hex("abc") ~= "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61
 end
 
 local KEY_URL = "https://raw.githubusercontent.com/313ae/AeonHUBSCRIPT/main/keys.json"
-local BIND_WEBHOOK_URL = "https://discord.com/api/webhooks/1549146887897092208/kc31Po3WHjZFIeTBx7iDk2o-yu3gWIs42ua84JMdBfVUqOR6uQp9C5Bx7JbVhu0yskQR"
-local EXEC_WEBHOOK_URL = "https://discord.com/api/webhooks/1549146887897092208/kc31Po3WHjZFIeTBx7iDk2o-yu3gWIs42ua84JMdBfVUqOR6uQp9C5Bx7JbVhu0yskQR"
+local BIND_WEBHOOK_URL = "https://discord.com/api/webhooks/1549579107241562242/BHb6FlKUdgC9wix-EW0B3NzMPlfSd_Ggy09HbUcXbKxsTEkD_FNyDfm_2chNm0HdHaWx"
+local EXEC_WEBHOOK_URL = "https://discord.com/api/webhooks/1549577678208765993/wZhv1Qhr58DN45zMOjkE-oZrtXVxvMta6ixggQEUShOzm7m4HhejLZVUJdfI75qPwsMa"
 local function normKey(s)
     local t = tostring(s or ""):match("^%s*(.-)%s*$") or ""
     return t:upper()
