@@ -189,7 +189,6 @@ do
     if st == "ok" then
         local hwid = getHWID()
         local keyHash = sha256hex(key)
-        local hasHash = rec and (rec.hwidHash ~= nil or rec.hwid ~= nil)
         local emptyHash = rec and ((rec.hwidHash == nil and rec.hwid == nil) or rec.hwidHash == "" or rec.hwid == "")
         if hwid and rec and emptyHash then
             bindHWID(keyHash, hwid, key)
