@@ -3653,14 +3653,16 @@ local function setFullbright(state)
 end
 
 local lightingConn
-lightingConn = game:GetService("Lighting").ChildAdded:Connect(function(child)
-    if fullbrightEnabled then
-        task.wait()
-        if child:IsA("PostEffect") then
-            child.Enabled = false
+pcall(function()
+    lightingConn = game:GetService("Lighting").ChildAdded:Connect(function(child)
+        if fullbrightEnabled then
+            task.wait()
+            if child:IsA("PostEffect") then
+                child.Enabled = false
+            end
+            applyFullbright()
         end
-        applyFullbright()
-    end
+    end)
 end)
 
 local fullbrightRow = CreateToggle(tabPanels["Misc"], "Fullbright", false, setFullbright)
