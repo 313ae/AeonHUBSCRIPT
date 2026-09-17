@@ -1,14 +1,4 @@
 {
-  "ef573d855afb65b730cb941853ad7b9f51078dc9314ab79124dcf87951a669f3": {
-    "key": "a722616091bee63b23546210df761b9b:8d1f16efdbbd2c5edc2b3f08852a3f7f98446610430d870042ca067c9a44a6c4",
-    "expires": null,
-    "banned": false,
-    "hwidHash": null,
-    "discordId": null,
-    "note": "",
-    "created": 1789640409,
-    "lastReset": 0
-  },
   "508b69084347337d839cb73c5d803db333a94ef918facfd62b33b68eadef0f88": {
     "key": "641fa7af897c7c5ad5a80089c9db9c3d:6ae31b0a629d47b5a63a93ba64a9926676f3ccddd7e9849e159bb61dd360fe8d",
     "expires": null,
