@@ -6165,7 +6165,8 @@ logo.Parent = toggleButton
 local BUTTON_FULL_SIZE = UDim2.new(0, 50, 0, 50)
 local LOGO_FULL_SIZE = UDim2.new(0, 36, 0, 36)
 
-introFrame.Destroying:Connect(function()
+local function showToggleButton()
+    if toggleButton.Visible then return end
     toggleButton.Visible = true
     TweenService:Create(toggleButton, TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
         Size = BUTTON_FULL_SIZE,
@@ -6175,6 +6176,12 @@ introFrame.Destroying:Connect(function()
         Size = LOGO_FULL_SIZE,
         TextSize = 34
     }):Play()
+end
+
+introFrame.Destroying:Connect(showToggleButton)
+task.delay(10, function()
+    if introFrame and introFrame.Parent then return end
+    showToggleButton()
 end)
 
 do
