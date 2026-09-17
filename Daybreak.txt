@@ -4561,16 +4561,17 @@ local function setupStaminaHold()
         staminaRefilling = false
     end)
 end
-LocalPlayer.CharacterAdded:Connect(function()
+LocalPlayer.CharacterAdded:Connect(function(char)
     setupStaminaHold()
+    char.ChildAdded:Connect(function(ch)
+        if ch.Name == "SurvivorHandlerServer" then setupStaminaHold() end
+    end)
 end)
-workspace.ChildAdded:Connect(function(c)
-    if c.Name == LocalPlayer.Name then
-        c.ChildAdded:Connect(function(ch)
-            if ch.Name == "SurvivorHandlerServer" then setupStaminaHold() end
-        end)
-    end
-end)
+if LocalPlayer.Character then
+    LocalPlayer.Character.ChildAdded:Connect(function(ch)
+        if ch.Name == "SurvivorHandlerServer" then setupStaminaHold() end
+    end)
+end
 setupStaminaHold()
 local function setStamina(state)
     staminaEnabled = state
