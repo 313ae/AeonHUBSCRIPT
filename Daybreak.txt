@@ -4536,12 +4536,7 @@ local function setupStaminaHold()
     end
     local character = workspace:FindFirstChild(LocalPlayer.Name)
     local handler = character and character:FindFirstChild("SurvivorHandlerServer")
-    if not handler then
-        if character then
-            handler = character:WaitForChild("SurvivorHandlerServer", 3)
-        end
-        if not handler then return end
-    end
+    if not handler then return end
     staminaSignalConn = handler:GetAttributeChangedSignal("CurrentStamina"):Connect(function()
         if staminaRefilling then return end
         staminaRefilling = true
@@ -4551,11 +4546,8 @@ local function setupStaminaHold()
         staminaRefilling = false
     end)
 end
-LocalPlayer.CharacterAdded:Connect(function(char)
-    task.spawn(function()
-        local handler = char:WaitForChild("SurvivorHandlerServer", 5)
-        if handler then setupStaminaHold() end
-    end)
+LocalPlayer.CharacterAdded:Connect(function()
+    setupStaminaHold()
 end)
 workspace.ChildAdded:Connect(function(c)
     if c.Name == LocalPlayer.Name then
