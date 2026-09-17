@@ -48,5 +48,15 @@
     "note": "",
     "created": 1789681985,
     "lastReset": 0
+  },
+  "df3c3c9db66c553fddc5c74e77fe8698b207608dacd36b2539699c346a80287c": {
+    "key": "ec7e490cfbb999fafa437dab24365623:211ca6eecd93bba5ea902685f751286adce0c35840169ac555f28ef3f485bd82",
+    "expires": null,
+    "banned": false,
+    "hwidHash": null,
+    "discordId": null,
+    "note": "",
+    "created": 1789683819,
+    "lastReset": 0
   }
 }
