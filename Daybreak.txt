@@ -2559,6 +2559,16 @@ local function makeVaultHighlight(inst)
     return highlight
 end
 
+local function forceOpaque(inst)
+    if not VAULT_NAMES[inst.Name] then return end
+    pcall(function()
+        inst.Transparency = 0
+        if inst:IsA("BasePart") then
+            inst.LocalTransparencyModifier = 0
+        end
+    end)
+end
+
 local vaultMapConn = nil
 local function hookVaultMap()
     if vaultMapConn then
@@ -2568,8 +2578,12 @@ local function hookVaultMap()
     local map = findVaultMap()
     if map then
         vaultMapConn = trackLoop(map.DescendantAdded:Connect(function(inst)
-            if VAULT_NAMES[inst.Name] and not vaultHighlights[inst] then
-                vaultHighlights[inst] = makeVaultHighlight(inst)
+            if VAULT_NAMES[inst.Name] then
+                if not vaultHighlights[inst] then
+                    vaultHighlights[inst] = makeVaultHighlight(inst)
+                end
+                task.wait()
+                forceOpaque(inst)
             end
         end))
     end
@@ -2591,6 +2605,7 @@ local function addVaultHighlights()
                 if myGen ~= vaultScanGen then return end
                 if VAULT_NAMES[inst.Name] and not vaultHighlights[inst] then
                     vaultHighlights[inst] = makeVaultHighlight(inst)
+                    forceOpaque(inst)
                 end
                 if i % 2000 == 0 then
                     task.wait()
@@ -2658,48 +2673,6 @@ watchMapHolder()
 local vaultESPRow = CreateToggle(tabPanels["Visuals"], "Vault ESP", false, setVaultESP)
 table.insert(featureRows, vaultESPRow)
 tipFor(vaultESPRow, "Vault ESP", "Highlight nearby vaults", "Warning: May cause an immense freeze")
-
-do
-local opaqueVaultsEnabled = false
-local opaqueVaultConn = nil
-
-local function forceOpaque(inst)
-    if not VAULT_NAMES[inst.Name] then return end
-    pcall(function()
-        inst.Transparency = 0
-        if inst:IsA("BasePart") then
-            inst.LocalTransparencyModifier = 0
-        end
-    end)
-end
-
-local function applyOpaqueVaults()
-    local map = workspace:FindFirstChild("Map_Holder") and workspace.Map_Holder:FindFirstChild("Game_Map")
-    if not map then return end
-    for _, inst in ipairs(map:GetDescendants()) do
-        forceOpaque(inst)
-    end
-end
-
-local function setOpaqueVaults(state)
-    opaqueVaultsEnabled = state
-    if state then
-        applyOpaqueVaults()
-        local map = workspace:FindFirstChild("Map_Holder") and workspace.Map_Holder:FindFirstChild("Game_Map")
-        if map then
-            opaqueVaultConn = trackLoop(map.DescendantAdded:Connect(function(inst)
-                if opaqueVaultsEnabled then task.wait(); forceOpaque(inst) end
-            end))
-        end
-    else
-        if opaqueVaultConn then opaqueVaultConn:Disconnect(); opaqueVaultConn = nil end
-    end
-end
-
-local opaqueVaultsRow = CreateToggle(tabPanels["Visuals"], "Opaque Vaults", false, setOpaqueVaults)
-table.insert(featureRows, opaqueVaultsRow)
-tipFor(opaqueVaultsRow, "Opaque Vaults", "Remove transparency from vault parts")
-end
 
 do
 local mistESPEnabled = false
