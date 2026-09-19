@@ -1,0 +1,12 @@
+local key = ...
+local HttpService = game:GetService("HttpService")
+local ok, raw = pcall(function() return game:HttpGet("https://raw.githubusercontent.com/313ae/AeonHUBSCRIPT/main/games.json?v=" .. tostring(os.time())) end)
+if not ok or type(raw) ~= "string" then return end
+local ok2, map = pcall(function() return HttpService:JSONDecode(raw) end)
+if not ok2 or type(map) ~= "table" then return end
+local url = map[tostring(game.PlaceId)]
+if url and type(url) == "string" and #url > 0 then
+    loadstring(game:HttpGet(url .. "?v=" .. tostring(os.time())))(key)
+else
+    game:GetService("Players").LocalPlayer:Kick("Unsupported game")
+end
