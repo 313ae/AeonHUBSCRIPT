@@ -525,6 +525,13 @@ do
 	miscLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 		page.CanvasSize = UDim2.new(0, 0, 0, miscLayout.AbsoluteContentSize.Y + 31)
 	end)
+	page:GetPropertyChangedSignal("Visible"):Connect(function()
+		if page.Visible then
+			task.delay(0.5, function()
+				print("[Aeon] Misc canvas=" .. tostring(page.CanvasSize.Y.Offset) .. " view=" .. tostring(page.AbsoluteSize.Y))
+			end)
+		end
+	end)
 
 	local mobilityHeader = Instance.new("TextLabel")
 	mobilityHeader.Size = UDim2.new(1, 0, 0, 14)
