@@ -1388,7 +1388,6 @@ do
 		miscOverlay.Visible = true
 	end
 	page:GetPropertyChangedSignal("Visible"):Connect(function() task.defer(refreshMiscOverlay) end)
-	page:GetPropertyChangedSignal("CanvasPosition"):Connect(refreshMiscOverlay)
 	page:GetPropertyChangedSignal("AbsoluteSize"):Connect(function() task.defer(refreshMiscOverlay) end)
 	miscLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() task.defer(refreshMiscOverlay) end)
 	task.defer(refreshMiscOverlay)
