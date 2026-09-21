@@ -1388,16 +1388,12 @@ local function setActiveTab(name, animate)
 	if animate == nil then animate = true end
 	for tabName, button in pairs(tabButtons) do
 		local label = button:FindFirstChild("Label")
-		local iconBox = button:FindFirstChild("IconBox")
-		local icon = iconBox and iconBox:FindFirstChild("Icon")
 		if tabName == name then
 			label.TextColor3 = TEXT_PRIMARY
 			label.Font = Enum.Font.GothamBold
-			if icon then icon.TextColor3 = LIME end
 		else
 			label.TextColor3 = TEXT_SECONDARY
 			label.Font = Enum.Font.GothamBold
-			if icon then icon.TextColor3 = TEXT_SECONDARY end
 		end
 	end
 
@@ -1416,7 +1412,6 @@ local function setActiveTab(name, animate)
 	end
 end
 
-local tabIcons = { Main = "○", Visuals = "◉", Misc = "✕", Settings = "⚙" }
 for i, name in ipairs(tabs) do
 	local tabButton = Instance.new("TextButton")
 	tabButton.Name = name
@@ -1434,37 +1429,10 @@ for i, name in ipairs(tabs) do
 	indicator.BorderSizePixel = 0
 	indicator.Parent = tabButton
 
-	local iconBox = Instance.new("Frame")
-	iconBox.Name = "IconBox"
-	iconBox.Size = UDim2.new(0, 24, 0, 24)
-	iconBox.Position = UDim2.new(0, 10, 0.5, -12)
-	iconBox.BackgroundTransparency = 1
-	iconBox.BorderSizePixel = 0
-	iconBox.Parent = tabButton
-
-	local iconBoxStroke = Instance.new("UIStroke")
-	iconBoxStroke.Color = LIME
-	iconBoxStroke.Thickness = 1
-	iconBoxStroke.Parent = iconBox
-
-	local iconBoxCorner = Instance.new("UICorner")
-	iconBoxCorner.CornerRadius = UDim.new(1, 0)
-	iconBoxCorner.Parent = iconBox
-
-	local icon = Instance.new("TextLabel")
-	icon.Name = "Icon"
-	icon.Size = UDim2.new(1, 0, 1, 0)
-	icon.BackgroundTransparency = 1
-	icon.Text = tabIcons[name] or ""
-	icon.Font = Enum.Font.GothamBold
-	icon.TextSize = 12
-	icon.TextColor3 = TEXT_SECONDARY
-	icon.Parent = iconBox
-
 	local label = Instance.new("TextLabel")
 	label.Name = "Label"
-	label.Size = UDim2.new(1, -44, 1, 0)
-	label.Position = UDim2.new(0, 42, 0, 0)
+	label.Size = UDim2.new(1, -14, 1, 0)
+	label.Position = UDim2.new(0, 14, 0, 0)
 	label.BackgroundTransparency = 1
 	label.Text = name
 	label.Font = Enum.Font.GothamBold
