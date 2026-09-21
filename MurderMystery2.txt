@@ -656,7 +656,7 @@ do
 	sliderRow.Parent = miscBox
 	sliderRow.Size = UDim2.new(1, 0, 0, 22)
 
-	local SPEED_TRACK_W = 270
+	local SPEED_TRACK_W = 200
 	local sliderValueLabel = Instance.new("TextLabel")
 	sliderValueLabel.Size = UDim2.new(0, 50, 0, 14)
 	sliderValueLabel.Position = UDim2.new(0, SPEED_TRACK_W + 8, 0, -9)
@@ -902,7 +902,7 @@ do
 	flySliderRow.ClipsDescendants = false
 	flySliderRow.Parent = miscBox
 
-	local FLY_TRACK_W = 270
+	local FLY_TRACK_W = 200
 	local flyValueLabel = Instance.new("TextLabel")
 	flyValueLabel.Size = UDim2.new(0, 50, 0, 14)
 	flyValueLabel.Position = UDim2.new(0, FLY_TRACK_W + 8, 0, -31)
@@ -1115,7 +1115,7 @@ do
 	jumpSliderRow.ClipsDescendants = false
 	jumpSliderRow.Parent = miscBox
 
-	local JUMP_TRACK_W = 270
+	local JUMP_TRACK_W = 200
 	local jumpValueLabel = Instance.new("TextLabel")
 	jumpValueLabel.Size = UDim2.new(0, 50, 0, 14)
 	jumpValueLabel.Position = UDim2.new(0, JUMP_TRACK_W + 8, 0, -51)
