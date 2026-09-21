@@ -539,7 +539,7 @@ do
 
 	local miscBox = Instance.new("Frame")
 	miscBox.Name = "MiscBox"
-	miscBox.Size = UDim2.new(1, 0, 0, 0)
+	miscBox.Size = UDim2.new(1, 5, 0, 0)
 	miscBox.AutomaticSize = Enum.AutomaticSize.Y
 	miscBox.BackgroundColor3 = BG_DARKER
 	miscBox.BorderSizePixel = 0
@@ -557,7 +557,7 @@ do
 
 	local miscBoxLayout = Instance.new("UIListLayout")
 	miscBoxLayout.SortOrder = Enum.SortOrder.LayoutOrder
-	miscBoxLayout.Padding = UDim.new(0, 8)
+	miscBoxLayout.Padding = UDim.new(0, 4.67)
 	miscBoxLayout.Parent = miscBox
 
 	local speedValue = 32
