@@ -470,7 +470,7 @@ do
 	pages["Visuals"] = page
 
 	local visualsPadding = Instance.new("UIPadding")
-	visualsPadding.PaddingTop = UDim.new(0, 8)
+	visualsPadding.PaddingTop = UDim.new(0, 3)
 	visualsPadding.PaddingLeft = UDim.new(0, 18)
 	visualsPadding.PaddingRight = UDim.new(0, 18)
 	visualsPadding.PaddingBottom = UDim.new(0, 18)
@@ -512,7 +512,7 @@ do
 	pages["Misc"] = page
 
 	local miscPadding = Instance.new("UIPadding")
-	miscPadding.PaddingTop = UDim.new(0, 8)
+	miscPadding.PaddingTop = UDim.new(0, 3)
 	miscPadding.PaddingLeft = UDim.new(0, 18)
 	miscPadding.PaddingRight = UDim.new(0, 18)
 	miscPadding.PaddingBottom = UDim.new(0, 18)
