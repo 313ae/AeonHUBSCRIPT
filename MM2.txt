@@ -557,7 +557,7 @@ do
 
 	local miscBoxLayout = Instance.new("UIListLayout")
 	miscBoxLayout.SortOrder = Enum.SortOrder.LayoutOrder
-	miscBoxLayout.Padding = UDim.new(0, 12)
+	miscBoxLayout.Padding = UDim.new(0, 8)
 	miscBoxLayout.Parent = miscBox
 
 	local speedValue = 32
