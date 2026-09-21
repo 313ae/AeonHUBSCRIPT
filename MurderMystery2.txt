@@ -1423,6 +1423,15 @@ for i, name in ipairs(tabs) do
 	tabButton.LayoutOrder = i
 	tabButton.Parent = sidebar
 
+	local tabStroke = Instance.new("UIStroke")
+	tabStroke.Color = LIME
+	tabStroke.Thickness = 1
+	tabStroke.Parent = tabButton
+
+	local tabCorner = Instance.new("UICorner")
+	tabCorner.CornerRadius = UDim.new(0, 6)
+	tabCorner.Parent = tabButton
+
 	local indicator = Instance.new("Frame")
 	indicator.Name = "Indicator"
 	indicator.Size = UDim2.new(0, 2, 1, 0)
