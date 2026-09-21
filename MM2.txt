@@ -571,8 +571,8 @@ do
 
 	local speedKeybind = Instance.new("TextButton")
 	speedKeybind.Name = "SpeedKeybind"
-	speedKeybind.Size = UDim2.new(0, 39, 0, 24)
-	speedKeybind.Position = UDim2.new(1, -83, 0, 8)
+	speedKeybind.Size = UDim2.new(0, 35, 0, 24)
+	speedKeybind.Position = UDim2.new(1, -79, 0, 8)
 	speedKeybind.BackgroundColor3 = BG_DARKER
 	speedKeybind.BorderSizePixel = 0
 	speedKeybind.AutoButtonColor = false
@@ -819,8 +819,8 @@ do
 	flyLabel.Parent = flyRow
 
 	local flyKeybind = Instance.new("TextButton")
-	flyKeybind.Size = UDim2.new(0, 39, 0, 24)
-	flyKeybind.Position = UDim2.new(1, -83, 0, -17)
+	flyKeybind.Size = UDim2.new(0, 35, 0, 24)
+	flyKeybind.Position = UDim2.new(1, -79, 0, -17)
 	flyKeybind.BackgroundColor3 = BG_DARKER
 	flyKeybind.BorderSizePixel = 0
 	flyKeybind.AutoButtonColor = false
@@ -1032,8 +1032,8 @@ do
 	jumpLabel.Parent = jumpRow
 
 	local jumpKeybind = Instance.new("TextButton")
-	jumpKeybind.Size = UDim2.new(0, 39, 0, 24)
-	jumpKeybind.Position = UDim2.new(1, -83, 0, -37)
+	jumpKeybind.Size = UDim2.new(0, 35, 0, 24)
+	jumpKeybind.Position = UDim2.new(1, -79, 0, -37)
 	jumpKeybind.BackgroundColor3 = BG_DARKER
 	jumpKeybind.BorderSizePixel = 0
 	jumpKeybind.AutoButtonColor = false
@@ -1275,8 +1275,8 @@ do
 	noclipLabel.Parent = noclipRow
 
 	local noclipKeybind = Instance.new("TextButton")
-	noclipKeybind.Size = UDim2.new(0, 39, 0, 24)
-	noclipKeybind.Position = UDim2.new(1, -83, 0, -57)
+	noclipKeybind.Size = UDim2.new(0, 35, 0, 24)
+	noclipKeybind.Position = UDim2.new(1, -79, 0, -57)
 	noclipKeybind.BackgroundColor3 = BG_DARKER
 	noclipKeybind.BorderSizePixel = 0
 	noclipKeybind.AutoButtonColor = false
