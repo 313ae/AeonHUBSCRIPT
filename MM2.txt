@@ -537,6 +537,29 @@ do
 	mobilityHeader.LayoutOrder = 1
 	mobilityHeader.Parent = page
 
+	local miscBox = Instance.new("Frame")
+	miscBox.Name = "MiscBox"
+	miscBox.Size = UDim2.new(1, 0, 0, 0)
+	miscBox.AutomaticSize = Enum.AutomaticSize.Y
+	miscBox.BackgroundColor3 = BG_DARKER
+	miscBox.BorderSizePixel = 0
+	miscBox.LayoutOrder = 2
+	miscBox.Parent = page
+
+	local miscBoxCorner = Instance.new("UICorner")
+	miscBoxCorner.CornerRadius = UDim.new(0, 8)
+	miscBoxCorner.Parent = miscBox
+
+	local miscBoxStroke = Instance.new("UIStroke")
+	miscBoxStroke.Color = BORDER
+	miscBoxStroke.Thickness = 1
+	miscBoxStroke.Parent = miscBox
+
+	local miscBoxLayout = Instance.new("UIListLayout")
+	miscBoxLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	miscBoxLayout.Padding = UDim.new(0, 12)
+	miscBoxLayout.Parent = miscBox
+
 	local speedValue = 32
 	local speedOn = false
 	local function applySpeed()
@@ -556,7 +579,7 @@ do
 	speedRow.Size = UDim2.new(1, 0, 0, 20)
 	speedRow.BackgroundTransparency = 1
 	speedRow.LayoutOrder = 2
-	speedRow.Parent = page
+	speedRow.Parent = miscBox
 
 	local speedLabel = Instance.new("TextLabel")
 	speedLabel.Size = UDim2.new(1, -90, 1, 0)
@@ -623,7 +646,7 @@ do
 	sliderRow.LayoutOrder = 3
 	sliderRow.Visible = true
 	sliderRow.ClipsDescendants = false
-	sliderRow.Parent = page
+	sliderRow.Parent = miscBox
 	sliderRow.Size = UDim2.new(1, 0, 0, 22)
 
 	local SPEED_TRACK_W = 270
@@ -805,7 +828,7 @@ do
 	flyRow.Size = UDim2.new(1, 0, 0, 20)
 	flyRow.BackgroundTransparency = 1
 	flyRow.LayoutOrder = 4
-	flyRow.Parent = page
+	flyRow.Parent = miscBox
 
 	local flyLabel = Instance.new("TextLabel")
 	flyLabel.Size = UDim2.new(1, -90, 1, 0)
@@ -870,7 +893,7 @@ do
 	flySliderRow.LayoutOrder = 5
 	flySliderRow.Visible = true
 	flySliderRow.ClipsDescendants = false
-	flySliderRow.Parent = page
+	flySliderRow.Parent = miscBox
 
 	local FLY_TRACK_W = 270
 	local flyValueLabel = Instance.new("TextLabel")
@@ -1018,7 +1041,7 @@ do
 	jumpRow.Size = UDim2.new(1, 0, 0, 20)
 	jumpRow.BackgroundTransparency = 1
 	jumpRow.LayoutOrder = 6
-	jumpRow.Parent = page
+	jumpRow.Parent = miscBox
 
 	local jumpLabel = Instance.new("TextLabel")
 	jumpLabel.Size = UDim2.new(1, -90, 1, 0)
@@ -1083,7 +1106,7 @@ do
 	jumpSliderRow.LayoutOrder = 7
 	jumpSliderRow.Visible = true
 	jumpSliderRow.ClipsDescendants = false
-	jumpSliderRow.Parent = page
+	jumpSliderRow.Parent = miscBox
 
 	local JUMP_TRACK_W = 270
 	local jumpValueLabel = Instance.new("TextLabel")
@@ -1261,7 +1284,7 @@ do
 	noclipRow.Size = UDim2.new(1, 0, 0, 20)
 	noclipRow.BackgroundTransparency = 1
 	noclipRow.LayoutOrder = 8
-	noclipRow.Parent = page
+	noclipRow.Parent = miscBox
 
 	local noclipLabel = Instance.new("TextLabel")
 	noclipLabel.Size = UDim2.new(1, -90, 1, 0)
