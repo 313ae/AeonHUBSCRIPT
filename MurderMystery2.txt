@@ -1355,43 +1355,39 @@ do
 		end
 	end)
 
-	-- Overlay background behind Speed -> Noclip. Parented to content (no
-	-- layout manager there) so resizing it never moves your buttons.
-	local miscOverlay = Instance.new("Frame")
-	miscOverlay.Name = "MiscOverlay"
-	miscOverlay.BackgroundColor3 = BG_DARKER
-	miscOverlay.BorderSizePixel = 0
-	miscOverlay.ZIndex = 0
-	miscOverlay.Visible = false
-	miscOverlay.Parent = content
+	-- Box background behind Speed -> Noclip. Lives INSIDE speedRow (a plain
+	-- Frame with no layout manager), so it scrolls and clips with the page
+	-- like normal content: rides alongside your buttons, never touches the
+	-- title bar, and resizing it can't move anything.
+	local miscBox = Instance.new("Frame")
+	miscBox.Name = "MiscBox"
+	miscBox.BackgroundColor3 = BG_DARKER
+	miscBox.BorderSizePixel = 0
+	miscBox.ZIndex = 0
+	miscBox.Parent = speedRow
 
-	local miscOverlayCorner = Instance.new("UICorner")
-	miscOverlayCorner.CornerRadius = UDim.new(0, 8)
-	miscOverlayCorner.Parent = miscOverlay
+	local miscBoxCorner = Instance.new("UICorner")
+	miscBoxCorner.CornerRadius = UDim.new(0, 8)
+	miscBoxCorner.Parent = miscBox
 
-	local miscOverlayStroke = Instance.new("UIStroke")
-	miscOverlayStroke.Color = BORDER
-	miscOverlayStroke.Thickness = 1
-	miscOverlayStroke.Parent = miscOverlay
+	local miscBoxStroke = Instance.new("UIStroke")
+	miscBoxStroke.Color = BORDER
+	miscBoxStroke.Thickness = 1
+	miscBoxStroke.Parent = miscBox
 
-	local OVERLAY_PAD = 8
-	local function refreshMiscOverlay()
-		if not page.Visible then miscOverlay.Visible = false return end
-		local cx, cy = content.AbsolutePosition.X, content.AbsolutePosition.Y
-		local pageTop = page.AbsolutePosition.Y
-		local pageBottom = pageTop + page.AbsoluteSize.Y
-		local top = math.max(speedRow.AbsolutePosition.Y - OVERLAY_PAD, pageTop) + 8
-		local bottom = math.min(noclipRow.AbsolutePosition.Y + noclipRow.AbsoluteSize.Y + OVERLAY_PAD, pageBottom)
-		if bottom - top - 52 <= 0 then miscOverlay.Visible = false return end
-		miscOverlay.Position = UDim2.new(0, speedRow.AbsolutePosition.X - cx - OVERLAY_PAD, 0, top - cy)
-		miscOverlay.Size = UDim2.new(0, speedRow.AbsoluteSize.X + OVERLAY_PAD * 2, 0, (bottom - top) - 52)
-		miscOverlay.Visible = true
+	local BOX_PAD = 8
+	local function refreshMiscBox()
+		if speedRow.AbsoluteSize.X <= 0 then return end
+		local span = (noclipRow.AbsolutePosition.Y + noclipRow.AbsoluteSize.Y) - speedRow.AbsolutePosition.Y
+		if span <= 0 then return end
+		miscBox.Position = UDim2.new(0, -BOX_PAD, 0, 0)
+		miscBox.Size = UDim2.new(1, BOX_PAD * 2, 0, span - 44)
 	end
-	page:GetPropertyChangedSignal("Visible"):Connect(function() task.defer(refreshMiscOverlay) end)
-	page:GetPropertyChangedSignal("AbsoluteSize"):Connect(function() task.defer(refreshMiscOverlay) end)
-	miscLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() task.defer(refreshMiscOverlay) end)
-	task.defer(refreshMiscOverlay)
-	task.delay(1, refreshMiscOverlay)
+	page:GetPropertyChangedSignal("Visible"):Connect(function()
+		if page.Visible then task.defer(refreshMiscBox) task.delay(0.5, refreshMiscBox) end
+	end)
+	page:GetPropertyChangedSignal("AbsoluteSize"):Connect(function() task.defer(refreshMiscBox) end)
+	task.delay(1, refreshMiscBox)
 end
 
 -- Main page: toggle / slider / dropdown placeholders
