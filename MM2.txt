@@ -537,36 +537,6 @@ do
 	mobilityHeader.LayoutOrder = 1
 	mobilityHeader.Parent = page
 
-	local miscBox = Instance.new("Frame")
-	miscBox.Name = "MiscBox"
-	miscBox.Size = UDim2.new(1, 0, 0, 0)
-	miscBox.AutomaticSize = Enum.AutomaticSize.Y
-	miscBox.BackgroundColor3 = BG_DARKER
-	miscBox.BorderSizePixel = 0
-	miscBox.LayoutOrder = 2
-	miscBox.Parent = page
-
-	local miscBoxCorner = Instance.new("UICorner")
-	miscBoxCorner.CornerRadius = UDim.new(0, 8)
-	miscBoxCorner.Parent = miscBox
-
-	local miscBoxStroke = Instance.new("UIStroke")
-	miscBoxStroke.Color = BORDER
-	miscBoxStroke.Thickness = 1
-	miscBoxStroke.Parent = miscBox
-
-	local miscBoxPad = Instance.new("UIPadding")
-	miscBoxPad.PaddingTop = UDim.new(0, 12)
-	miscBoxPad.PaddingBottom = UDim.new(0, 12)
-	miscBoxPad.PaddingLeft = UDim.new(0, 12)
-	miscBoxPad.PaddingRight = UDim.new(0, 12)
-	miscBoxPad.Parent = miscBox
-
-	local miscBoxLayout = Instance.new("UIListLayout")
-	miscBoxLayout.SortOrder = Enum.SortOrder.LayoutOrder
-	miscBoxLayout.Padding = UDim.new(0, 14)
-	miscBoxLayout.Parent = miscBox
-
 	local speedValue = 32
 	local speedOn = false
 	local function applySpeed()
@@ -585,8 +555,8 @@ do
 	speedRow.Name = "SpeedRow"
 	speedRow.Size = UDim2.new(1, 0, 0, 20)
 	speedRow.BackgroundTransparency = 1
-	speedRow.LayoutOrder = 1
-	speedRow.Parent = miscBox
+	speedRow.LayoutOrder = 2
+	speedRow.Parent = page
 
 	local speedLabel = Instance.new("TextLabel")
 	speedLabel.Size = UDim2.new(1, -90, 1, 0)
@@ -650,16 +620,16 @@ do
 	sliderRow.Name = "SpeedSliderRow"
 	sliderRow.Size = UDim2.new(1, 0, 0, 0)
 	sliderRow.BackgroundTransparency = 1
-	sliderRow.LayoutOrder = 2
+	sliderRow.LayoutOrder = 3
 	sliderRow.Visible = true
 	sliderRow.ClipsDescendants = false
-	sliderRow.Parent = miscBox
+	sliderRow.Parent = page
 	sliderRow.Size = UDim2.new(1, 0, 0, 22)
 
 	local SPEED_TRACK_W = 270
 	local sliderValueLabel = Instance.new("TextLabel")
 	sliderValueLabel.Size = UDim2.new(0, 50, 0, 14)
-	sliderValueLabel.Position = UDim2.new(0, SPEED_TRACK_W - 50, 0, -9)
+	sliderValueLabel.Position = UDim2.new(0, SPEED_TRACK_W + 8, 0, -9)
 	sliderValueLabel.BackgroundTransparency = 1
 	sliderValueLabel.Text = tostring(speedValue)
 	sliderValueLabel.Font = Enum.Font.GothamBold
@@ -834,8 +804,8 @@ do
 	flyRow.Name = "FlyRow"
 	flyRow.Size = UDim2.new(1, 0, 0, 20)
 	flyRow.BackgroundTransparency = 1
-	flyRow.LayoutOrder = 3
-	flyRow.Parent = miscBox
+	flyRow.LayoutOrder = 4
+	flyRow.Parent = page
 
 	local flyLabel = Instance.new("TextLabel")
 	flyLabel.Size = UDim2.new(1, -90, 1, 0)
@@ -897,15 +867,15 @@ do
 	local flySliderRow = Instance.new("Frame")
 	flySliderRow.Size = UDim2.new(1, 0, 0, 22)
 	flySliderRow.BackgroundTransparency = 1
-	flySliderRow.LayoutOrder = 4
+	flySliderRow.LayoutOrder = 5
 	flySliderRow.Visible = true
 	flySliderRow.ClipsDescendants = false
-	flySliderRow.Parent = miscBox
+	flySliderRow.Parent = page
 
 	local FLY_TRACK_W = 270
 	local flyValueLabel = Instance.new("TextLabel")
 	flyValueLabel.Size = UDim2.new(0, 50, 0, 14)
-	flyValueLabel.Position = UDim2.new(0, FLY_TRACK_W - 50, 0, -31)
+	flyValueLabel.Position = UDim2.new(0, FLY_TRACK_W + 8, 0, -31)
 	flyValueLabel.BackgroundTransparency = 1
 	flyValueLabel.Font = Enum.Font.GothamBold
 	flyValueLabel.TextSize = 10
@@ -1047,8 +1017,8 @@ do
 	local jumpRow = Instance.new("Frame")
 	jumpRow.Size = UDim2.new(1, 0, 0, 20)
 	jumpRow.BackgroundTransparency = 1
-	jumpRow.LayoutOrder = 5
-	jumpRow.Parent = miscBox
+	jumpRow.LayoutOrder = 6
+	jumpRow.Parent = page
 
 	local jumpLabel = Instance.new("TextLabel")
 	jumpLabel.Size = UDim2.new(1, -90, 1, 0)
@@ -1110,15 +1080,15 @@ do
 	local jumpSliderRow = Instance.new("Frame")
 	jumpSliderRow.Size = UDim2.new(1, 0, 0, 22)
 	jumpSliderRow.BackgroundTransparency = 1
-	jumpSliderRow.LayoutOrder = 6
+	jumpSliderRow.LayoutOrder = 7
 	jumpSliderRow.Visible = true
 	jumpSliderRow.ClipsDescendants = false
-	jumpSliderRow.Parent = miscBox
+	jumpSliderRow.Parent = page
 
 	local JUMP_TRACK_W = 270
 	local jumpValueLabel = Instance.new("TextLabel")
 	jumpValueLabel.Size = UDim2.new(0, 50, 0, 14)
-	jumpValueLabel.Position = UDim2.new(0, JUMP_TRACK_W - 50, 0, -51)
+	jumpValueLabel.Position = UDim2.new(0, JUMP_TRACK_W + 8, 0, -51)
 	jumpValueLabel.BackgroundTransparency = 1
 	jumpValueLabel.Font = Enum.Font.GothamBold
 	jumpValueLabel.TextSize = 10
@@ -1290,8 +1260,8 @@ do
 	local noclipRow = Instance.new("Frame")
 	noclipRow.Size = UDim2.new(1, 0, 0, 20)
 	noclipRow.BackgroundTransparency = 1
-	noclipRow.LayoutOrder = 7
-	noclipRow.Parent = miscBox
+	noclipRow.LayoutOrder = 8
+	noclipRow.Parent = page
 
 	local noclipLabel = Instance.new("TextLabel")
 	noclipLabel.Size = UDim2.new(1, -90, 1, 0)
