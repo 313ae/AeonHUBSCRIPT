@@ -1151,6 +1151,151 @@ do
 			setJumpOn(not jumpOn)
 		end
 	end)
+
+	-- Noclip
+	local noclipOn = false
+	local noclipConn = nil
+	local noclipSaved = {}
+	local function applyNoclip(char)
+		if not char then return end
+		for _, part in ipairs(char:GetDescendants()) do
+			if part:IsA("BasePart") then
+				if noclipSaved[part] == nil then noclipSaved[part] = part.CanCollide end
+				part.CanCollide = false
+			end
+		end
+	end
+	local function restoreNoclip()
+		for part, was in pairs(noclipSaved) do
+			if part and part.Parent then
+				part.CanCollide = was
+			end
+		end
+		noclipSaved = {}
+	end
+	local noclipTrack, noclipKnob
+	local function setNoclipOn(state)
+		noclipOn = state
+		if noclipConn then noclipConn:Disconnect() noclipConn = nil end
+		if state then
+			noclipTrack.BackgroundColor3 = LIME
+			noclipKnob.Position = UDim2.new(1, -18, 0, 2)
+			noclipKnob.BackgroundColor3 = BG_DARKER
+			local char = player.Character
+			if char then
+				noclipSaved = {}
+				applyNoclip(char)
+				noclipConn = RunService.Stepped:Connect(function() applyNoclip(char) end)
+			end
+		else
+			noclipTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+			noclipKnob.Position = UDim2.new(0, 2, 0, 2)
+			noclipKnob.BackgroundColor3 = TEXT_SECONDARY
+			restoreNoclip()
+		end
+	end
+	player.CharacterAdded:Connect(function(char)
+		noclipSaved = {}
+		if noclipOn then
+			task.wait(0.5)
+			if player.Character == char then
+				applyNoclip(char)
+				if noclipConn then noclipConn:Disconnect() end
+				noclipConn = RunService.Stepped:Connect(function() applyNoclip(char) end)
+			end
+		end
+	end)
+
+	local noclipRow = Instance.new("Frame")
+	noclipRow.Size = UDim2.new(1, 0, 0, 20)
+	noclipRow.BackgroundTransparency = 1
+	noclipRow.LayoutOrder = 8
+	noclipRow.Parent = page
+
+	local noclipLabel = Instance.new("TextLabel")
+	noclipLabel.Size = UDim2.new(1, -90, 1, 0)
+	noclipLabel.Position = UDim2.new(0, 0, 0, 2)
+	noclipLabel.BackgroundTransparency = 1
+	noclipLabel.Text = "Noclip"
+	noclipLabel.Font = Enum.Font.GothamBold
+	noclipLabel.TextSize = 13
+	noclipLabel.TextColor3 = TEXT_PRIMARY
+	noclipLabel.TextXAlignment = Enum.TextXAlignment.Left
+	noclipLabel.Parent = noclipRow
+
+	local noclipKeybind = Instance.new("TextButton")
+	noclipKeybind.Size = UDim2.new(0, 39, 0, 24)
+	noclipKeybind.Position = UDim2.new(1, -83, 0, -2)
+	noclipKeybind.BackgroundColor3 = BG_DARKER
+	noclipKeybind.BorderSizePixel = 0
+	noclipKeybind.AutoButtonColor = false
+	noclipKeybind.Font = Enum.Font.GothamBold
+	noclipKeybind.TextSize = 10
+	noclipKeybind.TextColor3 = TEXT_SECONDARY
+	noclipKeybind.Text = "..."
+	noclipKeybind.TextTruncate = Enum.TextTruncate.AtEnd
+	noclipKeybind.ClipsDescendants = true
+	noclipKeybind.Parent = noclipRow
+
+	local noclipKeybindCorner = Instance.new("UICorner")
+	noclipKeybindCorner.CornerRadius = UDim.new(0, 0)
+	noclipKeybindCorner.Parent = noclipKeybind
+
+	local noclipKeybindStroke = Instance.new("UIStroke")
+	noclipKeybindStroke.Color = Color3.fromRGB(50, 50, 50)
+	noclipKeybindStroke.Thickness = 1
+	noclipKeybindStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	noclipKeybindStroke.Parent = noclipKeybind
+
+	noclipTrack = Instance.new("TextButton")
+	noclipTrack.Size = UDim2.new(0, 38, 0, 20)
+	noclipTrack.Position = UDim2.new(1, -38, 0, 0)
+	noclipTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	noclipTrack.Text = ""
+	noclipTrack.AutoButtonColor = false
+	noclipTrack.Parent = noclipRow
+
+	local noclipTrackCorner = Instance.new("UICorner")
+	noclipTrackCorner.CornerRadius = UDim.new(1, 0)
+	noclipTrackCorner.Parent = noclipTrack
+
+	noclipKnob = Instance.new("Frame")
+	noclipKnob.Size = UDim2.new(0, 16, 0, 16)
+	noclipKnob.Position = UDim2.new(0, 2, 0, 2)
+	noclipKnob.BackgroundColor3 = TEXT_SECONDARY
+	noclipKnob.Parent = noclipTrack
+
+	local noclipKnobCorner = Instance.new("UICorner")
+	noclipKnobCorner.CornerRadius = UDim.new(1, 0)
+	noclipKnobCorner.Parent = noclipKnob
+
+	noclipTrack.MouseButton1Click:Connect(function() setNoclipOn(not noclipOn) end)
+
+	local noclipBoundKey = nil
+	local bindingNoclip = false
+	noclipKeybind.MouseButton1Click:Connect(function()
+		bindingNoclip = true
+		noclipKeybind.Text = "..."
+	end)
+	UserInputService.InputBegan:Connect(function(input, gpe)
+		if bindingNoclip then
+			if input.UserInputType == Enum.UserInputType.Keyboard then
+				noclipBoundKey = input.KeyCode
+				local nm = tostring(input.KeyCode):gsub("Enum.KeyCode.", "")
+				local short = { LeftControl = "LCtrl", RightControl = "RCtrl", LeftShift = "LShift", RightShift = "RShift", LeftAlt = "LAlt", RightAlt = "RAlt", CapsLock = "Caps", Space = "Spc", Backspace = "Bspc" }
+				nm = short[nm] or nm
+				if #nm > 5 then nm = nm:sub(1, 5) end
+				noclipKeybind.Text = nm
+				noclipKeybind.TextColor3 = TEXT_PRIMARY
+			end
+			bindingNoclip = false
+			if not noclipBoundKey then noclipKeybind.Text = "..." end
+			return
+		end
+		if input.UserInputType == Enum.UserInputType.Keyboard and noclipBoundKey and input.KeyCode == noclipBoundKey and not gpe then
+			setNoclipOn(not noclipOn)
+		end
+	end)
 end
 
 -- Main page: toggle / slider / dropdown placeholders
