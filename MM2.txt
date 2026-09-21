@@ -560,7 +560,7 @@ do
 
 	local speedLabel = Instance.new("TextLabel")
 	speedLabel.Size = UDim2.new(1, -90, 1, 0)
-	speedLabel.Position = UDim2.new(0, 0, 0, 2)
+	speedLabel.Position = UDim2.new(0, 0, 0, 12)
 	speedLabel.BackgroundTransparency = 1
 	speedLabel.Text = "Speed"
 	speedLabel.Font = Enum.Font.GothamBold
@@ -572,7 +572,7 @@ do
 	local speedKeybind = Instance.new("TextButton")
 	speedKeybind.Name = "SpeedKeybind"
 	speedKeybind.Size = UDim2.new(0, 39, 0, 24)
-	speedKeybind.Position = UDim2.new(1, -83, 0, -2)
+	speedKeybind.Position = UDim2.new(1, -83, 0, 8)
 	speedKeybind.BackgroundColor3 = BG_DARKER
 	speedKeybind.BorderSizePixel = 0
 	speedKeybind.AutoButtonColor = false
@@ -596,7 +596,7 @@ do
 
 	local speedTrack = Instance.new("TextButton")
 	speedTrack.Size = UDim2.new(0, 38, 0, 20)
-	speedTrack.Position = UDim2.new(1, -38, 0, 0)
+	speedTrack.Position = UDim2.new(1, -38, 0, 10)
 	speedTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 	speedTrack.Text = ""
 	speedTrack.AutoButtonColor = false
@@ -629,7 +629,7 @@ do
 	local SPEED_TRACK_W = 270
 	local sliderValueLabel = Instance.new("TextLabel")
 	sliderValueLabel.Size = UDim2.new(0, 50, 0, 14)
-	sliderValueLabel.Position = UDim2.new(0, SPEED_TRACK_W + 8, 0, -9)
+	sliderValueLabel.Position = UDim2.new(0, SPEED_TRACK_W + 8, 0, 1)
 	sliderValueLabel.BackgroundTransparency = 1
 	sliderValueLabel.Text = tostring(speedValue)
 	sliderValueLabel.Font = Enum.Font.GothamBold
@@ -640,7 +640,7 @@ do
 
 	local sliderTrack = Instance.new("Frame")
 	sliderTrack.Size = UDim2.new(0, SPEED_TRACK_W, 0, 4)
-	sliderTrack.Position = UDim2.new(0, 0, 0, -4)
+	sliderTrack.Position = UDim2.new(0, 0, 0, 6)
 	sliderTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 	sliderTrack.BorderSizePixel = 0
 	sliderTrack.Active = true
@@ -809,7 +809,7 @@ do
 
 	local flyLabel = Instance.new("TextLabel")
 	flyLabel.Size = UDim2.new(1, -90, 1, 0)
-	flyLabel.Position = UDim2.new(0, 0, 0, -23)
+	flyLabel.Position = UDim2.new(0, 0, 0, -13)
 	flyLabel.BackgroundTransparency = 1
 	flyLabel.Text = "Flight"
 	flyLabel.Font = Enum.Font.GothamBold
@@ -820,7 +820,7 @@ do
 
 	local flyKeybind = Instance.new("TextButton")
 	flyKeybind.Size = UDim2.new(0, 39, 0, 24)
-	flyKeybind.Position = UDim2.new(1, -83, 0, -27)
+	flyKeybind.Position = UDim2.new(1, -83, 0, -17)
 	flyKeybind.BackgroundColor3 = BG_DARKER
 	flyKeybind.BorderSizePixel = 0
 	flyKeybind.AutoButtonColor = false
@@ -844,7 +844,7 @@ do
 
 	local flyTrack = Instance.new("TextButton")
 	flyTrack.Size = UDim2.new(0, 38, 0, 20)
-	flyTrack.Position = UDim2.new(1, -38, 0, -25)
+	flyTrack.Position = UDim2.new(1, -38, 0, -15)
 	flyTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 	flyTrack.Text = ""
 	flyTrack.AutoButtonColor = false
@@ -875,7 +875,7 @@ do
 	local FLY_TRACK_W = 270
 	local flyValueLabel = Instance.new("TextLabel")
 	flyValueLabel.Size = UDim2.new(0, 50, 0, 14)
-	flyValueLabel.Position = UDim2.new(0, FLY_TRACK_W + 8, 0, -31)
+	flyValueLabel.Position = UDim2.new(0, FLY_TRACK_W + 8, 0, -21)
 	flyValueLabel.BackgroundTransparency = 1
 	flyValueLabel.Font = Enum.Font.GothamBold
 	flyValueLabel.TextSize = 10
@@ -885,7 +885,7 @@ do
 
 	local flySliderTrack = Instance.new("Frame")
 	flySliderTrack.Size = UDim2.new(0, FLY_TRACK_W, 0, 4)
-	flySliderTrack.Position = UDim2.new(0, 0, 0, -26)
+	flySliderTrack.Position = UDim2.new(0, 0, 0, -16)
 	flySliderTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 	flySliderTrack.BorderSizePixel = 0
 	flySliderTrack.Active = true
@@ -1022,7 +1022,7 @@ do
 
 	local jumpLabel = Instance.new("TextLabel")
 	jumpLabel.Size = UDim2.new(1, -90, 1, 0)
-	jumpLabel.Position = UDim2.new(0, 0, 0, -43)
+	jumpLabel.Position = UDim2.new(0, 0, 0, -33)
 	jumpLabel.BackgroundTransparency = 1
 	jumpLabel.Text = "Jump Power"
 	jumpLabel.Font = Enum.Font.GothamBold
@@ -1033,7 +1033,7 @@ do
 
 	local jumpKeybind = Instance.new("TextButton")
 	jumpKeybind.Size = UDim2.new(0, 39, 0, 24)
-	jumpKeybind.Position = UDim2.new(1, -83, 0, -47)
+	jumpKeybind.Position = UDim2.new(1, -83, 0, -37)
 	jumpKeybind.BackgroundColor3 = BG_DARKER
 	jumpKeybind.BorderSizePixel = 0
 	jumpKeybind.AutoButtonColor = false
@@ -1057,7 +1057,7 @@ do
 
 	local jumpTrack = Instance.new("TextButton")
 	jumpTrack.Size = UDim2.new(0, 38, 0, 20)
-	jumpTrack.Position = UDim2.new(1, -38, 0, -45)
+	jumpTrack.Position = UDim2.new(1, -38, 0, -35)
 	jumpTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 	jumpTrack.Text = ""
 	jumpTrack.AutoButtonColor = false
@@ -1088,7 +1088,7 @@ do
 	local JUMP_TRACK_W = 270
 	local jumpValueLabel = Instance.new("TextLabel")
 	jumpValueLabel.Size = UDim2.new(0, 50, 0, 14)
-	jumpValueLabel.Position = UDim2.new(0, JUMP_TRACK_W + 8, 0, -51)
+	jumpValueLabel.Position = UDim2.new(0, JUMP_TRACK_W + 8, 0, -41)
 	jumpValueLabel.BackgroundTransparency = 1
 	jumpValueLabel.Font = Enum.Font.GothamBold
 	jumpValueLabel.TextSize = 10
@@ -1098,7 +1098,7 @@ do
 
 	local jumpSliderTrack = Instance.new("Frame")
 	jumpSliderTrack.Size = UDim2.new(0, JUMP_TRACK_W, 0, 4)
-	jumpSliderTrack.Position = UDim2.new(0, 0, 0, -46)
+	jumpSliderTrack.Position = UDim2.new(0, 0, 0, -36)
 	jumpSliderTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 	jumpSliderTrack.BorderSizePixel = 0
 	jumpSliderTrack.Active = true
@@ -1265,7 +1265,7 @@ do
 
 	local noclipLabel = Instance.new("TextLabel")
 	noclipLabel.Size = UDim2.new(1, -90, 1, 0)
-	noclipLabel.Position = UDim2.new(0, 0, 0, -63)
+	noclipLabel.Position = UDim2.new(0, 0, 0, -53)
 	noclipLabel.BackgroundTransparency = 1
 	noclipLabel.Text = "Noclip"
 	noclipLabel.Font = Enum.Font.GothamBold
@@ -1276,7 +1276,7 @@ do
 
 	local noclipKeybind = Instance.new("TextButton")
 	noclipKeybind.Size = UDim2.new(0, 39, 0, 24)
-	noclipKeybind.Position = UDim2.new(1, -83, 0, -67)
+	noclipKeybind.Position = UDim2.new(1, -83, 0, -57)
 	noclipKeybind.BackgroundColor3 = BG_DARKER
 	noclipKeybind.BorderSizePixel = 0
 	noclipKeybind.AutoButtonColor = false
@@ -1300,7 +1300,7 @@ do
 
 	noclipTrack = Instance.new("TextButton")
 	noclipTrack.Size = UDim2.new(0, 38, 0, 20)
-	noclipTrack.Position = UDim2.new(1, -38, 0, -65)
+	noclipTrack.Position = UDim2.new(1, -38, 0, -55)
 	noclipTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 	noclipTrack.Text = ""
 	noclipTrack.AutoButtonColor = false
@@ -1374,7 +1374,7 @@ do
 		local top = speedRow.AbsolutePosition.Y
 		local bottom = noclipRow.AbsolutePosition.Y + noclipRow.AbsoluteSize.Y
 		if bottom <= top then return end
-		miscOverlay.Position = UDim2.new(0, speedRow.AbsolutePosition.X - cx - OVERLAY_PAD, 0, top - cy - OVERLAY_PAD)
+		miscOverlay.Position = UDim2.new(0, speedRow.AbsolutePosition.X - cx - OVERLAY_PAD, 0, top - cy - OVERLAY_PAD + 10)
 		miscOverlay.Size = UDim2.new(0, speedRow.AbsoluteSize.X + OVERLAY_PAD * 2, 0, (bottom - top) + OVERLAY_PAD * 2 - 60)
 		miscOverlay.Visible = true
 	end
