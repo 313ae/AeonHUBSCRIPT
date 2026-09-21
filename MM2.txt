@@ -433,8 +433,8 @@ sidebarDivider.Parent = body
 -- One page per tab, only the active one is Visible
 local pages = {}
 
--- Plain "empty" pages for Visuals / Settings
-for _, name in ipairs({"Visuals", "Settings"}) do
+-- Plain "empty" pages for Settings
+for _, name in ipairs({"Settings"}) do
 	local page = Instance.new("Frame")
 	page.Name = name .. "Page"
 	page.Size = UDim2.new(1, 0, 1, 0)
@@ -452,6 +452,48 @@ for _, name in ipairs({"Visuals", "Settings"}) do
 	emptyLabel.Parent = page
 
 	pages[name] = page
+end
+
+-- Visuals page with Player section (mirrors Mobility)
+do
+	local page = Instance.new("ScrollingFrame")
+	page.Name = "VisualsPage"
+	page.Size = UDim2.new(1, 0, 1, 0)
+	page.BackgroundTransparency = 1
+	page.BorderSizePixel = 0
+	page.Visible = false
+	page.CanvasSize = UDim2.new(0, 0, 0, 0)
+	page.ScrollingDirection = Enum.ScrollingDirection.Y
+	page.ElasticBehavior = Enum.ElasticBehavior.Never
+	page.ScrollBarThickness = 0
+	page.Parent = content
+	pages["Visuals"] = page
+
+	local visualsPadding = Instance.new("UIPadding")
+	visualsPadding.PaddingTop = UDim.new(0, 13)
+	visualsPadding.PaddingLeft = UDim.new(0, 18)
+	visualsPadding.PaddingRight = UDim.new(0, 18)
+	visualsPadding.PaddingBottom = UDim.new(0, 18)
+	visualsPadding.Parent = page
+
+	local visualsLayout = Instance.new("UIListLayout")
+	visualsLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	visualsLayout.Padding = UDim.new(0, 12)
+	visualsLayout.Parent = page
+	visualsLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+		page.CanvasSize = UDim2.new(0, 0, 0, visualsLayout.AbsoluteContentSize.Y + 31)
+	end)
+
+	local playerHeader = Instance.new("TextLabel")
+	playerHeader.Size = UDim2.new(1, 0, 0, 14)
+	playerHeader.BackgroundTransparency = 1
+	playerHeader.TextColor3 = TEXT_SECONDARY
+	playerHeader.Font = Enum.Font.GothamBold
+	playerHeader.TextSize = 11
+	playerHeader.TextXAlignment = Enum.TextXAlignment.Left
+	playerHeader.Text = "Player"
+	playerHeader.LayoutOrder = 1
+	playerHeader.Parent = page
 end
 
 -- Misc page with Mobility section
