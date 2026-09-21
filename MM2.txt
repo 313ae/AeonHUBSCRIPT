@@ -494,6 +494,7 @@ do
 	playerHeader.Text = "Player"
 	playerHeader.LayoutOrder = 1
 	playerHeader.Parent = page
+end
 
 -- Misc page with Mobility section
 do
