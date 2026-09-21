@@ -1378,11 +1378,13 @@ do
 	local function refreshMiscOverlay()
 		if not page.Visible then miscOverlay.Visible = false return end
 		local cx, cy = content.AbsolutePosition.X, content.AbsolutePosition.Y
-		local top = speedRow.AbsolutePosition.Y
-		local bottom = noclipRow.AbsolutePosition.Y + noclipRow.AbsoluteSize.Y
-		if bottom <= top then return end
-		miscOverlay.Position = UDim2.new(0, speedRow.AbsolutePosition.X - cx - OVERLAY_PAD, 0, top - cy - OVERLAY_PAD + 8)
-		miscOverlay.Size = UDim2.new(0, speedRow.AbsoluteSize.X + OVERLAY_PAD * 2, 0, (bottom - top) + OVERLAY_PAD * 2 - 60)
+		local pageTop = page.AbsolutePosition.Y
+		local pageBottom = pageTop + page.AbsoluteSize.Y
+		local top = math.max(speedRow.AbsolutePosition.Y - OVERLAY_PAD, pageTop) + 8
+		local bottom = math.min(noclipRow.AbsolutePosition.Y + noclipRow.AbsoluteSize.Y + OVERLAY_PAD, pageBottom)
+		if bottom - top - 52 <= 0 then miscOverlay.Visible = false return end
+		miscOverlay.Position = UDim2.new(0, speedRow.AbsolutePosition.X - cx - OVERLAY_PAD, 0, top - cy)
+		miscOverlay.Size = UDim2.new(0, speedRow.AbsoluteSize.X + OVERLAY_PAD * 2, 0, (bottom - top) - 52)
 		miscOverlay.Visible = true
 	end
 	page:GetPropertyChangedSignal("Visible"):Connect(function() task.defer(refreshMiscOverlay) end)
