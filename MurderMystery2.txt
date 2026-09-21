@@ -523,7 +523,7 @@ do
 	miscLayout.Padding = UDim.new(0, 12)
 	miscLayout.Parent = page
 	miscLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-		page.CanvasSize = UDim2.new(0, 0, 0, miscLayout.AbsoluteContentSize.Y + 31)
+		page.CanvasSize = UDim2.new(0, 0, 0, miscLayout.AbsoluteContentSize.Y + 31 + 300)
 	end)
 	page:GetPropertyChangedSignal("Visible"):Connect(function()
 		if page.Visible then
