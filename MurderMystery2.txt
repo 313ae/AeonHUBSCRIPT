@@ -656,10 +656,10 @@ do
 	sliderRow.Parent = miscBox
 	sliderRow.Size = UDim2.new(1, 0, 0, 22)
 
-	local SPEED_TRACK_W = 200
+	local SPEED_TRACK_W = 270
 	local sliderValueLabel = Instance.new("TextLabel")
 	sliderValueLabel.Size = UDim2.new(0, 50, 0, 14)
-	sliderValueLabel.Position = UDim2.new(0, SPEED_TRACK_W + 8, 0, -9)
+	sliderValueLabel.Position = UDim2.new(0, SPEED_TRACK_W - 50, 0, -9)
 	sliderValueLabel.BackgroundTransparency = 1
 	sliderValueLabel.Text = tostring(speedValue)
 	sliderValueLabel.Font = Enum.Font.GothamBold
@@ -902,10 +902,10 @@ do
 	flySliderRow.ClipsDescendants = false
 	flySliderRow.Parent = miscBox
 
-	local FLY_TRACK_W = 200
+	local FLY_TRACK_W = 270
 	local flyValueLabel = Instance.new("TextLabel")
 	flyValueLabel.Size = UDim2.new(0, 50, 0, 14)
-	flyValueLabel.Position = UDim2.new(0, FLY_TRACK_W + 8, 0, -31)
+	flyValueLabel.Position = UDim2.new(0, FLY_TRACK_W - 50, 0, -31)
 	flyValueLabel.BackgroundTransparency = 1
 	flyValueLabel.Font = Enum.Font.GothamBold
 	flyValueLabel.TextSize = 10
@@ -1115,10 +1115,10 @@ do
 	jumpSliderRow.ClipsDescendants = false
 	jumpSliderRow.Parent = miscBox
 
-	local JUMP_TRACK_W = 200
+	local JUMP_TRACK_W = 270
 	local jumpValueLabel = Instance.new("TextLabel")
 	jumpValueLabel.Size = UDim2.new(0, 50, 0, 14)
-	jumpValueLabel.Position = UDim2.new(0, JUMP_TRACK_W + 8, 0, -51)
+	jumpValueLabel.Position = UDim2.new(0, JUMP_TRACK_W - 50, 0, -51)
 	jumpValueLabel.BackgroundTransparency = 1
 	jumpValueLabel.Font = Enum.Font.GothamBold
 	jumpValueLabel.TextSize = 10
