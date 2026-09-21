@@ -433,8 +433,8 @@ sidebarDivider.Parent = body
 -- One page per tab, only the active one is Visible
 local pages = {}
 
--- Plain "empty" pages for Dashboard / Settings
-for _, name in ipairs({"Dashboard", "Settings"}) do
+-- Plain "empty" pages for Visuals / Settings
+for _, name in ipairs({"Visuals", "Settings"}) do
 	local page = Instance.new("Frame")
 	page.Name = name .. "Page"
 	page.Size = UDim2.new(1, 0, 1, 0)
@@ -1328,7 +1328,7 @@ mainLayout.Padding = UDim.new(0, 20)
 mainLayout.Parent = mainPage
 
 -- Tab button factory
-local tabs = {"Main", "Dashboard", "Misc", "Settings"}
+local tabs = {"Main", "Visuals", "Misc", "Settings"}
 local tabButtons = {}
 
 local activeIndicator = Instance.new("Frame")
@@ -1340,7 +1340,7 @@ activeIndicator.BorderSizePixel = 0
 activeIndicator.ZIndex = 3
 activeIndicator.Parent = body
 
-local tabIndex = { Main = 1, Dashboard = 2, Misc = 3, Settings = 4 }
+local tabIndex = { Main = 1, Visuals = 2, Misc = 3, Settings = 4 }
 
 local function setActiveTab(name, animate)
 	if animate == nil then animate = true end
