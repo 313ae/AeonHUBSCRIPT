@@ -1387,11 +1387,16 @@ do
 end
 
 -- Main page: toggle / slider / dropdown placeholders
-local mainPage = Instance.new("Frame")
+local mainPage = Instance.new("ScrollingFrame")
 mainPage.Name = "MainPage"
 mainPage.Size = UDim2.new(1, 0, 1, 0)
 mainPage.BackgroundTransparency = 1
+mainPage.BorderSizePixel = 0
 mainPage.Visible = true
+mainPage.CanvasSize = UDim2.new(0, 0, 0, 0)
+mainPage.ScrollingDirection = Enum.ScrollingDirection.Y
+mainPage.ElasticBehavior = Enum.ElasticBehavior.Never
+mainPage.ScrollBarThickness = 0
 mainPage.Parent = content
 pages["Main"] = mainPage
 
@@ -1399,12 +1404,16 @@ local mainPadding = Instance.new("UIPadding")
 mainPadding.PaddingTop = UDim.new(0, 18)
 mainPadding.PaddingLeft = UDim.new(0, 18)
 mainPadding.PaddingRight = UDim.new(0, 18)
+mainPadding.PaddingBottom = UDim.new(0, 18)
 mainPadding.Parent = mainPage
 
 local mainLayout = Instance.new("UIListLayout")
 mainLayout.SortOrder = Enum.SortOrder.LayoutOrder
 mainLayout.Padding = UDim.new(0, 20)
 mainLayout.Parent = mainPage
+mainLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+	mainPage.CanvasSize = UDim2.new(0, 0, 0, mainLayout.AbsoluteContentSize.Y + 36)
+end)
 
 -- Tab button factory
 local tabs = {"Main", "Visuals", "Misc", "Settings"}
