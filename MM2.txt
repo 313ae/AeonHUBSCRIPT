@@ -1374,7 +1374,7 @@ do
 		local top = speedRow.AbsolutePosition.Y
 		local bottom = noclipRow.AbsolutePosition.Y + noclipRow.AbsoluteSize.Y
 		if bottom <= top then return end
-		miscOverlay.Position = UDim2.new(0, speedRow.AbsolutePosition.X - cx - OVERLAY_PAD, 0, top - cy - OVERLAY_PAD + 10)
+		miscOverlay.Position = UDim2.new(0, speedRow.AbsolutePosition.X - cx - OVERLAY_PAD, 0, top - cy - OVERLAY_PAD + 8)
 		miscOverlay.Size = UDim2.new(0, speedRow.AbsoluteSize.X + OVERLAY_PAD * 2, 0, (bottom - top) + OVERLAY_PAD * 2 - 60)
 		miscOverlay.Visible = true
 	end
