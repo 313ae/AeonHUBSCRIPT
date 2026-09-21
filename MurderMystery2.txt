@@ -537,29 +537,6 @@ do
 	mobilityHeader.LayoutOrder = 1
 	mobilityHeader.Parent = page
 
-	local miscBox = Instance.new("Frame")
-	miscBox.Name = "MiscBox"
-	miscBox.Size = UDim2.new(1, 5, 0, 0)
-	miscBox.AutomaticSize = Enum.AutomaticSize.Y
-	miscBox.BackgroundColor3 = BG_DARKER
-	miscBox.BorderSizePixel = 0
-	miscBox.LayoutOrder = 2
-	miscBox.Parent = page
-
-	local miscBoxCorner = Instance.new("UICorner")
-	miscBoxCorner.CornerRadius = UDim.new(0, 8)
-	miscBoxCorner.Parent = miscBox
-
-	local miscBoxStroke = Instance.new("UIStroke")
-	miscBoxStroke.Color = BORDER
-	miscBoxStroke.Thickness = 1
-	miscBoxStroke.Parent = miscBox
-
-	local miscBoxLayout = Instance.new("UIListLayout")
-	miscBoxLayout.SortOrder = Enum.SortOrder.LayoutOrder
-	miscBoxLayout.Padding = UDim.new(0, 4.67)
-	miscBoxLayout.Parent = miscBox
-
 	local speedValue = 32
 	local speedOn = false
 	local function applySpeed()
@@ -579,7 +556,7 @@ do
 	speedRow.Size = UDim2.new(1, 0, 0, 20)
 	speedRow.BackgroundTransparency = 1
 	speedRow.LayoutOrder = 2
-	speedRow.Parent = miscBox
+	speedRow.Parent = page
 
 	local speedLabel = Instance.new("TextLabel")
 	speedLabel.Size = UDim2.new(1, -90, 1, 0)
@@ -646,7 +623,7 @@ do
 	sliderRow.LayoutOrder = 3
 	sliderRow.Visible = true
 	sliderRow.ClipsDescendants = false
-	sliderRow.Parent = miscBox
+	sliderRow.Parent = page
 	sliderRow.Size = UDim2.new(1, 0, 0, 22)
 
 	local SPEED_TRACK_W = 270
@@ -828,7 +805,7 @@ do
 	flyRow.Size = UDim2.new(1, 0, 0, 20)
 	flyRow.BackgroundTransparency = 1
 	flyRow.LayoutOrder = 4
-	flyRow.Parent = miscBox
+	flyRow.Parent = page
 
 	local flyLabel = Instance.new("TextLabel")
 	flyLabel.Size = UDim2.new(1, -90, 1, 0)
@@ -893,7 +870,7 @@ do
 	flySliderRow.LayoutOrder = 5
 	flySliderRow.Visible = true
 	flySliderRow.ClipsDescendants = false
-	flySliderRow.Parent = miscBox
+	flySliderRow.Parent = page
 
 	local FLY_TRACK_W = 270
 	local flyValueLabel = Instance.new("TextLabel")
@@ -1041,7 +1018,7 @@ do
 	jumpRow.Size = UDim2.new(1, 0, 0, 20)
 	jumpRow.BackgroundTransparency = 1
 	jumpRow.LayoutOrder = 6
-	jumpRow.Parent = miscBox
+	jumpRow.Parent = page
 
 	local jumpLabel = Instance.new("TextLabel")
 	jumpLabel.Size = UDim2.new(1, -90, 1, 0)
@@ -1106,7 +1083,7 @@ do
 	jumpSliderRow.LayoutOrder = 7
 	jumpSliderRow.Visible = true
 	jumpSliderRow.ClipsDescendants = false
-	jumpSliderRow.Parent = miscBox
+	jumpSliderRow.Parent = page
 
 	local JUMP_TRACK_W = 270
 	local jumpValueLabel = Instance.new("TextLabel")
@@ -1284,7 +1261,7 @@ do
 	noclipRow.Size = UDim2.new(1, 0, 0, 20)
 	noclipRow.BackgroundTransparency = 1
 	noclipRow.LayoutOrder = 8
-	noclipRow.Parent = miscBox
+	noclipRow.Parent = page
 
 	local noclipLabel = Instance.new("TextLabel")
 	noclipLabel.Size = UDim2.new(1, -90, 1, 0)
@@ -1371,6 +1348,42 @@ do
 		end
 	end)
 
+	-- Overlay background behind Speed -> Noclip. Parented to content (no
+	-- layout manager there) so resizing it never moves your buttons.
+	local miscOverlay = Instance.new("Frame")
+	miscOverlay.Name = "MiscOverlay"
+	miscOverlay.BackgroundColor3 = BG_DARKER
+	miscOverlay.BorderSizePixel = 0
+	miscOverlay.ZIndex = 0
+	miscOverlay.Visible = false
+	miscOverlay.Parent = content
+
+	local miscOverlayCorner = Instance.new("UICorner")
+	miscOverlayCorner.CornerRadius = UDim.new(0, 8)
+	miscOverlayCorner.Parent = miscOverlay
+
+	local miscOverlayStroke = Instance.new("UIStroke")
+	miscOverlayStroke.Color = BORDER
+	miscOverlayStroke.Thickness = 1
+	miscOverlayStroke.Parent = miscOverlay
+
+	local OVERLAY_PAD = 8
+	local function refreshMiscOverlay()
+		if not page.Visible then miscOverlay.Visible = false return end
+		local cx, cy = content.AbsolutePosition.X, content.AbsolutePosition.Y
+		local top = speedRow.AbsolutePosition.Y
+		local bottom = noclipRow.AbsolutePosition.Y + noclipRow.AbsoluteSize.Y
+		if bottom <= top then return end
+		miscOverlay.Position = UDim2.new(0, speedRow.AbsolutePosition.X - cx - OVERLAY_PAD, 0, top - cy - OVERLAY_PAD)
+		miscOverlay.Size = UDim2.new(0, speedRow.AbsoluteSize.X + OVERLAY_PAD * 2, 0, (bottom - top) + OVERLAY_PAD * 2)
+		miscOverlay.Visible = true
+	end
+	page:GetPropertyChangedSignal("Visible"):Connect(function() task.defer(refreshMiscOverlay) end)
+	page:GetPropertyChangedSignal("CanvasPosition"):Connect(refreshMiscOverlay)
+	page:GetPropertyChangedSignal("AbsoluteSize"):Connect(function() task.defer(refreshMiscOverlay) end)
+	miscLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() task.defer(refreshMiscOverlay) end)
+	task.defer(refreshMiscOverlay)
+	task.delay(1, refreshMiscOverlay)
 end
 
 -- Main page: toggle / slider / dropdown placeholders
