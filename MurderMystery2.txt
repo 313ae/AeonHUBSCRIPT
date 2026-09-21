@@ -1441,6 +1441,18 @@ for i, name in ipairs(tabs) do
 	label.TextXAlignment = Enum.TextXAlignment.Left
 	label.Parent = tabButton
 
+	if name == "Settings" then
+		local icon = Instance.new("ImageLabel")
+		icon.Name = "TabIcon"
+		icon.Size = UDim2.new(0, 18, 0, 18)
+		icon.Position = UDim2.new(0, 14, 0.5, -9)
+		icon.BackgroundTransparency = 1
+		icon.Image = "rbxassetid://99369682798830"
+		icon.Parent = tabButton
+		label.Position = UDim2.new(0, 38, 0, 0)
+		label.Size = UDim2.new(1, -38, 1, 0)
+	end
+
 	tabButtons[name] = tabButton
 
 	tabButton.MouseButton1Click:Connect(function()
