@@ -495,313 +495,6 @@ do
 	playerHeader.LayoutOrder = 1
 	playerHeader.Parent = page
 
-	local espBox = Instance.new("Frame")
-	espBox.Name = "PlayerESPBox"
-	espBox.Size = UDim2.new(1, 0, 0, 0)
-	espBox.AutomaticSize = Enum.AutomaticSize.Y
-	espBox.BackgroundColor3 = BG_DARKER
-	espBox.BorderSizePixel = 0
-	espBox.LayoutOrder = 2
-	espBox.Parent = page
-
-	local espBoxCorner = Instance.new("UICorner")
-	espBoxCorner.CornerRadius = UDim.new(0, 8)
-	espBoxCorner.Parent = espBox
-
-	local espBoxStroke = Instance.new("UIStroke")
-	espBoxStroke.Color = BORDER
-	espBoxStroke.Thickness = 1
-	espBoxStroke.Parent = espBox
-
-	local espBoxPad = Instance.new("UIPadding")
-	espBoxPad.PaddingTop = UDim.new(0, 12)
-	espBoxPad.PaddingBottom = UDim.new(0, 12)
-	espBoxPad.PaddingLeft = UDim.new(0, 12)
-	espBoxPad.PaddingRight = UDim.new(0, 12)
-	espBoxPad.Parent = espBox
-
-	local espBoxLayout = Instance.new("UIListLayout")
-	espBoxLayout.SortOrder = Enum.SortOrder.LayoutOrder
-	espBoxLayout.Padding = UDim.new(0, 14)
-	espBoxLayout.Parent = espBox
-
-	local function makeInfoIcon(parent, order)
-		local info = Instance.new("TextLabel")
-		info.Size = UDim2.new(0, 14, 0, 14)
-		info.BackgroundTransparency = 1
-		info.Text = "?"
-		info.Font = Enum.Font.GothamBold
-		info.TextSize = 9
-		info.TextColor3 = TEXT_SECONDARY
-		info.LayoutOrder = order
-		info.Parent = parent
-		local infoCorner = Instance.new("UICorner")
-		infoCorner.CornerRadius = UDim.new(1, 0)
-		infoCorner.Parent = info
-		local infoStroke = Instance.new("UIStroke")
-		infoStroke.Color = TEXT_SECONDARY
-		infoStroke.Thickness = 1
-		infoStroke.Parent = info
-		return info
-	end
-
-	local function makeToggleRow(parent, order, text, defaultOn, onChanged)
-		local row = Instance.new("Frame")
-		row.Size = UDim2.new(1, 0, 0, 20)
-		row.BackgroundTransparency = 1
-		row.LayoutOrder = order
-		row.Parent = parent
-
-		local label = Instance.new("TextLabel")
-		label.Size = UDim2.new(0, 0, 0, 20)
-		label.AutomaticSize = Enum.AutomaticSize.X
-		label.BackgroundTransparency = 1
-		label.Text = text
-		label.Font = Enum.Font.GothamBold
-		label.TextSize = 13
-		label.TextColor3 = TEXT_PRIMARY
-		label.TextXAlignment = Enum.TextXAlignment.Left
-		label.Parent = row
-
-		local info = makeInfoIcon(row, 2)
-		info.Position = UDim2.new(0, label.AbsoluteSize.X + 6, 0.5, -7)
-
-		local track = Instance.new("TextButton")
-		track.Size = UDim2.new(0, 38, 0, 20)
-		track.Position = UDim2.new(1, -38, 0, 0)
-		track.BackgroundColor3 = defaultOn and LIME or Color3.fromRGB(60, 60, 60)
-		track.Text = ""
-		track.AutoButtonColor = false
-		track.Parent = row
-
-		local trackCorner = Instance.new("UICorner")
-		trackCorner.CornerRadius = UDim.new(1, 0)
-		trackCorner.Parent = track
-
-		local knob = Instance.new("Frame")
-		knob.Size = UDim2.new(0, 16, 0, 16)
-		knob.Position = defaultOn and UDim2.new(1, -18, 0, 2) or UDim2.new(0, 2, 0, 2)
-		knob.BackgroundColor3 = defaultOn and BG_DARKER or TEXT_SECONDARY
-		knob.Parent = track
-
-		local knobCorner = Instance.new("UICorner")
-		knobCorner.CornerRadius = UDim.new(1, 0)
-		knobCorner.Parent = knob
-
-		task.defer(function()
-			label.Size = UDim2.new(0, 0, 0, 20)
-			label.AutomaticSize = Enum.AutomaticSize.X
-			task.wait()
-			info.Position = UDim2.new(0, label.AbsoluteSize.X + 6, 0.5, -7)
-		end)
-		label:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
-			info.Position = UDim2.new(0, label.AbsoluteSize.X + 6, 0.5, -7)
-		end)
-
-		local state = defaultOn
-		track.MouseButton1Click:Connect(function()
-			state = not state
-			if state then
-				track.BackgroundColor3 = LIME
-				knob.Position = UDim2.new(1, -18, 0, 2)
-				knob.BackgroundColor3 = BG_DARKER
-			else
-				track.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-				knob.Position = UDim2.new(0, 2, 0, 2)
-				knob.BackgroundColor3 = TEXT_SECONDARY
-			end
-			if onChanged then onChanged(state) end
-		end)
-		return row
-	end
-
-	local ignoreAllies = false
-	makeToggleRow(espBox, 1, "Ignore Allies", false, function(s) ignoreAllies = s end)
-
-	local playerDistValue = 100
-	local playerDistRow = Instance.new("Frame")
-	playerDistRow.Size = UDim2.new(1, 0, 0, 36)
-	playerDistRow.BackgroundTransparency = 1
-	playerDistRow.LayoutOrder = 2
-	playerDistRow.Parent = espBox
-
-	local playerDistLabel = Instance.new("TextLabel")
-	playerDistLabel.Size = UDim2.new(0.7, 0, 0, 16)
-	playerDistLabel.BackgroundTransparency = 1
-	playerDistLabel.Text = "Player Distance"
-	playerDistLabel.Font = Enum.Font.GothamBold
-	playerDistLabel.TextSize = 13
-	playerDistLabel.TextColor3 = TEXT_PRIMARY
-	playerDistLabel.TextXAlignment = Enum.TextXAlignment.Left
-	playerDistLabel.Parent = playerDistRow
-
-	local playerDistValueLabel = Instance.new("TextLabel")
-	playerDistValueLabel.Size = UDim2.new(0.3, 0, 0, 16)
-	playerDistValueLabel.Position = UDim2.new(0.7, 0, 0, 0)
-	playerDistValueLabel.BackgroundTransparency = 1
-	playerDistValueLabel.Font = Enum.Font.GothamBold
-	playerDistValueLabel.TextSize = 12
-	playerDistValueLabel.TextColor3 = LIME
-	playerDistValueLabel.TextXAlignment = Enum.TextXAlignment.Right
-	playerDistValueLabel.Parent = playerDistRow
-
-	local playerDistTrack = Instance.new("Frame")
-	playerDistTrack.Size = UDim2.new(1, 0, 0, 4)
-	playerDistTrack.Position = UDim2.new(0, 0, 0, 26)
-	playerDistTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-	playerDistTrack.Parent = playerDistRow
-
-	local playerDistTrackCorner = Instance.new("UICorner")
-	playerDistTrackCorner.CornerRadius = UDim.new(1, 0)
-	playerDistTrackCorner.Parent = playerDistTrack
-
-	local playerDistFill = Instance.new("Frame")
-	playerDistFill.BackgroundColor3 = LIME
-	playerDistFill.BorderSizePixel = 0
-	playerDistFill.Parent = playerDistTrack
-
-	local playerDistFillCorner = Instance.new("UICorner")
-	playerDistFillCorner.CornerRadius = UDim.new(1, 0)
-	playerDistFillCorner.Parent = playerDistFill
-
-	local playerDistKnob = Instance.new("Frame")
-	playerDistKnob.Size = UDim2.new(0, 14, 0, 14)
-	playerDistKnob.BackgroundColor3 = Color3.new(1, 1, 1)
-	playerDistKnob.Parent = playerDistTrack
-
-	local playerDistKnobCorner = Instance.new("UICorner")
-	playerDistKnobCorner.CornerRadius = UDim.new(1, 0)
-	playerDistKnobCorner.Parent = playerDistKnob
-
-	local DIST_MIN, DIST_MAX = 0, 500
-	local function refreshDist()
-		local ratio = (playerDistValue - DIST_MIN) / (DIST_MAX - DIST_MIN)
-		playerDistFill.Size = UDim2.new(ratio, 0, 1, 0)
-		playerDistKnob.Position = UDim2.new(ratio, -7, 0.5, -7)
-		playerDistValueLabel.Text = tostring(math.floor(playerDistValue + 0.5)) .. " studs"
-	end
-	refreshDist()
-
-	local draggingDist = false
-	local function setDistFromInput(inputPos)
-		local absPos = playerDistTrack.AbsolutePosition
-		local absSize = playerDistTrack.AbsoluteSize
-		if absSize.X <= 0 then return end
-		local ratio = math.clamp((inputPos.X - absPos.X) / absSize.X, 0, 1)
-		playerDistValue = DIST_MIN + ratio * (DIST_MAX - DIST_MIN)
-		refreshDist()
-	end
-	playerDistTrack.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-			draggingDist = true
-			setDistFromInput(input.Position)
-		end
-	end)
-	UserInputService.InputChanged:Connect(function(input)
-		if draggingDist and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-			setDistFromInput(input.Position)
-		end
-	end)
-	UserInputService.InputEnded:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-			draggingDist = false
-		end
-	end)
-
-	local healthCheck = false
-	makeToggleRow(espBox, 3, "Health Check", false, function(s) healthCheck = s end)
-
-	local healthPctValue = 35
-	local healthPctRow = Instance.new("Frame")
-	healthPctRow.Size = UDim2.new(1, 0, 0, 36)
-	healthPctRow.BackgroundTransparency = 1
-	healthPctRow.LayoutOrder = 4
-	healthPctRow.Parent = espBox
-
-	local healthPctLabel = Instance.new("TextLabel")
-	healthPctLabel.Size = UDim2.new(0.7, 0, 0, 16)
-	healthPctLabel.BackgroundTransparency = 1
-	healthPctLabel.Text = "Under what % health"
-	healthPctLabel.Font = Enum.Font.GothamBold
-	healthPctLabel.TextSize = 13
-	healthPctLabel.TextColor3 = TEXT_PRIMARY
-	healthPctLabel.TextXAlignment = Enum.TextXAlignment.Left
-	healthPctLabel.Parent = healthPctRow
-
-	local healthPctValueLabel = Instance.new("TextLabel")
-	healthPctValueLabel.Size = UDim2.new(0.3, 0, 0, 16)
-	healthPctValueLabel.Position = UDim2.new(0.7, 0, 0, 0)
-	healthPctValueLabel.BackgroundTransparency = 1
-	healthPctValueLabel.Font = Enum.Font.GothamBold
-	healthPctValueLabel.TextSize = 12
-	healthPctValueLabel.TextColor3 = LIME
-	healthPctValueLabel.TextXAlignment = Enum.TextXAlignment.Right
-	healthPctValueLabel.Parent = healthPctRow
-
-	local healthPctTrack = Instance.new("Frame")
-	healthPctTrack.Size = UDim2.new(1, 0, 0, 4)
-	healthPctTrack.Position = UDim2.new(0, 0, 0, 26)
-	healthPctTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-	healthPctTrack.Parent = healthPctRow
-
-	local healthPctTrackCorner = Instance.new("UICorner")
-	healthPctTrackCorner.CornerRadius = UDim.new(1, 0)
-	healthPctTrackCorner.Parent = healthPctTrack
-
-	local healthPctFill = Instance.new("Frame")
-	healthPctFill.BackgroundColor3 = LIME
-	healthPctFill.BorderSizePixel = 0
-	healthPctFill.Parent = healthPctTrack
-
-	local healthPctFillCorner = Instance.new("UICorner")
-	healthPctFillCorner.CornerRadius = UDim.new(1, 0)
-	healthPctFillCorner.Parent = healthPctFill
-
-	local healthPctKnob = Instance.new("Frame")
-	healthPctKnob.Size = UDim2.new(0, 14, 0, 14)
-	healthPctKnob.BackgroundColor3 = Color3.new(1, 1, 1)
-	healthPctKnob.Parent = healthPctTrack
-
-	local healthPctKnobCorner = Instance.new("UICorner")
-	healthPctKnobCorner.CornerRadius = UDim.new(1, 0)
-	healthPctKnobCorner.Parent = healthPctKnob
-
-	local HPCT_MIN, HPCT_MAX = 0, 100
-	local function refreshHpct()
-		local ratio = (healthPctValue - HPCT_MIN) / (HPCT_MAX - HPCT_MIN)
-		healthPctFill.Size = UDim2.new(ratio, 0, 1, 0)
-		healthPctKnob.Position = UDim2.new(ratio, -7, 0.5, -7)
-		healthPctValueLabel.Text = tostring(math.floor(healthPctValue + 0.5)) .. "%"
-	end
-	refreshHpct()
-
-	local draggingHpct = false
-	local function setHpctFromInput(inputPos)
-		local absPos = healthPctTrack.AbsolutePosition
-		local absSize = healthPctTrack.AbsoluteSize
-		if absSize.X <= 0 then return end
-		local ratio = math.clamp((inputPos.X - absPos.X) / absSize.X, 0, 1)
-		healthPctValue = HPCT_MIN + ratio * (HPCT_MAX - HPCT_MIN)
-		refreshHpct()
-	end
-	healthPctTrack.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-			draggingHpct = true
-			setHpctFromInput(input.Position)
-		end
-	end)
-	UserInputService.InputChanged:Connect(function(input)
-		if draggingHpct and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-			setHpctFromInput(input.Position)
-		end
-	end)
-	UserInputService.InputEnded:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-			draggingHpct = false
-		end
-	end)
-end
-
 -- Misc page with Mobility section
 do
 	local page = Instance.new("ScrollingFrame")
@@ -1653,6 +1346,36 @@ do
 			setNoclipOn(not noclipOn)
 		end
 	end)
+
+	local miscBox = Instance.new("Frame")
+	miscBox.Name = "MiscBox"
+	miscBox.Size = UDim2.new(1, 0, 0, 0)
+	miscBox.AutomaticSize = Enum.AutomaticSize.Y
+	miscBox.BackgroundColor3 = BG_DARKER
+	miscBox.BorderSizePixel = 0
+	miscBox.LayoutOrder = 9
+	miscBox.Parent = page
+
+	local miscBoxCorner = Instance.new("UICorner")
+	miscBoxCorner.CornerRadius = UDim.new(0, 8)
+	miscBoxCorner.Parent = miscBox
+
+	local miscBoxStroke = Instance.new("UIStroke")
+	miscBoxStroke.Color = BORDER
+	miscBoxStroke.Thickness = 1
+	miscBoxStroke.Parent = miscBox
+
+	local miscBoxPad = Instance.new("UIPadding")
+	miscBoxPad.PaddingTop = UDim.new(0, 12)
+	miscBoxPad.PaddingBottom = UDim.new(0, 12)
+	miscBoxPad.PaddingLeft = UDim.new(0, 12)
+	miscBoxPad.PaddingRight = UDim.new(0, 12)
+	miscBoxPad.Parent = miscBox
+
+	local miscBoxLayout = Instance.new("UIListLayout")
+	miscBoxLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	miscBoxLayout.Padding = UDim.new(0, 14)
+	miscBoxLayout.Parent = miscBox
 end
 
 -- Main page: toggle / slider / dropdown placeholders
