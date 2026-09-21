@@ -1223,7 +1223,7 @@ do
 
 	local noclipLabel = Instance.new("TextLabel")
 	noclipLabel.Size = UDim2.new(1, -90, 1, 0)
-	noclipLabel.Position = UDim2.new(0, 0, 0, -58)
+	noclipLabel.Position = UDim2.new(0, 0, 0, -63)
 	noclipLabel.BackgroundTransparency = 1
 	noclipLabel.Text = "Noclip"
 	noclipLabel.Font = Enum.Font.GothamBold
@@ -1234,7 +1234,7 @@ do
 
 	local noclipKeybind = Instance.new("TextButton")
 	noclipKeybind.Size = UDim2.new(0, 39, 0, 24)
-	noclipKeybind.Position = UDim2.new(1, -83, 0, -62)
+	noclipKeybind.Position = UDim2.new(1, -83, 0, -67)
 	noclipKeybind.BackgroundColor3 = BG_DARKER
 	noclipKeybind.BorderSizePixel = 0
 	noclipKeybind.AutoButtonColor = false
@@ -1258,7 +1258,7 @@ do
 
 	noclipTrack = Instance.new("TextButton")
 	noclipTrack.Size = UDim2.new(0, 38, 0, 20)
-	noclipTrack.Position = UDim2.new(1, -38, 0, -60)
+	noclipTrack.Position = UDim2.new(1, -38, 0, -65)
 	noclipTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 	noclipTrack.Text = ""
 	noclipTrack.AutoButtonColor = false
