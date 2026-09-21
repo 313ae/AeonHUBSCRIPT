@@ -1448,7 +1448,7 @@ for i, name in ipairs(tabs) do
 	iconBoxStroke.Parent = iconBox
 
 	local iconBoxCorner = Instance.new("UICorner")
-	iconBoxCorner.CornerRadius = UDim.new(0, 6)
+	iconBoxCorner.CornerRadius = UDim.new(1, 0)
 	iconBoxCorner.Parent = iconBox
 
 	local icon = Instance.new("TextLabel")
