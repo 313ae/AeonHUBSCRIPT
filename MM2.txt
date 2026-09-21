@@ -585,7 +585,7 @@ do
 	speedKeybind.Parent = speedRow
 
 	local speedKeybindCorner = Instance.new("UICorner")
-	speedKeybindCorner.CornerRadius = UDim.new(0, 0)
+	speedKeybindCorner.CornerRadius = UDim.new(0, 8)
 	speedKeybindCorner.Parent = speedKeybind
 
 	local speedKeybindStroke = Instance.new("UIStroke")
@@ -833,7 +833,7 @@ do
 	flyKeybind.Parent = flyRow
 
 	local flyKeybindCorner = Instance.new("UICorner")
-	flyKeybindCorner.CornerRadius = UDim.new(0, 0)
+	flyKeybindCorner.CornerRadius = UDim.new(0, 8)
 	flyKeybindCorner.Parent = flyKeybind
 
 	local flyKeybindStroke = Instance.new("UIStroke")
@@ -1046,7 +1046,7 @@ do
 	jumpKeybind.Parent = jumpRow
 
 	local jumpKeybindCorner = Instance.new("UICorner")
-	jumpKeybindCorner.CornerRadius = UDim.new(0, 0)
+	jumpKeybindCorner.CornerRadius = UDim.new(0, 8)
 	jumpKeybindCorner.Parent = jumpKeybind
 
 	local jumpKeybindStroke = Instance.new("UIStroke")
@@ -1289,7 +1289,7 @@ do
 	noclipKeybind.Parent = noclipRow
 
 	local noclipKeybindCorner = Instance.new("UICorner")
-	noclipKeybindCorner.CornerRadius = UDim.new(0, 0)
+	noclipKeybindCorner.CornerRadius = UDim.new(0, 8)
 	noclipKeybindCorner.Parent = noclipKeybind
 
 	local noclipKeybindStroke = Instance.new("UIStroke")
