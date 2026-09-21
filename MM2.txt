@@ -1393,7 +1393,7 @@ local function setActiveTab(name, animate)
 		if tabName == name then
 			label.TextColor3 = TEXT_PRIMARY
 			label.Font = Enum.Font.GothamBold
-			if icon then icon.TextColor3 = TEXT_PRIMARY end
+			if icon then icon.TextColor3 = LIME end
 		else
 			label.TextColor3 = TEXT_SECONDARY
 			label.Font = Enum.Font.GothamBold
@@ -1416,7 +1416,7 @@ local function setActiveTab(name, animate)
 	end
 end
 
-local tabIcons = { Main = "🏠", Visuals = "👁", Misc = "📦", Settings = "⚙" }
+local tabIcons = { Main = "○", Visuals = "◉", Misc = "✕", Settings = "⚙" }
 for i, name in ipairs(tabs) do
 	local tabButton = Instance.new("TextButton")
 	tabButton.Name = name
