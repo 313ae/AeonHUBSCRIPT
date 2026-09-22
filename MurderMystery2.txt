@@ -1158,8 +1158,6 @@ do
 					end
 					boxDims[p] = dims
 				end
-					boxDims[p] = dims
-				end
 				local ratio = math.clamp(dims.x / math.max(dims.y, 0.1), 0.3, 1)
 				local top, tOn = cam:WorldToViewportPoint(hrp.Position + Vector3.new(0, dims.y / 2 + 0.4, 0))
 				local bot, bOn = cam:WorldToViewportPoint(hrp.Position - Vector3.new(0, dims.y / 2 + 0.4, 0))
