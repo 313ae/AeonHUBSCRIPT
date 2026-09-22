@@ -723,6 +723,155 @@ do
 		end
 	end)
 
+	local sheriffHighlights = {}
+	local sheriffOn = false
+	local function isSheriff(name)
+		local data = getPlayerData()
+		if data then
+			local entry = data[name]
+			if entry and (entry.Role == "Sheriff" or entry.Role == "Hero") then return true end
+		end
+		return false
+	end
+	local function sheriffAdd(p)
+		if p == player then return end
+		if innocentIsDead(p) or innocentIsDead(player) then return end
+		if not isSheriff(p.Name) then return end
+		local char = p.Character
+		if not char or sheriffHighlights[p] then return end
+		if not char:FindFirstChild("HumanoidRootPart") and not char:FindFirstChild("UpperTorso") and not char:FindFirstChild("Torso") then return end
+		local hl = Instance.new("Highlight")
+		hl.Name = "SheriffESP"
+		hl.FillTransparency = 1
+		hl.OutlineTransparency = 0
+		hl.OutlineColor = Color3.fromRGB(50, 50, 255)
+		hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+		hl.Adornee = char
+		hl.Parent = char
+		sheriffHighlights[p] = hl
+	end
+	local function sheriffRemove(p)
+		local hl = sheriffHighlights[p]
+		if hl then pcall(function() hl:Destroy() end) sheriffHighlights[p] = nil end
+		local char = p.Character
+		if char then
+			for _, d in ipairs(char:GetDescendants()) do
+				if d:IsA("Highlight") and d.Name == "SheriffESP" then pcall(function() d:Destroy() end) end
+			end
+		end
+	end
+	local function sheriffSync(p)
+		local hl = sheriffHighlights[p]
+		if hl and hl.Parent then
+			if sheriffOn and not innocentIsDead(player) and not innocentIsDead(p) and isSheriff(p.Name) then return end
+			sheriffRemove(p)
+		else
+			if hl then sheriffHighlights[p] = nil end
+			sheriffRemove(p)
+		end
+		if sheriffOn then sheriffAdd(p) end
+	end
+	local function sheriffApply()
+		for _, plr in ipairs(Players:GetPlayers()) do sheriffSync(plr) end
+	end
+	local function sheriffClear()
+		local ps = {}
+		for p, _ in pairs(sheriffHighlights) do ps[#ps + 1] = p end
+		for _, p in ipairs(ps) do sheriffRemove(p) end
+	end
+	local function setSheriffESP(state)
+		sheriffOn = state
+		if state then sheriffApply() else sheriffClear() end
+	end
+	local function sheriffTrack(p)
+		p:GetPropertyChangedSignal("Team"):Connect(function() if sheriffOn then sheriffSync(p) end end)
+		p.CharacterAdded:Connect(function()
+			task.wait(0.5)
+			if sheriffOn then sheriffSync(p) end
+		end)
+		if p.Character then
+			p.Character.ChildAdded:Connect(function() if sheriffOn then sheriffSync(p) end end)
+		end
+	end
+	for _, plr in ipairs(Players:GetPlayers()) do sheriffTrack(plr) end
+	Players.PlayerAdded:Connect(function(plr)
+		sheriffTrack(plr)
+		task.wait(0.5)
+		if sheriffOn then sheriffSync(plr) end
+	end)
+	Players.PlayerRemoving:Connect(function(plr) sheriffRemove(plr) end)
+	pcall(function()
+		local rs = game:GetService("ReplicatedStorage")
+		local remotes = rs:FindFirstChild("Remotes")
+		local gp = remotes and remotes:FindFirstChild("Gameplay")
+		local ev = gp and gp:FindFirstChild("PlayerDataChanged")
+		if ev then
+			ev.OnClientEvent:Connect(function()
+				if not sheriffOn then return end
+				if innocentIsDead(player) then sheriffClear() else sheriffApply() end
+			end)
+		end
+	end)
+	do
+		local lastSync = 0
+		RunService.Heartbeat:Connect(function()
+			if not sheriffOn then return end
+			if innocentIsDead(player) then sheriffClear() return end
+			if os.clock() - lastSync < 1 then return end
+			lastSync = os.clock()
+			sheriffApply()
+		end)
+	end
+
+	local sheriffRow = Instance.new("Frame")
+	sheriffRow.Size = UDim2.new(1, 0, 0, 20)
+	sheriffRow.BackgroundTransparency = 1
+	sheriffRow.LayoutOrder = 3
+	sheriffRow.Parent = page
+
+	local sheriffLabel = Instance.new("TextLabel")
+	sheriffLabel.Size = UDim2.new(1, -50, 1, 0)
+	sheriffLabel.BackgroundTransparency = 1
+	sheriffLabel.Text = "Sheriff ESP"
+	sheriffLabel.Font = Enum.Font.GothamBold
+	sheriffLabel.TextSize = 13
+	sheriffLabel.TextColor3 = TEXT_PRIMARY
+	sheriffLabel.TextXAlignment = Enum.TextXAlignment.Left
+	sheriffLabel.Parent = sheriffRow
+
+	local sheriffTrack = Instance.new("TextButton")
+	sheriffTrack.Size = UDim2.new(0, 38, 0, 20)
+	sheriffTrack.Position = UDim2.new(1, -38, 0, 0)
+	sheriffTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	sheriffTrack.Text = ""
+	sheriffTrack.AutoButtonColor = false
+	sheriffTrack.Parent = sheriffRow
+
+	local sheriffTrackCorner = Instance.new("UICorner")
+	sheriffTrackCorner.CornerRadius = UDim.new(1, 0)
+	sheriffTrackCorner.Parent = sheriffTrack
+
+	local sheriffKnob = Instance.new("Frame")
+	sheriffKnob.Size = UDim2.new(0, 16, 0, 16)
+	sheriffKnob.Position = UDim2.new(0, 2, 0, 2)
+	sheriffKnob.BackgroundColor3 = TEXT_SECONDARY
+	sheriffKnob.Parent = sheriffTrack
+
+	local sheriffKnobCorner = Instance.new("UICorner")
+	sheriffKnobCorner.CornerRadius = UDim.new(1, 0)
+	sheriffKnobCorner.Parent = sheriffKnob
+
+	sheriffTrack.MouseButton1Click:Connect(function()
+		setSheriffESP(not sheriffOn)
+		if sheriffOn then
+			TweenService:Create(sheriffTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = LIME }):Play()
+			TweenService:Create(sheriffKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(1, -18, 0, 2), BackgroundColor3 = BG_DARKER }):Play()
+		else
+			TweenService:Create(sheriffTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = Color3.fromRGB(60, 60, 60) }):Play()
+			TweenService:Create(sheriffKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(0, 2, 0, 2), BackgroundColor3 = TEXT_SECONDARY }):Play()
+		end
+	end)
+
 	local murderHighlights = {}
 	local murderOn = false
 	local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -840,7 +989,7 @@ do
 	local murderRow = Instance.new("Frame")
 	murderRow.Size = UDim2.new(1, 0, 0, 20)
 	murderRow.BackgroundTransparency = 1
-	murderRow.LayoutOrder = 3
+	murderRow.LayoutOrder = 4
 	murderRow.Parent = page
 
 	local murderLabel = Instance.new("TextLabel")
