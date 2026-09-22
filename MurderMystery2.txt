@@ -593,7 +593,7 @@ do
 		if not char or not char.Parent or innocentHighlights[p] then return end
 		if not char:FindFirstChild("HumanoidRootPart") and not char:FindFirstChild("UpperTorso") and not char:FindFirstChild("Torso") then return end
 		local hl = Instance.new("Highlight")
-		hl.Name = "InnocentESP"
+		hl.Name = "InnocentESP_" .. MY_GEN
 		hl.FillTransparency = 1
 		hl.OutlineTransparency = 0
 		hl.OutlineColor = Color3.fromRGB(50, 210, 70)
@@ -609,7 +609,7 @@ do
 		local char = p.Character
 		if char then
 			for _, d in ipairs(char:GetDescendants()) do
-				if d:IsA("Highlight") and d.Name == "InnocentESP" then
+				if d:IsA("Highlight") and (d.Name == "InnocentESP_" .. MY_GEN or d.Name == "InnocentESP") then
 					pcall(function() d:Destroy() end)
 				end
 			end
@@ -716,6 +716,7 @@ do
 	do
 		local lastSync = 0
 		RunService.Heartbeat:Connect(function()
+			if not alive() then return end
 			if not innocentESPEnabled then return end
 			if os.clock() - lastSync < 3 then return end
 			lastSync = os.clock()
@@ -783,6 +784,7 @@ do
 		return false
 	end
 	local function sheriffAdd(p)
+		if not alive() then return end
 		if p == player then return end
 		if innocentIsDead(p) then return end
 		if not isSheriff(p.Name) then return end
@@ -790,7 +792,7 @@ do
 		if not char or not char.Parent or sheriffHighlights[p] then return end
 		if not char:FindFirstChild("HumanoidRootPart") and not char:FindFirstChild("UpperTorso") and not char:FindFirstChild("Torso") then return end
 		local hl = Instance.new("Highlight")
-		hl.Name = "SheriffESP"
+		hl.Name = "SheriffESP_" .. MY_GEN
 		hl.FillTransparency = 1
 		hl.OutlineTransparency = 0
 		hl.OutlineColor = Color3.fromRGB(50, 50, 255)
@@ -806,7 +808,7 @@ do
 		local char = p.Character
 		if char then
 			for _, d in ipairs(char:GetDescendants()) do
-				if d:IsA("Highlight") and d.Name == "SheriffESP" then pcall(function() d:Destroy() end) end
+				if d:IsA("Highlight") and (d.Name == "SheriffESP_" .. MY_GEN or d.Name == "SheriffESP") then pcall(function() d:Destroy() end) end
 			end
 		end
 	end
@@ -872,6 +874,7 @@ do
 	do
 		local lastSync = 0
 		RunService.Heartbeat:Connect(function()
+			if not alive() then return end
 			if not sheriffOn then return end
 			if os.clock() - lastSync < 1 then return end
 			lastSync = os.clock()
@@ -939,6 +942,7 @@ do
 		return false
 	end
 	local function murderAdd(p)
+		if not alive() then return end
 		if p == player then return end
 		if innocentIsDead(p) then return end
 		if not isMurderer(p.Name) then return end
@@ -946,7 +950,7 @@ do
 		if not char or not char.Parent or murderHighlights[p] then return end
 		if not char:FindFirstChild("HumanoidRootPart") and not char:FindFirstChild("UpperTorso") and not char:FindFirstChild("Torso") then return end
 		local hl = Instance.new("Highlight")
-		hl.Name = "MurderESP"
+		hl.Name = "MurderESP_" .. MY_GEN
 		hl.FillTransparency = 1
 		hl.OutlineTransparency = 0
 		hl.OutlineColor = Color3.fromRGB(255, 50, 50)
@@ -962,7 +966,7 @@ do
 		local char = p.Character
 		if char then
 			for _, d in ipairs(char:GetDescendants()) do
-				if d:IsA("Highlight") and d.Name == "MurderESP" then pcall(function() d:Destroy() end) end
+				if d:IsA("Highlight") and (d.Name == "MurderESP_" .. MY_GEN or d.Name == "MurderESP") then pcall(function() d:Destroy() end) end
 			end
 		end
 	end
@@ -1028,6 +1032,7 @@ do
 	do
 		local lastSync = 0
 		RunService.Heartbeat:Connect(function()
+			if not alive() then return end
 			if not murderOn then return end
 			if os.clock() - lastSync < 1 then return end
 			lastSync = os.clock()
@@ -1169,7 +1174,13 @@ do
 		end)
 	end
 	RunService.RenderStepped:Connect(function()
-		if not alive() then return end
+		if not alive() then
+			for _, box in pairs(boxes) do pcall(function() box:Remove() end) end
+			table.clear(boxes)
+			table.clear(boxSmooth)
+			table.clear(boxDims)
+			return
+		end
 		if not boxOn then
 			for _, box in pairs(boxes) do box.Visible = false end
 			return
