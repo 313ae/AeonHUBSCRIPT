@@ -1245,6 +1245,29 @@ do
 			TweenService:Create(boxKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(0, 2, 0, 2), BackgroundColor3 = TEXT_SECONDARY }):Play()
 		end
 	end)
+
+	do
+		local lastDead = {}
+		RunService.Heartbeat:Connect(function()
+			if not alive() then return end
+			if not innocentESPEnabled and not murderOn and not sheriffOn and not boxOn then return end
+			for _, p in ipairs(Players:GetPlayers()) do
+				local d = innocentIsDead(p)
+				if lastDead[p] == nil then
+					lastDead[p] = d
+				elseif lastDead[p] ~= d then
+					lastDead[p] = d
+					if innocentESPEnabled then innocentSync(p) end
+					if murderOn then murderSync(p) end
+					if sheriffOn then sheriffSync(p) end
+					if boxOn then boxSync(p) end
+				end
+			end
+			for p, _ in pairs(lastDead) do
+				if not p.Parent then lastDead[p] = nil end
+			end
+		end)
+	end
 end
 
 -- Misc page with Mobility section
