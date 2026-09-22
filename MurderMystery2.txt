@@ -549,8 +549,13 @@ do
 		if ok and dead then return true end
 		local char = p.Character
 		if char then
+			if not char:IsDescendantOf(workspace) then return true end
 			local hum = char:FindFirstChildOfClass("Humanoid")
-			if hum and hum.Health <= 0 then return true end
+			if hum then
+				if hum.Health <= 0 then return true end
+				local okSt, st = pcall(function() return hum:GetState() end)
+				if okSt and st == Enum.HumanoidStateType.Dead then return true end
+			end
 		end
 		return false
 	end
