@@ -1454,16 +1454,19 @@ do
 			if snap ~= lastSnap then
 				lastSnap = snap
 				murderCache = nil
-				if innocentESPEnabled then innocentApply() end
-				if murderOn then murderApply() end
-				if sheriffOn then sheriffApply() end
-				if boxOn then boxApply() end
-				if nameOn then
-					for p, g in pairs(nameGuis) do
-						local lbl = g:FindFirstChildOfClass("TextLabel")
-						if lbl then lbl.TextColor3 = boxColor(p) end
+				task.delay(1, function()
+					if not alive() then return end
+					if innocentESPEnabled then innocentApply() end
+					if murderOn then murderApply() end
+					if sheriffOn then sheriffApply() end
+					if boxOn then boxApply() end
+					if nameOn then
+						for p, g in pairs(nameGuis) do
+							local lbl = g:FindFirstChildOfClass("TextLabel")
+							if lbl then lbl.TextColor3 = boxColor(p) end
+						end
 					end
-				end
+				end)
 			end
 		end)
 	end
