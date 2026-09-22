@@ -503,6 +503,29 @@ do
 	playerHeader.LayoutOrder = 1
 	playerHeader.Parent = page
 
+	local ReplicatedStorage = game:GetService("ReplicatedStorage")
+	local GetCurrentPlayerData = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Gameplay"):WaitForChild("GetCurrentPlayerData")
+	local murderCache = nil
+	local murderCacheAt = 0
+	local function getPlayerData()
+		if murderCache and os.clock() - murderCacheAt < 2 then return murderCache end
+		local ok, data = pcall(function() return GetCurrentPlayerData:InvokeServer() end)
+		if ok and type(data) == "table" then
+			murderCache = data
+			murderCacheAt = os.clock()
+			return data
+		end
+		return murderCache
+	end
+	local function innocentRole(p)
+		local data = getPlayerData()
+		if data then
+			local e = data[p.Name]
+			if e and (e.Role == "Murderer" or e.Role == "Sheriff" or e.Role == "Hero") then return e.Role end
+		end
+		return nil
+	end
+
 	local innocentESPEnabled = false
 	local innocentHighlights = {}
 	local function innocentHasTool(p, name)
@@ -564,6 +587,7 @@ do
 		if p == player then return end
 		if innocentIsDead(p) then return end
 		if innocentHasTool(p, "Knife") or innocentHasTool(p, "Gun") or innocentHasTool(p, "Revolver") then return end
+		if innocentRole(p) then return end
 		local char = p.Character
 		if not char or not char.Parent or innocentHighlights[p] then return end
 		if not char:FindFirstChild("HumanoidRootPart") and not char:FindFirstChild("UpperTorso") and not char:FindFirstChild("Torso") then return end
@@ -602,7 +626,7 @@ do
 		local ok, err = pcall(function()
 			local hl = innocentHighlights[p]
 			if hl and hl.Parent then
-				if innocentESPEnabled and not innocentIsDead(p) and not innocentDirectTool(p) then
+				if innocentESPEnabled and not innocentIsDead(p) and not innocentDirectTool(p) and not innocentRole(p) then
 					return
 				end
 				innocentRemove(p)
@@ -746,21 +770,6 @@ do
 			TweenService:Create(innocentKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(0, 2, 0, 2), BackgroundColor3 = TEXT_SECONDARY }):Play()
 		end
 	end)
-
-	local ReplicatedStorage = game:GetService("ReplicatedStorage")
-	local GetCurrentPlayerData = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Gameplay"):WaitForChild("GetCurrentPlayerData")
-	local murderCache = nil
-	local murderCacheAt = 0
-	local function getPlayerData()
-		if murderCache and os.clock() - murderCacheAt < 2 then return murderCache end
-		local ok, data = pcall(function() return GetCurrentPlayerData:InvokeServer() end)
-		if ok and type(data) == "table" then
-			murderCache = data
-			murderCacheAt = os.clock()
-			return data
-		end
-		return murderCache
-	end
 
 	local sheriffHighlights = {}
 	local sheriffOn = false
@@ -1397,6 +1406,42 @@ do
 			end
 			for p, _ in pairs(lastDead) do
 				if not p.Parent then lastDead[p] = nil end
+			end
+		end)
+	end
+
+	do
+		local roundMod = nil
+		local lastSnap, lastPoll = "", 0
+		RunService.Heartbeat:Connect(function()
+			if not alive() then return end
+			if os.clock() - lastPoll < 1 then return end
+			lastPoll = os.clock()
+			local ok, snap = pcall(function()
+				if not roundMod then
+					local m = game:GetService("ReplicatedStorage"):FindFirstChild("CurrentRoundClient", true)
+					if m then roundMod = require(m) end
+				end
+				if not roundMod or not roundMod.PlayerData then return "" end
+				local parts = {}
+				for name, d in pairs(roundMod.PlayerData) do
+					if type(d) == "table" then
+						parts[#parts + 1] = name .. ":" .. tostring(d.Role) .. ":" .. tostring(d.Dead)
+					end
+				end
+				table.sort(parts)
+				return table.concat(parts, "|")
+			end)
+			if not ok or snap == "" then return end
+			if lastSnap == "" then lastSnap = snap return end
+			if snap ~= lastSnap then
+				lastSnap = snap
+				murderCache = nil
+				if innocentESPEnabled then innocentApply() end
+				if murderOn then murderApply() end
+				if sheriffOn then sheriffApply() end
+				if boxOn then boxApply() end
+				if nameOn then nameApply() end
 			end
 		end)
 	end
