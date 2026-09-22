@@ -494,6 +494,187 @@ do
 	playerHeader.Text = "Player"
 	playerHeader.LayoutOrder = 1
 	playerHeader.Parent = page
+
+	local innocentESPEnabled = false
+	local innocentHighlights = {}
+	local function innocentHasTool(p, name)
+		local char = p.Character
+		if char and char:FindFirstChild(name) then return true end
+		local bp = p:FindFirstChild("Backpack")
+		if bp and bp:FindFirstChild(name) then return true end
+		for _, v in ipairs(char and char:GetDescendants() or {}) do
+			if v.Name:lower():find(name:lower()) and (v:IsA("Tool") or v:IsA("BasePart")) then return true end
+		end
+		for _, v in ipairs(bp and bp:GetDescendants() or {}) do
+			if v.Name:lower():find(name:lower()) and (v:IsA("Tool") or v:IsA("BasePart")) then return true end
+		end
+		return false
+	end
+	local function innocentIsDead(p)
+		local ok, dead = pcall(function()
+			local rs = game:GetService("ReplicatedStorage")
+			local mod = rs:FindFirstChild("CurrentRoundClient", true)
+			if mod then
+				local tbl = require(mod)
+				if tbl and tbl.PlayerData and tbl.PlayerData[p.Name] and tbl.PlayerData[p.Name].Dead == true then return true end
+			end
+			return false
+		end)
+		if ok and dead then return true end
+		local team = p.Team
+		if team and team.Name:lower():find("dead") then return true end
+		local char = p.Character
+		if char then
+			local hum = char:FindFirstChildOfClass("Humanoid")
+			if hum and hum.Health <= 0 then return true end
+		end
+		return false
+	end
+	local function innocentAdd(p)
+		if p == player then return end
+		if innocentIsDead(player) or innocentIsDead(p) then return end
+		if innocentHasTool(p, "Knife") or innocentHasTool(p, "Gun") or innocentHasTool(p, "Revolver") then return end
+		local char = p.Character
+		if not char or innocentHighlights[p] then return end
+		if not char:FindFirstChild("HumanoidRootPart") and not char:FindFirstChild("UpperTorso") and not char:FindFirstChild("Torso") then return end
+		local hl = Instance.new("Highlight")
+		hl.Name = "InnocentESP"
+		hl.FillTransparency = 1
+		hl.OutlineTransparency = 0
+		hl.OutlineColor = Color3.fromRGB(46, 204, 113)
+		hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+		hl.Adornee = char
+		hl.Parent = char
+		innocentHighlights[p] = hl
+	end
+	local function innocentRemove(p)
+		local hl = innocentHighlights[p]
+		if hl then pcall(function() hl:Destroy() end) innocentHighlights[p] = nil end
+	end
+	local function innocentSync(p)
+		innocentRemove(p)
+		if innocentESPEnabled then innocentAdd(p) end
+	end
+	local function innocentApply()
+		for _, plr in ipairs(Players:GetPlayers()) do innocentSync(plr) end
+	end
+	local function setInnocentESP(state)
+		innocentESPEnabled = state
+		if state then innocentApply() else for p, _ in pairs(innocentHighlights) do innocentRemove(p) end end
+	end
+	local function innocentTrack(p)
+		p:GetPropertyChangedSignal("Team"):Connect(function() if innocentESPEnabled then innocentSync(p) end end)
+		pcall(function() p:GetAttributeChangedSignal("Dead"):Connect(function() if innocentESPEnabled then innocentSync(p) end end) end)
+		p.CharacterAdded:Connect(function()
+			task.wait(0.5)
+			if innocentESPEnabled then innocentSync(p) end
+		end)
+		if p.Character then
+			p.Character.ChildAdded:Connect(function() if innocentESPEnabled then innocentSync(p) end end)
+			p.Character.ChildRemoved:Connect(function() if innocentESPEnabled then innocentSync(p) end end)
+		end
+		local bp = p:FindFirstChild("Backpack")
+		if bp then
+			bp.ChildAdded:Connect(function() if innocentESPEnabled then innocentSync(p) end end)
+			bp.ChildRemoved:Connect(function() if innocentESPEnabled then innocentSync(p) end end)
+		end
+	end
+	for _, plr in ipairs(Players:GetPlayers()) do innocentTrack(plr) end
+	Players.PlayerAdded:Connect(function(plr)
+		innocentTrack(plr)
+		task.wait(0.5)
+		if innocentESPEnabled then innocentSync(plr) end
+	end)
+	Players.PlayerRemoving:Connect(function(plr) innocentRemove(plr) end)
+	pcall(function()
+		player:GetAttributeChangedSignal("Dead"):Connect(function()
+			if innocentIsDead(player) then
+				for p, _ in pairs(innocentHighlights) do innocentRemove(p) end
+			elseif innocentESPEnabled then
+				innocentApply()
+			end
+		end)
+	end)
+	pcall(function()
+		local rs = game:GetService("ReplicatedStorage")
+		local remotes = rs:FindFirstChild("Remotes")
+		local gp = remotes and remotes:FindFirstChild("Gameplay")
+		local ev = gp and gp:FindFirstChild("PlayerDataChanged")
+		if ev then
+			ev.OnClientEvent:Connect(function()
+				if not innocentESPEnabled then return end
+				if innocentIsDead(player) then
+					for p, _ in pairs(innocentHighlights) do innocentRemove(p) end
+				else
+					innocentApply()
+				end
+			end)
+		end
+	end)
+	do
+		local lastSync = 0
+		RunService.Heartbeat:Connect(function()
+			if not innocentESPEnabled then return end
+			if innocentIsDead(player) then
+				for p, _ in pairs(innocentHighlights) do innocentRemove(p) end
+				return
+			end
+			if os.clock() - lastSync < 1 then return end
+			lastSync = os.clock()
+			innocentApply()
+		end)
+	end
+
+	local innocentRow = Instance.new("Frame")
+	innocentRow.Size = UDim2.new(1, 0, 0, 20)
+	innocentRow.BackgroundTransparency = 1
+	innocentRow.LayoutOrder = 2
+	innocentRow.Parent = page
+
+	local innocentLabel = Instance.new("TextLabel")
+	innocentLabel.Size = UDim2.new(1, -50, 1, 0)
+	innocentLabel.BackgroundTransparency = 1
+	innocentLabel.Text = "Innocent ESP"
+	innocentLabel.Font = Enum.Font.GothamBold
+	innocentLabel.TextSize = 13
+	innocentLabel.TextColor3 = TEXT_PRIMARY
+	innocentLabel.TextXAlignment = Enum.TextXAlignment.Left
+	innocentLabel.Parent = innocentRow
+
+	local innocentTrack = Instance.new("TextButton")
+	innocentTrack.Size = UDim2.new(0, 38, 0, 20)
+	innocentTrack.Position = UDim2.new(1, -38, 0, 0)
+	innocentTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	innocentTrack.Text = ""
+	innocentTrack.AutoButtonColor = false
+	innocentTrack.Parent = innocentRow
+
+	local innocentTrackCorner = Instance.new("UICorner")
+	innocentTrackCorner.CornerRadius = UDim.new(1, 0)
+	innocentTrackCorner.Parent = innocentTrack
+
+	local innocentKnob = Instance.new("Frame")
+	innocentKnob.Size = UDim2.new(0, 16, 0, 16)
+	innocentKnob.Position = UDim2.new(0, 2, 0, 2)
+	innocentKnob.BackgroundColor3 = TEXT_SECONDARY
+	innocentKnob.Parent = innocentTrack
+
+	local innocentKnobCorner = Instance.new("UICorner")
+	innocentKnobCorner.CornerRadius = UDim.new(1, 0)
+	innocentKnobCorner.Parent = innocentKnob
+
+	innocentTrack.MouseButton1Click:Connect(function()
+		setInnocentESP(not innocentESPEnabled)
+		if innocentESPEnabled then
+			innocentTrack.BackgroundColor3 = LIME
+			innocentKnob.Position = UDim2.new(1, -18, 0, 2)
+			innocentKnob.BackgroundColor3 = BG_DARKER
+		else
+			innocentTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+			innocentKnob.Position = UDim2.new(0, 2, 0, 2)
+			innocentKnob.BackgroundColor3 = TEXT_SECONDARY
+		end
+	end)
 end
 
 -- Misc page with Mobility section
