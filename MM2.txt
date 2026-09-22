@@ -565,6 +565,11 @@ do
 		local hl = innocentHighlights[p]
 		if hl then pcall(function() hl:Destroy() end) innocentHighlights[p] = nil end
 	end
+	local function innocentClear()
+		local ps = {}
+		for p, _ in pairs(innocentHighlights) do ps[#ps + 1] = p end
+		for _, p in ipairs(ps) do innocentRemove(p) end
+	end
 	local function innocentSync(p)
 		innocentRemove(p)
 		if innocentESPEnabled then innocentAdd(p) end
@@ -574,7 +579,7 @@ do
 	end
 	local function setInnocentESP(state)
 		innocentESPEnabled = state
-		if state then innocentApply() else for p, _ in pairs(innocentHighlights) do innocentRemove(p) end end
+		if state then innocentApply() else innocentClear() end
 	end
 	local function innocentTrack(p)
 		p:GetPropertyChangedSignal("Team"):Connect(function() if innocentESPEnabled then innocentSync(p) end end)
@@ -604,7 +609,7 @@ do
 	pcall(function()
 		player:GetAttributeChangedSignal("Dead"):Connect(function()
 			if innocentIsDead(player) then
-				for p, _ in pairs(innocentHighlights) do innocentRemove(p) end
+				innocentClear()
 			elseif innocentESPEnabled then
 				innocentApply()
 			end
@@ -619,7 +624,7 @@ do
 			ev.OnClientEvent:Connect(function()
 				if not innocentESPEnabled then return end
 				if innocentIsDead(player) then
-					for p, _ in pairs(innocentHighlights) do innocentRemove(p) end
+					innocentClear()
 				else
 					innocentApply()
 				end
@@ -631,7 +636,7 @@ do
 		RunService.Heartbeat:Connect(function()
 			if not innocentESPEnabled then return end
 			if innocentIsDead(player) then
-				for p, _ in pairs(innocentHighlights) do innocentRemove(p) end
+				innocentClear()
 				return
 			end
 			if os.clock() - lastSync < 1 then return end
