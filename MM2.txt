@@ -1059,9 +1059,13 @@ do
 		box.Transparency = 1
 		boxes[p] = box
 	end
+	local boxSmooth = {}
+	local boxDims = {}
 	local function boxRemove(p)
 		local box = boxes[p]
 		if box then pcall(function() box:Remove() end) boxes[p] = nil end
+		boxSmooth[p] = nil
+		boxDims[p] = nil
 	end
 	local function boxSync(p)
 		boxRemove(p)
@@ -1104,30 +1108,47 @@ do
 			end)
 		end
 	end)
-	RunService.RenderStepped:Connect(function()
+	RunService.RenderStepped:Connect(function(dt)
 		if not alive() then return end
 		if not boxOn then return end
 		local cam = workspace.CurrentCamera
 		if not cam then return end
+		local k = 1 - math.exp(-(dt or 0.016) * 14)
+		local now = os.clock()
 		for p, box in pairs(boxes) do
 			local shown = false
 			local char = p.Character
 			local hrp = char and (char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("UpperTorso") or char:FindFirstChild("Torso"))
 			if char and hrp and not innocentIsDead(p) then
-				local topV, botV, wide = hrp.Position + Vector3.new(0, 2.5, 0), hrp.Position - Vector3.new(0, 2.5, 0), 0.6
-				local ok, cf, size = pcall(function() return char:GetBoundingBox() end)
-				if ok and cf and size and size.Y > 0.5 then
-					topV = cf.Position + Vector3.new(0, size.Y / 2 + 0.3, 0)
-					botV = cf.Position - Vector3.new(0, size.Y / 2 + 0.3, 0)
-					wide = math.clamp(size.X / size.Y, 0.3, 1)
+				local dims = boxDims[p]
+				if not dims or now - dims.t > 1 then
+					local ok, _, size = pcall(function() return char:GetBoundingBox() end)
+					if ok and size and size.Y > 0.5 then
+						dims = { x = size.X, y = size.Y, t = now }
+					else
+						dims = { x = 3, y = 5, t = now }
+					end
+					boxDims[p] = dims
 				end
-				local top, tOn = cam:WorldToViewportPoint(topV)
-				local bot, bOn = cam:WorldToViewportPoint(botV)
+				local ratio = math.clamp(dims.x / math.max(dims.y, 0.1), 0.3, 1)
+				local top, tOn = cam:WorldToViewportPoint(hrp.Position + Vector3.new(0, dims.y / 2 + 0.4, 0))
+				local bot, bOn = cam:WorldToViewportPoint(hrp.Position - Vector3.new(0, dims.y / 2 + 0.4, 0))
 				if tOn and bOn then
-					local h = math.abs(top.Y - bot.Y)
-					local w = h * wide
-					box.Size = Vector2.new(w, h)
-					box.Position = Vector2.new(top.X - w / 2, top.Y)
+					local h0 = math.abs(top.Y - bot.Y)
+					local h = h0 * 1.15
+					local w = h0 * ratio * 1.15
+					local tp = Vector2.new(top.X - w / 2, top.Y - (h - h0) / 2)
+					local ts = Vector2.new(w, h)
+					local s = boxSmooth[p]
+					if not s then
+						s = { pos = tp, size = ts }
+						boxSmooth[p] = s
+					else
+						s.pos = s.pos:Lerp(tp, k)
+						s.size = s.size:Lerp(ts, k)
+					end
+					box.Size = s.size
+					box.Position = s.pos
 					box.Color = boxColor(p)
 					box.Visible = true
 					shown = true
