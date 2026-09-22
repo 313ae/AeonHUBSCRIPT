@@ -1441,7 +1441,12 @@ do
 				if murderOn then murderApply() end
 				if sheriffOn then sheriffApply() end
 				if boxOn then boxApply() end
-				if nameOn then nameApply() end
+				if nameOn then
+					for p, g in pairs(nameGuis) do
+						local lbl = g:FindFirstChildOfClass("TextLabel")
+						if lbl then lbl.TextColor3 = boxColor(p) end
+					end
+				end
 			end
 		end)
 	end
