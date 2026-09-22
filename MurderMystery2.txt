@@ -581,25 +581,6 @@ do
 		return false
 	end
 	local function innocentIsDead(p)
-		local dd = dataDead(p)
-		if dd == true then return true end
-		if p:GetAttribute("Dead") == true or tostring(p:GetAttribute("Dead") or ""):lower() == "true" then return true end
-		if p:GetAttribute("IsDead") == true or tostring(p:GetAttribute("IsDead") or ""):lower() == "true" then return true end
-		local team = p.Team
-		if team then
-			local n = team.Name:lower()
-			if n:find("dead") or n:find("spect") or n:find("lobby") then return true end
-		end
-		local char = p.Character
-		if char then
-			if not char:IsDescendantOf(workspace) then return true end
-			local hum = char:FindFirstChildOfClass("Humanoid")
-			if hum then
-				if hum.Health <= 0 then return true end
-				local okSt, st = pcall(function() return hum:GetState() end)
-				if okSt and st == Enum.HumanoidStateType.Dead then return true end
-			end
-		end
 		return false
 	end
 	local function innocentAdd(p)
