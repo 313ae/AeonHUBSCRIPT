@@ -23,6 +23,14 @@ screenGui.ResetOnSpawn = false
 screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 screenGui.Parent = playerGui
 
+if _G.__mm2Gen == nil then _G.__mm2Gen = 0 end
+_G.__mm2Gen = _G.__mm2Gen + 1
+local MY_GEN = _G.__mm2Gen
+local function alive() return _G.__mm2Gen == MY_GEN end
+for _, g in ipairs(playerGui:GetChildren()) do
+	if g.Name == "AeonHub" and g ~= screenGui then pcall(function() g:Destroy() end) end
+end
+
 -- Intro
 local introFrame = Instance.new("Frame")
 introFrame.Name = "AeonHubIntro"
@@ -531,6 +539,7 @@ do
 		return false
 	end
 	local function innocentAdd(p)
+		if not alive() then return end
 		if p == player then return end
 		if innocentIsDead(player) or innocentIsDead(p) then return end
 		if innocentHasTool(p, "Knife") or innocentHasTool(p, "Gun") or innocentHasTool(p, "Revolver") then return end
@@ -728,6 +737,7 @@ do
 	local speedValue = 32
 	local speedOn = false
 	local function applySpeed()
+		if not alive() then return end
 		local char = player.Character
 		local hum = char and char:FindFirstChildOfClass("Humanoid")
 		if hum then
@@ -953,6 +963,7 @@ do
 		if hum then hum.PlatformStand = false end
 	end
 	local function startFly()
+		if not alive() then return end
 		local char = player.Character
 		local hrp = char and char:FindFirstChild("HumanoidRootPart")
 		local hum = char and char:FindFirstChildOfClass("Humanoid")
@@ -968,6 +979,7 @@ do
 		flyGyro.CFrame = hrp.CFrame
 		flyGyro.Parent = hrp
 		flyConn = RunService.Heartbeat:Connect(function()
+			if not alive() then flyConn:Disconnect() return end
 			if not flyOn then return end
 			local cam = workspace.CurrentCamera
 			if not cam or not hrp.Parent then return end
@@ -1190,6 +1202,7 @@ do
 	local jumpOn = false
 	local JUMP_MIN, JUMP_MAX = 0, 200
 	local function applyJump()
+		if not alive() then return end
 		local char = player.Character
 		local hum = char and char:FindFirstChildOfClass("Humanoid")
 		if hum then
@@ -1396,6 +1409,7 @@ do
 	local noclipConn = nil
 	local noclipSaved = {}
 	local function applyNoclip(char)
+		if not alive() then return end
 		if not char then return end
 		for _, part in ipairs(char:GetDescendants()) do
 			if part:IsA("BasePart") then
