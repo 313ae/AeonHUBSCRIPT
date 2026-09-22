@@ -566,7 +566,7 @@ do
 		hl.Name = "InnocentESP"
 		hl.FillTransparency = 1
 		hl.OutlineTransparency = 0
-		hl.OutlineColor = Color3.fromRGB(46, 204, 113)
+		hl.OutlineColor = Color3.fromRGB(50, 255, 50)
 		hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
 		hl.Adornee = char
 		hl.Parent = char
