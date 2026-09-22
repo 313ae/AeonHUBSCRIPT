@@ -518,6 +518,17 @@ do
 		end
 		return false
 	end
+	local function innocentDirectTool(p)
+		local char = p.Character
+		if char then
+			if char:FindFirstChild("Knife") or char:FindFirstChild("Gun") or char:FindFirstChild("Revolver") then return true end
+		end
+		local bp = p:FindFirstChild("Backpack")
+		if bp then
+			if bp:FindFirstChild("Knife") or bp:FindFirstChild("Gun") or bp:FindFirstChild("Revolver") then return true end
+		end
+		return false
+	end
 	local function innocentIsDead(p)
 		if p:GetAttribute("Dead") == true or tostring(p:GetAttribute("Dead") or ""):lower() == "true" then return true end
 		if p:GetAttribute("IsDead") == true or tostring(p:GetAttribute("IsDead") or ""):lower() == "true" then return true end
@@ -579,7 +590,16 @@ do
 		for _, p in ipairs(ps) do innocentRemove(p) end
 	end
 	local function innocentSync(p)
-		innocentRemove(p)
+		local hl = innocentHighlights[p]
+		if hl and hl.Parent then
+			if innocentESPEnabled and not innocentIsDead(player) and not innocentIsDead(p) and not innocentDirectTool(p) then
+				return
+			end
+			innocentRemove(p)
+		else
+			if hl then innocentHighlights[p] = nil end
+			innocentRemove(p)
+		end
 		if innocentESPEnabled then innocentAdd(p) end
 	end
 	local function innocentApply()
@@ -647,7 +667,7 @@ do
 				innocentClear()
 				return
 			end
-			if os.clock() - lastSync < 1 then return end
+			if os.clock() - lastSync < 3 then return end
 			lastSync = os.clock()
 			innocentApply()
 		end)
