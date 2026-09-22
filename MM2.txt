@@ -566,7 +566,7 @@ do
 		hl.Name = "InnocentESP"
 		hl.FillTransparency = 1
 		hl.OutlineTransparency = 0
-		hl.OutlineColor = Color3.fromRGB(50, 255, 50)
+		hl.OutlineColor = Color3.fromRGB(50, 210, 70)
 		hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
 		hl.Adornee = char
 		hl.Parent = char
@@ -1040,7 +1040,7 @@ do
 	local function boxColor(p)
 		if isMurderer(p.Name) then return Color3.fromRGB(255, 50, 50) end
 		if isSheriff(p.Name) then return Color3.fromRGB(50, 50, 255) end
-		return Color3.fromRGB(50, 255, 50)
+		return Color3.fromRGB(50, 210, 70)
 	end
 	local function boxAdd(p)
 		if not alive() then return end
