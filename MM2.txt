@@ -664,10 +664,12 @@ do
 		pcall(function() p:GetAttributeChangedSignal("RoleID"):Connect(function() if innocentESPEnabled then innocentSync(p) end end) end)
 		pcall(function() p:GetAttributeChangedSignal("CurrentRole"):Connect(function() if innocentESPEnabled then innocentSync(p) end end) end)
 		local function hookDied(char)
-			local hum = char and char:FindFirstChildOfClass("Humanoid")
-			if hum then
-				hum.Died:Connect(function() if innocentESPEnabled then innocentSync(p) end end)
-			end
+			task.spawn(function()
+				local hum = char and (char:FindFirstChildOfClass("Humanoid") or char:WaitForChild("Humanoid", 5))
+				if hum then
+					hum.Died:Connect(function() if innocentESPEnabled then innocentSync(p) end end)
+				end
+			end)
 		end
 		p.CharacterAdded:Connect(function(char)
 			hookDied(char)
