@@ -704,13 +704,11 @@ do
 	innocentTrack.MouseButton1Click:Connect(function()
 		setInnocentESP(not innocentESPEnabled)
 		if innocentESPEnabled then
-			innocentTrack.BackgroundColor3 = LIME
-			innocentKnob.Position = UDim2.new(1, -18, 0, 2)
-			innocentKnob.BackgroundColor3 = BG_DARKER
+			TweenService:Create(innocentTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = LIME }):Play()
+			TweenService:Create(innocentKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(1, -18, 0, 2), BackgroundColor3 = BG_DARKER }):Play()
 		else
-			innocentTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-			innocentKnob.Position = UDim2.new(0, 2, 0, 2)
-			innocentKnob.BackgroundColor3 = TEXT_SECONDARY
+			TweenService:Create(innocentTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = Color3.fromRGB(60, 60, 60) }):Play()
+			TweenService:Create(innocentKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(0, 2, 0, 2), BackgroundColor3 = TEXT_SECONDARY }):Play()
 		end
 	end)
 end
@@ -936,14 +934,12 @@ do
 	local function setSpeedOn(state)
 		speedOn = state
 		if speedOn then
-			speedTrack.BackgroundColor3 = LIME
-			speedKnob.Position = UDim2.new(1, -18, 0, 2)
-			speedKnob.BackgroundColor3 = BG_DARKER
+			TweenService:Create(speedTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = LIME }):Play()
+			TweenService:Create(speedKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(1, -18, 0, 2), BackgroundColor3 = BG_DARKER }):Play()
 			applySpeed()
 		else
-			speedTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-			speedKnob.Position = UDim2.new(0, 2, 0, 2)
-			speedKnob.BackgroundColor3 = TEXT_SECONDARY
+			TweenService:Create(speedTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = Color3.fromRGB(60, 60, 60) }):Play()
+			TweenService:Create(speedKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(0, 2, 0, 2), BackgroundColor3 = TEXT_SECONDARY }):Play()
 			applySpeed()
 		end
 	end
@@ -1179,14 +1175,12 @@ do
 	local function setFlyOn(state)
 		flyOn = state
 		if state then
-			flyTrack.BackgroundColor3 = LIME
-			flyKnob.Position = UDim2.new(1, -18, 0, 2)
-			flyKnob.BackgroundColor3 = BG_DARKER
+			TweenService:Create(flyTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = LIME }):Play()
+			TweenService:Create(flyKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(1, -18, 0, 2), BackgroundColor3 = BG_DARKER }):Play()
 			startFly()
 		else
-			flyTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-			flyKnob.Position = UDim2.new(0, 2, 0, 2)
-			flyKnob.BackgroundColor3 = TEXT_SECONDARY
+			TweenService:Create(flyTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = Color3.fromRGB(60, 60, 60) }):Play()
+			TweenService:Create(flyKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(0, 2, 0, 2), BackgroundColor3 = TEXT_SECONDARY }):Play()
 			stopFly()
 		end
 	end
@@ -1394,14 +1388,12 @@ do
 	local function setJumpOn(state)
 		jumpOn = state
 		if state then
-			jumpTrack.BackgroundColor3 = LIME
-			jumpKnob.Position = UDim2.new(1, -18, 0, 2)
-			jumpKnob.BackgroundColor3 = BG_DARKER
+			TweenService:Create(jumpTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = LIME }):Play()
+			TweenService:Create(jumpKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(1, -18, 0, 2), BackgroundColor3 = BG_DARKER }):Play()
 			applyJump()
 		else
-			jumpTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-			jumpKnob.Position = UDim2.new(0, 2, 0, 2)
-			jumpKnob.BackgroundColor3 = TEXT_SECONDARY
+			TweenService:Create(jumpTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = Color3.fromRGB(60, 60, 60) }):Play()
+			TweenService:Create(jumpKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(0, 2, 0, 2), BackgroundColor3 = TEXT_SECONDARY }):Play()
 			applyJump()
 		end
 	end
@@ -1460,9 +1452,8 @@ do
 		noclipOn = state
 		if noclipConn then noclipConn:Disconnect() noclipConn = nil end
 		if state then
-			noclipTrack.BackgroundColor3 = LIME
-			noclipKnob.Position = UDim2.new(1, -18, 0, 2)
-			noclipKnob.BackgroundColor3 = BG_DARKER
+			TweenService:Create(noclipTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = LIME }):Play()
+			TweenService:Create(noclipKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(1, -18, 0, 2), BackgroundColor3 = BG_DARKER }):Play()
 			local char = player.Character
 			if char then
 				noclipSaved = {}
@@ -1470,9 +1461,8 @@ do
 				noclipConn = RunService.Stepped:Connect(function() applyNoclip(char) end)
 			end
 		else
-			noclipTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-			noclipKnob.Position = UDim2.new(0, 2, 0, 2)
-			noclipKnob.BackgroundColor3 = TEXT_SECONDARY
+			TweenService:Create(noclipTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = Color3.fromRGB(60, 60, 60) }):Play()
+			TweenService:Create(noclipKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(0, 2, 0, 2), BackgroundColor3 = TEXT_SECONDARY }):Play()
 			restoreNoclip()
 		end
 	end
