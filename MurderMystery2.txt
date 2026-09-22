@@ -613,11 +613,22 @@ do
 		p:GetPropertyChangedSignal("Team"):Connect(function() if innocentESPEnabled then innocentSync(p) end end)
 		pcall(function() p:GetAttributeChangedSignal("Dead"):Connect(function() if innocentESPEnabled then innocentSync(p) end end) end)
 		pcall(function() p:GetAttributeChangedSignal("IsDead"):Connect(function() if innocentESPEnabled then innocentSync(p) end end) end)
-		p.CharacterAdded:Connect(function()
+		pcall(function() p:GetAttributeChangedSignal("Role"):Connect(function() if innocentESPEnabled then innocentSync(p) end end) end)
+		pcall(function() p:GetAttributeChangedSignal("RoleID"):Connect(function() if innocentESPEnabled then innocentSync(p) end end) end)
+		pcall(function() p:GetAttributeChangedSignal("CurrentRole"):Connect(function() if innocentESPEnabled then innocentSync(p) end end) end)
+		local function hookDied(char)
+			local hum = char and char:FindFirstChildOfClass("Humanoid")
+			if hum then
+				hum.Died:Connect(function() if innocentESPEnabled then innocentSync(p) end end)
+			end
+		end
+		p.CharacterAdded:Connect(function(char)
+			hookDied(char)
 			task.wait(0.5)
 			if innocentESPEnabled then innocentSync(p) end
 		end)
 		if p.Character then
+			hookDied(p.Character)
 			p.Character.ChildAdded:Connect(function() if innocentESPEnabled then innocentSync(p) end end)
 			p.Character.ChildRemoved:Connect(function() if innocentESPEnabled then innocentSync(p) end end)
 		end
