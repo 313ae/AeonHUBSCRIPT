@@ -722,6 +722,57 @@ do
 			TweenService:Create(innocentKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(0, 2, 0, 2), BackgroundColor3 = TEXT_SECONDARY }):Play()
 		end
 	end)
+
+	-- Murderer ESP (Placeholder — no logic yet, just the row)
+	local murderRow = Instance.new("Frame")
+	murderRow.Size = UDim2.new(1, 0, 0, 20)
+	murderRow.BackgroundTransparency = 1
+	murderRow.LayoutOrder = 3
+	murderRow.Parent = page
+
+	local murderLabel = Instance.new("TextLabel")
+	murderLabel.Size = UDim2.new(1, -50, 1, 0)
+	murderLabel.BackgroundTransparency = 1
+	murderLabel.Text = "Murderer ESP"
+	murderLabel.Font = Enum.Font.GothamBold
+	murderLabel.TextSize = 13
+	murderLabel.TextColor3 = TEXT_PRIMARY
+	murderLabel.TextXAlignment = Enum.TextXAlignment.Left
+	murderLabel.Parent = murderRow
+
+	local murderTrack = Instance.new("TextButton")
+	murderTrack.Size = UDim2.new(0, 38, 0, 20)
+	murderTrack.Position = UDim2.new(1, -38, 0, 0)
+	murderTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	murderTrack.Text = ""
+	murderTrack.AutoButtonColor = false
+	murderTrack.Parent = murderRow
+
+	local murderTrackCorner = Instance.new("UICorner")
+	murderTrackCorner.CornerRadius = UDim.new(1, 0)
+	murderTrackCorner.Parent = murderTrack
+
+	local murderKnob = Instance.new("Frame")
+	murderKnob.Size = UDim2.new(0, 16, 0, 16)
+	murderKnob.Position = UDim2.new(0, 2, 0, 2)
+	murderKnob.BackgroundColor3 = TEXT_SECONDARY
+	murderKnob.Parent = murderTrack
+
+	local murderKnobCorner = Instance.new("UICorner")
+	murderKnobCorner.CornerRadius = UDim.new(1, 0)
+	murderKnobCorner.Parent = murderKnob
+
+	local murderOn = false
+	murderTrack.MouseButton1Click:Connect(function()
+		murderOn = not murderOn
+		if murderOn then
+			TweenService:Create(murderTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = LIME }):Play()
+			TweenService:Create(murderKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(1, -18, 0, 2), BackgroundColor3 = BG_DARKER }):Play()
+		else
+			TweenService:Create(murderTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = Color3.fromRGB(60, 60, 60) }):Play()
+			TweenService:Create(murderKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(0, 2, 0, 2), BackgroundColor3 = TEXT_SECONDARY }):Play()
+		end
+	end)
 end
 
 -- Misc page with Mobility section
