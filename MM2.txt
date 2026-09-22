@@ -565,7 +565,7 @@ do
 		if innocentIsDead(p) then return end
 		if innocentHasTool(p, "Knife") or innocentHasTool(p, "Gun") or innocentHasTool(p, "Revolver") then return end
 		local char = p.Character
-		if not char or innocentHighlights[p] then return end
+		if not char or not char.Parent or innocentHighlights[p] then return end
 		if not char:FindFirstChild("HumanoidRootPart") and not char:FindFirstChild("UpperTorso") and not char:FindFirstChild("Torso") then return end
 		local hl = Instance.new("Highlight")
 		hl.Name = "InnocentESP"
@@ -574,7 +574,8 @@ do
 		hl.OutlineColor = Color3.fromRGB(50, 210, 70)
 		hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
 		hl.Adornee = char
-		hl.Parent = char
+		local okParent = pcall(function() hl.Parent = char end)
+		if not okParent or hl.Parent ~= char then pcall(function() hl:Destroy() end) return end
 		innocentHighlights[p] = hl
 	end
 	local function innocentRemove(p)
@@ -769,7 +770,7 @@ do
 		if innocentIsDead(p) then return end
 		if not isSheriff(p.Name) then return end
 		local char = p.Character
-		if not char or sheriffHighlights[p] then return end
+		if not char or not char.Parent or sheriffHighlights[p] then return end
 		if not char:FindFirstChild("HumanoidRootPart") and not char:FindFirstChild("UpperTorso") and not char:FindFirstChild("Torso") then return end
 		local hl = Instance.new("Highlight")
 		hl.Name = "SheriffESP"
@@ -778,7 +779,8 @@ do
 		hl.OutlineColor = Color3.fromRGB(50, 50, 255)
 		hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
 		hl.Adornee = char
-		hl.Parent = char
+		local okParent = pcall(function() hl.Parent = char end)
+		if not okParent or hl.Parent ~= char then pcall(function() hl:Destroy() end) return end
 		sheriffHighlights[p] = hl
 	end
 	local function sheriffRemove(p)
@@ -917,7 +919,7 @@ do
 		if innocentIsDead(p) then return end
 		if not isMurderer(p.Name) then return end
 		local char = p.Character
-		if not char or murderHighlights[p] then return end
+		if not char or not char.Parent or murderHighlights[p] then return end
 		if not char:FindFirstChild("HumanoidRootPart") and not char:FindFirstChild("UpperTorso") and not char:FindFirstChild("Torso") then return end
 		local hl = Instance.new("Highlight")
 		hl.Name = "MurderESP"
@@ -926,7 +928,8 @@ do
 		hl.OutlineColor = Color3.fromRGB(255, 50, 50)
 		hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
 		hl.Adornee = char
-		hl.Parent = char
+		local okParent = pcall(function() hl.Parent = char end)
+		if not okParent or hl.Parent ~= char then pcall(function() hl:Destroy() end) return end
 		murderHighlights[p] = hl
 	end
 	local function murderRemove(p)
