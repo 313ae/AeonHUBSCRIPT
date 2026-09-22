@@ -595,18 +595,25 @@ do
 		for p, _ in pairs(innocentHighlights) do ps[#ps + 1] = p end
 		for _, p in ipairs(ps) do innocentRemove(p) end
 	end
+	local syncing = {}
 	local function innocentSync(p)
-		local hl = innocentHighlights[p]
-		if hl and hl.Parent then
-			if innocentESPEnabled and not innocentIsDead(p) and not innocentDirectTool(p) then
-				return
+		if syncing[p] then return end
+		syncing[p] = true
+		local ok, err = pcall(function()
+			local hl = innocentHighlights[p]
+			if hl and hl.Parent then
+				if innocentESPEnabled and not innocentIsDead(p) and not innocentDirectTool(p) then
+					return
+				end
+				innocentRemove(p)
+			else
+				if hl then innocentHighlights[p] = nil end
+				innocentRemove(p)
 			end
-			innocentRemove(p)
-		else
-			if hl then innocentHighlights[p] = nil end
-			innocentRemove(p)
-		end
-		if innocentESPEnabled then innocentAdd(p) end
+			if innocentESPEnabled then innocentAdd(p) end
+		end)
+		syncing[p] = nil
+		if not ok then error(err, 0) end
 	end
 	local function innocentApply()
 		for _, plr in ipairs(Players:GetPlayers()) do innocentSync(plr) end
@@ -793,16 +800,23 @@ do
 			end
 		end
 	end
+	local ssyncing = {}
 	local function sheriffSync(p)
-		local hl = sheriffHighlights[p]
-		if hl and hl.Parent then
-			if sheriffOn and not innocentIsDead(p) and isSheriff(p.Name) then return end
-			sheriffRemove(p)
-		else
-			if hl then sheriffHighlights[p] = nil end
-			sheriffRemove(p)
-		end
-		if sheriffOn then sheriffAdd(p) end
+		if ssyncing[p] then return end
+		ssyncing[p] = true
+		local ok, err = pcall(function()
+			local hl = sheriffHighlights[p]
+			if hl and hl.Parent then
+				if sheriffOn and not innocentIsDead(p) and isSheriff(p.Name) then return end
+				sheriffRemove(p)
+			else
+				if hl then sheriffHighlights[p] = nil end
+				sheriffRemove(p)
+			end
+			if sheriffOn then sheriffAdd(p) end
+		end)
+		ssyncing[p] = nil
+		if not ok then error(err, 0) end
 	end
 	local function sheriffApply()
 		for _, plr in ipairs(Players:GetPlayers()) do sheriffSync(plr) end
@@ -942,16 +956,23 @@ do
 			end
 		end
 	end
+	local msyncing = {}
 	local function murderSync(p)
-		local hl = murderHighlights[p]
-		if hl and hl.Parent then
-			if murderOn and not innocentIsDead(p) and isMurderer(p.Name) then return end
-			murderRemove(p)
-		else
-			if hl then murderHighlights[p] = nil end
-			murderRemove(p)
-		end
-		if murderOn then murderAdd(p) end
+		if msyncing[p] then return end
+		msyncing[p] = true
+		local ok, err = pcall(function()
+			local hl = murderHighlights[p]
+			if hl and hl.Parent then
+				if murderOn and not innocentIsDead(p) and isMurderer(p.Name) then return end
+				murderRemove(p)
+			else
+				if hl then murderHighlights[p] = nil end
+				murderRemove(p)
+			end
+			if murderOn then murderAdd(p) end
+		end)
+		msyncing[p] = nil
+		if not ok then error(err, 0) end
 	end
 	local function murderApply()
 		for _, plr in ipairs(Players:GetPlayers()) do murderSync(plr) end
