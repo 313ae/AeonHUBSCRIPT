@@ -557,7 +557,7 @@ do
 	local function innocentAdd(p)
 		if not alive() then return end
 		if p == player then return end
-		if innocentIsDead(player) or innocentIsDead(p) then return end
+		if innocentIsDead(p) then return end
 		if innocentHasTool(p, "Knife") or innocentHasTool(p, "Gun") or innocentHasTool(p, "Revolver") then return end
 		local char = p.Character
 		if not char or innocentHighlights[p] then return end
@@ -592,7 +592,7 @@ do
 	local function innocentSync(p)
 		local hl = innocentHighlights[p]
 		if hl and hl.Parent then
-			if innocentESPEnabled and not innocentIsDead(player) and not innocentIsDead(p) and not innocentDirectTool(p) then
+			if innocentESPEnabled and not innocentIsDead(p) and not innocentDirectTool(p) then
 				return
 			end
 			innocentRemove(p)
@@ -636,9 +636,7 @@ do
 	Players.PlayerRemoving:Connect(function(plr) innocentRemove(plr) end)
 	pcall(function()
 		player:GetAttributeChangedSignal("Dead"):Connect(function()
-			if innocentIsDead(player) then
-				innocentClear()
-			elseif innocentESPEnabled then
+			if innocentESPEnabled then
 				innocentApply()
 			end
 		end)
@@ -651,11 +649,7 @@ do
 		if ev then
 			ev.OnClientEvent:Connect(function()
 				if not innocentESPEnabled then return end
-				if innocentIsDead(player) then
-					innocentClear()
-				else
-					innocentApply()
-				end
+				innocentApply()
 			end)
 		end
 	end)
@@ -663,10 +657,6 @@ do
 		local lastSync = 0
 		RunService.Heartbeat:Connect(function()
 			if not innocentESPEnabled then return end
-			if innocentIsDead(player) then
-				innocentClear()
-				return
-			end
 			if os.clock() - lastSync < 3 then return end
 			lastSync = os.clock()
 			innocentApply()
