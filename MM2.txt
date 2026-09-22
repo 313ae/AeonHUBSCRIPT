@@ -507,13 +507,20 @@ do
 	local GetCurrentPlayerData = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Gameplay"):WaitForChild("GetCurrentPlayerData")
 	local murderCache = nil
 	local murderCacheAt = 0
+	local invoking = false
 	local function getPlayerData()
 		if murderCache and os.clock() - murderCacheAt < 2 then return murderCache end
-		local ok, data = pcall(function() return GetCurrentPlayerData:InvokeServer() end)
-		if ok and type(data) == "table" then
-			murderCache = data
-			murderCacheAt = os.clock()
-			return data
+		if not invoking then
+			invoking = true
+			task.delay(5, function() invoking = false end)
+			task.spawn(function()
+				local ok, data = pcall(function() return GetCurrentPlayerData:InvokeServer() end)
+				invoking = false
+				if ok and type(data) == "table" then
+					murderCache = data
+					murderCacheAt = os.clock()
+				end
+			end)
 		end
 		return murderCache
 	end
