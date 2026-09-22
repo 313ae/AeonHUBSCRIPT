@@ -727,9 +727,21 @@ do
 	local murderOn = false
 	local ReplicatedStorage = game:GetService("ReplicatedStorage")
 	local GetCurrentPlayerData = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Gameplay"):WaitForChild("GetCurrentPlayerData")
-	local function isMurderer(name)
+	local murderCache = nil
+	local murderCacheAt = 0
+	local function getPlayerData()
+		if murderCache and os.clock() - murderCacheAt < 2 then return murderCache end
 		local ok, data = pcall(function() return GetCurrentPlayerData:InvokeServer() end)
 		if ok and type(data) == "table" then
+			murderCache = data
+			murderCacheAt = os.clock()
+			return data
+		end
+		return murderCache
+	end
+	local function isMurderer(name)
+		local data = getPlayerData()
+		if data then
 			local entry = data[name]
 			if entry and entry.Role == "Murderer" then return true end
 		end
