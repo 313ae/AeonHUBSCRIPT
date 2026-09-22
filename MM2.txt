@@ -1113,7 +1113,7 @@ do
 		if not boxOn then return end
 		local cam = workspace.CurrentCamera
 		if not cam then return end
-		local k = 1 - math.exp(-(dt or 0.016) * 14)
+		local k = 1 - math.exp(-(dt or 0.016) * 24)
 		local now = os.clock()
 		for p, box in pairs(boxes) do
 			local shown = false
