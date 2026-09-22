@@ -519,6 +519,13 @@ do
 		return false
 	end
 	local function innocentIsDead(p)
+		if p:GetAttribute("Dead") == true or tostring(p:GetAttribute("Dead") or ""):lower() == "true" then return true end
+		if p:GetAttribute("IsDead") == true or tostring(p:GetAttribute("IsDead") or ""):lower() == "true" then return true end
+		local team = p.Team
+		if team then
+			local n = team.Name:lower()
+			if n:find("dead") or n:find("spect") or n:find("lobby") then return true end
+		end
 		local ok, dead = pcall(function()
 			local rs = game:GetService("ReplicatedStorage")
 			local mod = rs:FindFirstChild("CurrentRoundClient", true)
@@ -529,8 +536,6 @@ do
 			return false
 		end)
 		if ok and dead then return true end
-		local team = p.Team
-		if team and team.Name:lower():find("dead") then return true end
 		local char = p.Character
 		if char then
 			local hum = char:FindFirstChildOfClass("Humanoid")
@@ -574,6 +579,7 @@ do
 	local function innocentTrack(p)
 		p:GetPropertyChangedSignal("Team"):Connect(function() if innocentESPEnabled then innocentSync(p) end end)
 		pcall(function() p:GetAttributeChangedSignal("Dead"):Connect(function() if innocentESPEnabled then innocentSync(p) end end) end)
+		pcall(function() p:GetAttributeChangedSignal("IsDead"):Connect(function() if innocentESPEnabled then innocentSync(p) end end) end)
 		p.CharacterAdded:Connect(function()
 			task.wait(0.5)
 			if innocentESPEnabled then innocentSync(p) end
