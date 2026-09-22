@@ -552,7 +552,37 @@ do
 		end
 		return false
 	end
+	local roundModCache, roundModAt = nil, 0
+	local function getRoundData()
+		local now = os.clock()
+		if not roundModCache or now - roundModAt > 5 then
+			roundModAt = now
+			pcall(function()
+				for _, d in ipairs(game:GetService("ReplicatedStorage"):GetDescendants()) do
+					if d.Name == "CurrentRoundClient" and d:IsA("ModuleScript") then
+						roundModCache = require(d)
+						break
+					end
+				end
+			end)
+		end
+		if type(roundModCache) == "table" and type(roundModCache.PlayerData) == "table" then
+			return roundModCache.PlayerData
+		end
+		return nil
+	end
+	local function dataDead(p)
+		local pd = getRoundData()
+		if not pd then return nil end
+		local e = pd[p.Name] or pd[tostring(p.UserId)]
+		if type(e) ~= "table" then return nil end
+		if e.Dead == true or e.IsDead == true then return true end
+		if e.Alive == false then return true end
+		return false
+	end
 	local function innocentIsDead(p)
+		local dd = dataDead(p)
+		if dd == true then return true end
 		if p:GetAttribute("Dead") == true or tostring(p:GetAttribute("Dead") or ""):lower() == "true" then return true end
 		if p:GetAttribute("IsDead") == true or tostring(p:GetAttribute("IsDead") or ""):lower() == "true" then return true end
 		local team = p.Team
@@ -560,16 +590,6 @@ do
 			local n = team.Name:lower()
 			if n:find("dead") or n:find("spect") or n:find("lobby") then return true end
 		end
-		local ok, dead = pcall(function()
-			local rs = game:GetService("ReplicatedStorage")
-			local mod = rs:FindFirstChild("CurrentRoundClient", true)
-			if mod then
-				local tbl = require(mod)
-				if tbl and tbl.PlayerData and tbl.PlayerData[p.Name] and tbl.PlayerData[p.Name].Dead == true then return true end
-			end
-			return false
-		end)
-		if ok and dead then return true end
 		local char = p.Character
 		if char then
 			if not char:IsDescendantOf(workspace) then return true end
@@ -1411,20 +1431,16 @@ do
 	end
 
 	do
-		local roundMod = nil
 		local lastSnap, lastPoll = "", 0
 		RunService.Heartbeat:Connect(function()
 			if not alive() then return end
 			if os.clock() - lastPoll < 1 then return end
 			lastPoll = os.clock()
 			local ok, snap = pcall(function()
-				if not roundMod then
-					local m = game:GetService("ReplicatedStorage"):FindFirstChild("CurrentRoundClient", true)
-					if m then roundMod = require(m) end
-				end
-				if not roundMod or not roundMod.PlayerData then return "" end
+				local pd = getRoundData()
+				if not pd then return "" end
 				local parts = {}
-				for name, d in pairs(roundMod.PlayerData) do
+				for name, d in pairs(pd) do
 					if type(d) == "table" then
 						parts[#parts + 1] = name .. ":" .. tostring(d.Role) .. ":" .. tostring(d.Dead)
 					end
