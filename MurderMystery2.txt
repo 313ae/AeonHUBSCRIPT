@@ -605,6 +605,15 @@ do
 	local function innocentApply()
 		for _, plr in ipairs(Players:GetPlayers()) do innocentSync(plr) end
 	end
+	local roundResyncAt = 0
+	local function scheduleRoundResync()
+		local t = os.clock()
+		roundResyncAt = t
+		task.delay(2, function()
+			if roundResyncAt ~= t then return end
+			if innocentESPEnabled then innocentApply() end
+		end)
+	end
 	local function setInnocentESP(state)
 		innocentESPEnabled = state
 		if state then innocentApply() else innocentClear() end
@@ -626,6 +635,7 @@ do
 			hookDied(char)
 			task.wait(0.5)
 			if innocentESPEnabled then innocentSync(p) end
+			scheduleRoundResync()
 		end)
 		if p.Character then
 			hookDied(p.Character)
@@ -661,6 +671,7 @@ do
 			ev.OnClientEvent:Connect(function()
 				if not innocentESPEnabled then return end
 				innocentApply()
+				scheduleRoundResync()
 			end)
 		end
 	end)
