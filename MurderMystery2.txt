@@ -735,7 +735,7 @@ do
 	end
 	local function sheriffAdd(p)
 		if p == player then return end
-		if innocentIsDead(p) or innocentIsDead(player) then return end
+		if innocentIsDead(p) then return end
 		if not isSheriff(p.Name) then return end
 		local char = p.Character
 		if not char or sheriffHighlights[p] then return end
@@ -763,7 +763,7 @@ do
 	local function sheriffSync(p)
 		local hl = sheriffHighlights[p]
 		if hl and hl.Parent then
-			if sheriffOn and not innocentIsDead(player) and not innocentIsDead(p) and isSheriff(p.Name) then return end
+			if sheriffOn and not innocentIsDead(p) and isSheriff(p.Name) then return end
 			sheriffRemove(p)
 		else
 			if hl then sheriffHighlights[p] = nil end
@@ -808,7 +808,7 @@ do
 		if ev then
 			ev.OnClientEvent:Connect(function()
 				if not sheriffOn then return end
-				if innocentIsDead(player) then sheriffClear() else sheriffApply() end
+				sheriffApply()
 			end)
 		end
 	end)
@@ -816,7 +816,6 @@ do
 		local lastSync = 0
 		RunService.Heartbeat:Connect(function()
 			if not sheriffOn then return end
-			if innocentIsDead(player) then sheriffClear() return end
 			if os.clock() - lastSync < 1 then return end
 			lastSync = os.clock()
 			sheriffApply()
@@ -898,7 +897,7 @@ do
 	end
 	local function murderAdd(p)
 		if p == player then return end
-		if innocentIsDead(p) or innocentIsDead(player) then return end
+		if innocentIsDead(p) then return end
 		if not isMurderer(p.Name) then return end
 		local char = p.Character
 		if not char or murderHighlights[p] then return end
@@ -926,7 +925,7 @@ do
 	local function murderSync(p)
 		local hl = murderHighlights[p]
 		if hl and hl.Parent then
-			if murderOn and not innocentIsDead(player) and not innocentIsDead(p) and isMurderer(p.Name) then return end
+			if murderOn and not innocentIsDead(p) and isMurderer(p.Name) then return end
 			murderRemove(p)
 		else
 			if hl then murderHighlights[p] = nil end
@@ -971,7 +970,7 @@ do
 		if ev then
 			ev.OnClientEvent:Connect(function()
 				if not murderOn then return end
-				if innocentIsDead(player) then murderClear() else murderApply() end
+				murderApply()
 			end)
 		end
 	end)
@@ -979,7 +978,6 @@ do
 		local lastSync = 0
 		RunService.Heartbeat:Connect(function()
 			if not murderOn then return end
-			if innocentIsDead(player) then murderClear() return end
 			if os.clock() - lastSync < 1 then return end
 			lastSync = os.clock()
 			murderApply()
