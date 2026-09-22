@@ -1132,12 +1132,32 @@ do
 			if char and hrp and not innocentIsDead(p) then
 				local dims = boxDims[p]
 				if not dims or now - dims.t > 1 then
-					local ok, _, size = pcall(function() return char:GetBoundingBox() end)
-					if ok and size and size.Y > 0.5 then
-						dims = { x = size.X, y = size.Y, t = now }
+					local hrpPos = hrp.Position
+					local top, bot, rad = hrpPos.Y, hrpPos.Y, 1.2
+					for _, d in ipairs(char:GetDescendants()) do
+						if d:IsA("BasePart") then
+							local inTool, a = false, d.Parent
+							while a and a ~= char do
+								if a:IsA("Tool") then inTool = true break end
+								a = a.Parent
+							end
+							if not inTool then
+								local pos, sz = d.Position, d.Size
+								if pos.Y + sz.Y / 2 > top then top = pos.Y + sz.Y / 2 end
+								if pos.Y - sz.Y / 2 < bot then bot = pos.Y - sz.Y / 2 end
+								local dx, dz = pos.X - hrpPos.X, pos.Z - hrpPos.Z
+								local r = math.sqrt(dx * dx + dz * dz) + math.max(sz.X, sz.Z) / 2
+								if r > rad then rad = r end
+							end
+						end
+					end
+					if top - bot > 0.5 then
+						dims = { x = rad * 2, y = top - bot, t = now }
 					else
 						dims = { x = 3, y = 5, t = now }
 					end
+					boxDims[p] = dims
+				end
 					boxDims[p] = dims
 				end
 				local ratio = math.clamp(dims.x / math.max(dims.y, 0.1), 0.3, 1)
