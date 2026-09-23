@@ -1527,6 +1527,7 @@ do
 	local objectiveDivider = Instance.new("Frame")
 	objectiveDivider.Name = "ObjectiveDivider"
 	objectiveDivider.Size = UDim2.new(1, 0, 0, 1)
+	objectiveDivider.Position = UDim2.new(0, 0, 0, 20)
 	objectiveDivider.BackgroundColor3 = BORDER
 	objectiveDivider.BorderSizePixel = 0
 	objectiveDivider.LayoutOrder = 7
@@ -1534,6 +1535,7 @@ do
 
 	local objectiveHeader = Instance.new("TextLabel")
 	objectiveHeader.Size = UDim2.new(1, 0, 0, 14)
+	objectiveHeader.Position = UDim2.new(0, 0, 0, 20)
 	objectiveHeader.BackgroundTransparency = 1
 	objectiveHeader.TextColor3 = TEXT_SECONDARY
 	objectiveHeader.Font = Enum.Font.GothamBold
