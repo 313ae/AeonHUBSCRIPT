@@ -1377,7 +1377,7 @@ do
 	local visualsBox = Instance.new("Frame")
 	visualsBox.Name = "VisualsBox"
 	visualsBox.Size = UDim2.new(1, 16, 0, 166)
-	visualsBox.Position = UDim2.new(0, -8, 0, 33)
+	visualsBox.Position = UDim2.new(0, -8, 0, 25)
 	visualsBox.BackgroundColor3 = BG_DARKER
 	visualsBox.BorderSizePixel = 0
 	visualsBox.ZIndex = 0
