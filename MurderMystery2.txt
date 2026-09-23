@@ -1545,12 +1545,15 @@ do
 	objectiveHeader.LayoutOrder = 8
 	objectiveHeader.Parent = page
 
-	local function shiftObjective()
-		objectiveDivider.Position = UDim2.new(0, 0, 0, 20)
-		objectiveHeader.Position = UDim2.new(0, 0, 0, 20)
+	local function positionObjective()
+		local y = nameRow.Position.Y + nameRow.Size.Y.Offset + 44
+		objectiveDivider.Position = UDim2.new(0, 0, 0, y)
+		objectiveHeader.Position = UDim2.new(0, 0, 0, y + 7)
 	end
-	visualsLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() task.defer(shiftObjective) end)
-	task.defer(shiftObjective)
+	visualsLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() task.defer(positionObjective) end)
+	page:GetPropertyChangedSignal("AbsoluteSize"):Connect(function() task.defer(positionObjective) end)
+	task.defer(positionObjective)
+	task.delay(1, positionObjective)
 
 	local visualsOverlay = Instance.new("Frame")
 	visualsOverlay.Name = "VisualsOverlay"
