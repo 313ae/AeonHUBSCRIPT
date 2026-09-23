@@ -2258,7 +2258,7 @@ do
 		local span = (noclipRow.AbsolutePosition.Y + noclipRow.AbsoluteSize.Y) - speedRow.AbsolutePosition.Y
 		if span <= 0 then return end
 		miscBox.Position = UDim2.new(0, -BOX_PAD, 0, 0)
-		miscBox.Size = UDim2.new(1, BOX_PAD * 2, 0, span + 8)
+		miscBox.Size = UDim2.new(1, BOX_PAD * 2, 0, span - 41)
 	end
 	page:GetPropertyChangedSignal("Visible"):Connect(function()
 		if page.Visible then task.defer(refreshMiscBox) task.delay(0.5, refreshMiscBox) end
