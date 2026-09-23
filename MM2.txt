@@ -1552,6 +1552,7 @@ do
 	end
 	visualsLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() task.defer(positionObjective) end)
 	page:GetPropertyChangedSignal("AbsoluteSize"):Connect(function() task.defer(positionObjective) end)
+	page:GetPropertyChangedSignal("Visible"):Connect(function() task.defer(positionObjective) end)
 	task.defer(positionObjective)
 	task.delay(1, positionObjective)
 
