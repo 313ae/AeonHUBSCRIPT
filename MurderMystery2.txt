@@ -498,6 +498,273 @@ do
 	playerHeader.Text = "Player"
 	playerHeader.Parent = page
 
+	local innocentESPEnabled = false
+	local innocentHighlights = {}
+	local function innocentHasTool(p, name)
+		local char = p.Character
+		if char and char:FindFirstChild(name) then return true end
+		local bp = p:FindFirstChild("Backpack")
+		if bp and bp:FindFirstChild(name) then return true end
+		for _, v in ipairs(char and char:GetDescendants() or {}) do
+			if v.Name:lower():find(name:lower()) and (v:IsA("Tool") or v:IsA("BasePart")) then return true end
+		end
+		for _, v in ipairs(bp and bp:GetDescendants() or {}) do
+			if v.Name:lower():find(name:lower()) and (v:IsA("Tool") or v:IsA("BasePart")) then return true end
+		end
+		return false
+	end
+	local function innocentDirectTool(p)
+		local char = p.Character
+		if char then
+			if char:FindFirstChild("Knife") or char:FindFirstChild("Gun") or char:FindFirstChild("Revolver") then return true end
+		end
+		local bp = p:FindFirstChild("Backpack")
+		if bp then
+			if bp:FindFirstChild("Knife") or bp:FindFirstChild("Gun") or bp:FindFirstChild("Revolver") then return true end
+		end
+		return false
+	end
+	local function innocentIsDead(p)
+		return false
+	end
+	local function hasExactTool(p, ...)
+		local names = { ... }
+		local char = p.Character
+		if char then
+			for _, c in ipairs(char:GetChildren()) do
+				for _, n in ipairs(names) do
+					if c.Name == n then return true end
+				end
+			end
+		end
+		local bp = p:FindFirstChild("Backpack")
+		if bp then
+			for _, c in ipairs(bp:GetChildren()) do
+				for _, n in ipairs(names) do
+					if c.Name == n then return true end
+				end
+			end
+		end
+		return false
+	end
+	local function hasKnife(p)
+		return hasExactTool(p, "Knife")
+	end
+	local function hasGun(p)
+		return hasExactTool(p, "Gun", "Revolver")
+	end
+	local roundMod = nil
+	local function serverRole(name)
+		if not roundMod then
+			pcall(function()
+				for _, d in ipairs(game:GetService("ReplicatedStorage"):GetDescendants()) do
+					if d.Name == "CurrentRoundClient" and d:IsA("ModuleScript") then
+						roundMod = d
+						break
+					end
+				end
+			end)
+		end
+		if roundMod then
+			local ok, role = pcall(function()
+				local tbl = require(roundMod)
+				if type(tbl) == "table" and type(tbl.PlayerData) == "table" then
+					local e = tbl.PlayerData[name]
+					if type(e) == "table" and type(e.Role) == "string" then return e.Role end
+				end
+				return nil
+			end)
+			if ok then return role end
+		end
+		return nil
+	end
+	local function detectRole(p)
+		local r = serverRole(p.Name)
+		if r == "Murderer" or r == "Sheriff" or r == "Hero" then
+			return r == "Hero" and "Sheriff" or r
+		end
+		if r ~= nil then return nil end
+		if hasKnife(p) then return "Murderer" end
+		if hasGun(p) then return "Sheriff" end
+		return nil
+	end
+	local function innocentRole(p)
+		if detectRole(p) then return "Armed" end
+		return nil
+	end
+	local function innocentAdd(p)
+		if not alive() then return end
+		if p == player then return end
+		if innocentIsDead(p) then return end
+		if innocentHasTool(p, "Knife") or innocentHasTool(p, "Gun") or innocentHasTool(p, "Revolver") then return end
+		if innocentRole(p) then return end
+		local char = p.Character
+		if not char or not char.Parent then return end
+		if not char:FindFirstChild("HumanoidRootPart") and not char:FindFirstChild("UpperTorso") and not char:FindFirstChild("Torso") and not char:FindFirstChildWhichIsA("BasePart", true) then return end
+		local existing = char:FindFirstChild("InnocentESP_" .. MY_GEN)
+		if existing and existing:IsA("Highlight") then innocentHighlights[p] = existing return end
+		local known = innocentHighlights[p]
+		if known and known.Parent then return end
+		innocentHighlights[p] = nil
+		local hl = Instance.new("Highlight")
+		hl.Name = "InnocentESP_" .. MY_GEN
+		hl.FillTransparency = 1
+		hl.OutlineTransparency = 0
+		hl.OutlineColor = Color3.fromRGB(50, 210, 70)
+		hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+		hl.Adornee = char
+		local okParent = pcall(function() hl.Parent = char end)
+		if not okParent or hl.Parent ~= char then pcall(function() hl:Destroy() end) return end
+		innocentHighlights[p] = hl
+	end
+	local function innocentRemove(p)
+		local hl = innocentHighlights[p]
+		if hl then pcall(function() hl:Destroy() end) innocentHighlights[p] = nil end
+		local char = p.Character
+		if char then
+			for _, d in ipairs(char:GetDescendants()) do
+				if d:IsA("Highlight") and (d.Name == "InnocentESP_" .. MY_GEN or d.Name == "InnocentESP") then
+					pcall(function() d:Destroy() end)
+				end
+			end
+		end
+	end
+	local function innocentClear()
+		local ps = {}
+		for p, _ in pairs(innocentHighlights) do ps[#ps + 1] = p end
+		for _, p in ipairs(ps) do innocentRemove(p) end
+	end
+	local syncing = {}
+	local function innocentSync(p)
+		if syncing[p] then return end
+		syncing[p] = true
+		local ok, err = pcall(function()
+			local hl = innocentHighlights[p]
+			if hl and hl.Parent then
+				if innocentESPEnabled and not innocentIsDead(p) and not innocentDirectTool(p) and not innocentRole(p) then
+					return
+				end
+				innocentRemove(p)
+			else
+				if hl then innocentHighlights[p] = nil end
+				innocentRemove(p)
+			end
+			if innocentESPEnabled then innocentAdd(p) end
+		end)
+		syncing[p] = nil
+		if not ok then error(err, 0) end
+	end
+	local function innocentApply()
+		for _, plr in ipairs(Players:GetPlayers()) do innocentSync(plr) end
+	end
+	local roundResyncAt = 0
+	local function scheduleRoundResync()
+		local t = os.clock()
+		roundResyncAt = t
+		task.delay(2, function()
+			if roundResyncAt ~= t then return end
+			if innocentESPEnabled then innocentApply() end
+		end)
+	end
+	local function setInnocentESP(state)
+		innocentESPEnabled = state
+		if state then innocentApply() else innocentClear() end
+	end
+	local function innocentTrack(p)
+		p.CharacterAdded:Connect(function()
+			if innocentESPEnabled then
+				task.wait(0.5)
+				innocentSync(p)
+			end
+		end)
+		p:GetPropertyChangedSignal("Team"):Connect(function()
+			if not innocentESPEnabled then return end
+			innocentSync(p)
+		end)
+	end
+	for _, plr in ipairs(Players:GetPlayers()) do innocentTrack(plr) end
+	Players.PlayerAdded:Connect(function(plr)
+		innocentTrack(plr)
+		if innocentESPEnabled and plr.Character then
+			innocentSync(plr)
+		end
+	end)
+	Players.PlayerRemoving:Connect(function(plr) innocentRemove(plr) end)
+	pcall(function()
+		player:GetAttributeChangedSignal("Dead"):Connect(function()
+			if innocentESPEnabled then
+				innocentApply()
+			end
+		end)
+	end)
+	pcall(function()
+		local rs = game:GetService("ReplicatedStorage")
+		local remotes = rs:FindFirstChild("Remotes")
+		local gp = remotes and remotes:FindFirstChild("Gameplay")
+		local ev = gp and gp:FindFirstChild("PlayerDataChanged")
+		if ev then
+			ev.OnClientEvent:Connect(function()
+				if not innocentESPEnabled then return end
+				innocentApply()
+				scheduleRoundResync()
+			end)
+		end
+	end)
+	do
+		local lastSync = 0
+		RunService.Heartbeat:Connect(function()
+			if not alive() then return end
+			if not innocentESPEnabled then return end
+			if os.clock() - lastSync < 1 then return end
+			lastSync = os.clock()
+			innocentApply()
+		end)
+	end
+
+	local innocentLabel = Instance.new("TextLabel")
+	innocentLabel.Size = UDim2.new(1, -50, 0, 20)
+	innocentLabel.Position = UDim2.new(0, 0, 0, 50)
+	innocentLabel.BackgroundTransparency = 1
+	innocentLabel.Text = "Innocent ESP"
+	innocentLabel.Font = Enum.Font.GothamBold
+	innocentLabel.TextSize = 13
+	innocentLabel.TextColor3 = TEXT_PRIMARY
+	innocentLabel.TextXAlignment = Enum.TextXAlignment.Left
+	innocentLabel.Parent = page
+
+	local innocentTrack = Instance.new("TextButton")
+	innocentTrack.Size = UDim2.new(0, 38, 0, 20)
+	innocentTrack.Position = UDim2.new(1, -38, 0, 50)
+	innocentTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	innocentTrack.Text = ""
+	innocentTrack.AutoButtonColor = false
+	innocentTrack.Parent = page
+
+	local innocentTrackCorner = Instance.new("UICorner")
+	innocentTrackCorner.CornerRadius = UDim.new(1, 0)
+	innocentTrackCorner.Parent = innocentTrack
+
+	local innocentKnob = Instance.new("Frame")
+	innocentKnob.Size = UDim2.new(0, 16, 0, 16)
+	innocentKnob.Position = UDim2.new(0, 2, 0, 2)
+	innocentKnob.BackgroundColor3 = TEXT_SECONDARY
+	innocentKnob.Parent = innocentTrack
+
+	local innocentKnobCorner = Instance.new("UICorner")
+	innocentKnobCorner.CornerRadius = UDim.new(1, 0)
+	innocentKnobCorner.Parent = innocentKnob
+
+	innocentTrack.MouseButton1Click:Connect(function()
+		setInnocentESP(not innocentESPEnabled)
+		if innocentESPEnabled then
+			TweenService:Create(innocentTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = LIME }):Play()
+			TweenService:Create(innocentKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(1, -18, 0, 2), BackgroundColor3 = BG_DARKER }):Play()
+		else
+			TweenService:Create(innocentTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = Color3.fromRGB(60, 60, 60) }):Play()
+			TweenService:Create(innocentKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(0, 2, 0, 2), BackgroundColor3 = TEXT_SECONDARY }):Play()
+		end
+	end)
+
 	end
 
 -- Misc page with Mobility section
