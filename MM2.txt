@@ -1562,6 +1562,40 @@ do
 		nameApply()
 	end
 
+	local visualsOverlay = Instance.new("Frame")
+	visualsOverlay.Name = "VisualsOverlay"
+	visualsOverlay.BackgroundColor3 = BG_DARKER
+	visualsOverlay.BorderSizePixel = 0
+	visualsOverlay.ZIndex = 0
+	visualsOverlay.Visible = false
+	visualsOverlay.Parent = content
+
+	local visualsOverlayCorner = Instance.new("UICorner")
+	visualsOverlayCorner.CornerRadius = UDim.new(0, 8)
+	visualsOverlayCorner.Parent = visualsOverlay
+
+	local visualsOverlayStroke = Instance.new("UIStroke")
+	visualsOverlayStroke.Color = BORDER
+	visualsOverlayStroke.Thickness = 1
+	visualsOverlayStroke.Parent = visualsOverlay
+
+	local VOVERLAY_PAD = 8
+	local function refreshVisualsOverlay()
+		if not page.Visible then visualsOverlay.Visible = false return end
+		local cx, cy = content.AbsolutePosition.X, content.AbsolutePosition.Y
+		local top = innocentRow.AbsolutePosition.Y
+		local bottom = nameRow.AbsolutePosition.Y + nameRow.AbsoluteSize.Y
+		if bottom <= top then return end
+		visualsOverlay.Position = UDim2.new(0, innocentRow.AbsolutePosition.X - cx - VOVERLAY_PAD, 0, top - cy - VOVERLAY_PAD)
+		visualsOverlay.Size = UDim2.new(0, innocentRow.AbsoluteSize.X + VOVERLAY_PAD * 2, 0, (bottom - top) + VOVERLAY_PAD * 2)
+		visualsOverlay.Visible = true
+	end
+	page:GetPropertyChangedSignal("Visible"):Connect(function() task.defer(refreshVisualsOverlay) end)
+	page:GetPropertyChangedSignal("AbsoluteSize"):Connect(function() task.defer(refreshVisualsOverlay) end)
+	visualsLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() task.defer(refreshVisualsOverlay) end)
+	task.defer(refreshVisualsOverlay)
+	task.delay(1, refreshVisualsOverlay)
+
 	do
 		local lastSnap, lastPoll = "", 0
 		RunService.Heartbeat:Connect(function()
