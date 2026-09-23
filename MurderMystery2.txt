@@ -1411,6 +1411,51 @@ do
 	objectiveHeader.Text = "Objective"
 	objectiveHeader.Parent = page
 
+	local gunLabel = Instance.new("TextLabel")
+	gunLabel.Size = UDim2.new(1, -50, 0, 20)
+	gunLabel.Position = UDim2.new(0, 0, 0, 266)
+	gunLabel.BackgroundTransparency = 1
+	gunLabel.Text = "Gun ESP"
+	gunLabel.Font = Enum.Font.GothamBold
+	gunLabel.TextSize = 13
+	gunLabel.TextColor3 = TEXT_PRIMARY
+	gunLabel.TextXAlignment = Enum.TextXAlignment.Left
+	gunLabel.Parent = page
+
+	local gunTrack = Instance.new("TextButton")
+	gunTrack.Size = UDim2.new(0, 38, 0, 20)
+	gunTrack.Position = UDim2.new(1, -38, 0, 266)
+	gunTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	gunTrack.Text = ""
+	gunTrack.AutoButtonColor = false
+	gunTrack.Parent = page
+
+	local gunTrackCorner = Instance.new("UICorner")
+	gunTrackCorner.CornerRadius = UDim.new(1, 0)
+	gunTrackCorner.Parent = gunTrack
+
+	local gunKnob = Instance.new("Frame")
+	gunKnob.Size = UDim2.new(0, 16, 0, 16)
+	gunKnob.Position = UDim2.new(0, 2, 0, 2)
+	gunKnob.BackgroundColor3 = TEXT_SECONDARY
+	gunKnob.Parent = gunTrack
+
+	local gunKnobCorner = Instance.new("UICorner")
+	gunKnobCorner.CornerRadius = UDim.new(1, 0)
+	gunKnobCorner.Parent = gunKnob
+
+	local gunOn = false
+	gunTrack.MouseButton1Click:Connect(function()
+		gunOn = not gunOn
+		if gunOn then
+			TweenService:Create(gunTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = LIME }):Play()
+			TweenService:Create(gunKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(1, -18, 0, 2), BackgroundColor3 = BG_DARKER }):Play()
+		else
+			TweenService:Create(gunTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = Color3.fromRGB(60, 60, 60) }):Play()
+			TweenService:Create(gunKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(0, 2, 0, 2), BackgroundColor3 = TEXT_SECONDARY }):Play()
+		end
+	end)
+
 	end
 
 -- Misc page with Mobility section
