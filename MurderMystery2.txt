@@ -1507,6 +1507,20 @@ do
 		syncToggleVisual(nameTrack, nameKnob, nameOn)
 		if boxOn then boxApply() end
 		if nameOn then nameApply() end
+	else
+		innocentESPEnabled, murderOn, sheriffOn, boxOn, nameOn = true, true, true, true, true
+		local function syncToggleVisual2(track, knob, on)
+			track.BackgroundColor3 = on and LIME or Color3.fromRGB(60, 60, 60)
+			knob.Position = on and UDim2.new(1, -18, 0, 2) or UDim2.new(0, 2, 0, 2)
+			knob.BackgroundColor3 = on and BG_DARKER or TEXT_SECONDARY
+		end
+		syncToggleVisual2(innocentTrack, innocentKnob, true)
+		syncToggleVisual2(sheriffTrack, sheriffKnob, true)
+		syncToggleVisual2(murderTrack, murderKnob, true)
+		syncToggleVisual2(boxTrack, boxKnob, true)
+		syncToggleVisual2(nameTrack, nameKnob, true)
+		boxApply()
+		nameApply()
 	end
 
 	do
