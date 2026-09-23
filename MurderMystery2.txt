@@ -678,7 +678,7 @@ do
 	end
 	local function setInnocentESP(state)
 		innocentESPEnabled = state
-		if state then innocentApply() else innocentClear() end
+		if state then innocentApply() task.delay(0.5, function() if innocentESPEnabled and alive() then innocentApply() end end) else innocentClear() end
 	end
 	local function innocentTrack(p)
 		p:GetPropertyChangedSignal("Team"):Connect(function() if innocentESPEnabled then innocentSync(p) end end)
@@ -862,7 +862,7 @@ do
 	end
 	local function setSheriffESP(state)
 		sheriffOn = state
-		if state then sheriffApply() else sheriffClear() end
+		if state then sheriffApply() task.delay(0.5, function() if sheriffOn and alive() then sheriffApply() end end) else sheriffClear() end
 	end
 	local function sheriffTrack(p)
 		p:GetPropertyChangedSignal("Team"):Connect(function() if sheriffOn then sheriffSync(p) end end)
@@ -1015,7 +1015,7 @@ do
 	end
 	local function setMurderESP(state)
 		murderOn = state
-		if state then murderApply() else murderClear() end
+		if state then murderApply() task.delay(0.5, function() if murderOn and alive() then murderApply() end end) else murderClear() end
 	end
 	local function murderTrack(p)
 		p:GetPropertyChangedSignal("Team"):Connect(function() if murderOn then murderSync(p) end end)
@@ -1462,7 +1462,7 @@ do
 			if snap ~= lastSnap then
 				lastSnap = snap
 				murderCache = nil
-				task.delay(1, function()
+				task.delay(0.4, function()
 					if not alive() then return end
 					if innocentESPEnabled then innocentApply() end
 					if murderOn then murderApply() end
