@@ -471,7 +471,7 @@ do
 	page.BackgroundTransparency = 1
 	page.BorderSizePixel = 0
 	page.Visible = false
-	page.CanvasSize = UDim2.new(0, 0, 0, 0)
+	page.CanvasSize = UDim2.new(0, 0, 0, 580)
 	page.ScrollingDirection = Enum.ScrollingDirection.Y
 	page.ElasticBehavior = Enum.ElasticBehavior.Never
 	page.ScrollBarThickness = 0
@@ -485,13 +485,7 @@ do
 	visualsPadding.PaddingBottom = UDim.new(0, 18)
 	visualsPadding.Parent = page
 
-	local visualsLayout = Instance.new("UIListLayout")
-	visualsLayout.SortOrder = Enum.SortOrder.LayoutOrder
-	visualsLayout.Padding = UDim.new(0, 12)
-	visualsLayout.Parent = page
-	visualsLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-		page.CanvasSize = UDim2.new(0, 0, 0, visualsLayout.AbsoluteContentSize.Y + 31 + 300)
-	end)
+	-- manual positions below, no UIListLayout
 
 	local playerHeader = Instance.new("TextLabel")
 	playerHeader.Size = UDim2.new(1, 0, 0, 14)
@@ -739,6 +733,7 @@ do
 	innocentRow.BackgroundTransparency = 1
 	innocentRow.LayoutOrder = 2
 	innocentRow.Parent = page
+	innocentRow.Position = UDim2.new(0, 0, 0, 26)
 
 	local innocentLabel = Instance.new("TextLabel")
 	innocentLabel.Size = UDim2.new(1, -50, 1, 0)
@@ -899,6 +894,7 @@ do
 	sheriffRow.BackgroundTransparency = 1
 	sheriffRow.LayoutOrder = 3
 	sheriffRow.Parent = page
+	sheriffRow.Position = UDim2.new(0, 0, 0, 58)
 
 	local sheriffLabel = Instance.new("TextLabel")
 	sheriffLabel.Size = UDim2.new(1, -50, 1, 0)
@@ -1059,6 +1055,7 @@ do
 	murderRow.BackgroundTransparency = 1
 	murderRow.LayoutOrder = 4
 	murderRow.Parent = page
+	murderRow.Position = UDim2.new(0, 0, 0, 90)
 
 	local murderLabel = Instance.new("TextLabel")
 	murderLabel.Size = UDim2.new(1, -50, 1, 0)
@@ -1348,6 +1345,7 @@ do
 	boxRow.BackgroundTransparency = 1
 	boxRow.LayoutOrder = 5
 	boxRow.Parent = page
+	boxRow.Position = UDim2.new(0, 0, 0, 122)
 
 	local boxLabel = Instance.new("TextLabel")
 	boxLabel.Size = UDim2.new(1, -50, 1, 0)
@@ -1479,6 +1477,7 @@ do
 	nameRow.BackgroundTransparency = 1
 	nameRow.LayoutOrder = 6
 	nameRow.Parent = page
+	nameRow.Position = UDim2.new(0, 0, 0, 154)
 
 	local nameLabel = Instance.new("TextLabel")
 	nameLabel.Size = UDim2.new(1, -50, 1, 0)
@@ -1531,6 +1530,7 @@ do
 	objectiveDivider.BorderSizePixel = 0
 	objectiveDivider.LayoutOrder = 7
 	objectiveDivider.Parent = page
+	objectiveDivider.Position = UDim2.new(0, 0, 0, 186)
 
 	local objectiveHeader = Instance.new("TextLabel")
 	objectiveHeader.Size = UDim2.new(1, 0, 0, 14)
@@ -1542,47 +1542,25 @@ do
 	objectiveHeader.Text = "Objective"
 	objectiveHeader.LayoutOrder = 8
 	objectiveHeader.Parent = page
+	objectiveHeader.Position = UDim2.new(0, 0, 0, 199)
 
-	local visualsOverlay = Instance.new("Frame")
-	visualsOverlay.Name = "VisualsOverlay"
-	visualsOverlay.BackgroundColor3 = BG_DARKER
-	visualsOverlay.BorderSizePixel = 0
-	visualsOverlay.ZIndex = 0
-	visualsOverlay.Visible = false
-	visualsOverlay.Parent = content
+	local visualsBox = Instance.new("Frame")
+	visualsBox.Name = "VisualsBox"
+	visualsBox.Size = UDim2.new(1, -16, 0, 164)
+	visualsBox.Position = UDim2.new(0, 8, 0, 28)
+	visualsBox.BackgroundColor3 = BG_DARKER
+	visualsBox.BorderSizePixel = 0
+	visualsBox.ZIndex = 0
+	visualsBox.Parent = page
 
-	local visualsOverlayCorner = Instance.new("UICorner")
-	visualsOverlayCorner.CornerRadius = UDim.new(0, 8)
-	visualsOverlayCorner.Parent = visualsOverlay
+	local visualsBoxCorner = Instance.new("UICorner")
+	visualsBoxCorner.CornerRadius = UDim.new(0, 8)
+	visualsBoxCorner.Parent = visualsBox
 
-	local visualsOverlayStroke = Instance.new("UIStroke")
-	visualsOverlayStroke.Color = BORDER
-	visualsOverlayStroke.Thickness = 1
-	visualsOverlayStroke.Parent = visualsOverlay
-
-	local VOVERLAY_PAD = 10.5
-	local function refreshVisualsOverlay()
-		if not page.Visible then visualsOverlay.Visible = false return end
-		local cx, cy = content.AbsolutePosition.X, content.AbsolutePosition.Y
-		local spanTop = innocentRow.AbsolutePosition.Y + 1
-		local spanBottom = nameRow.AbsolutePosition.Y + nameRow.AbsoluteSize.Y + 19
-		local pageTop = page.AbsolutePosition.Y
-		local top = math.max(spanTop, pageTop)
-		local bottom = math.min(spanBottom, pageTop + page.AbsoluteSize.Y)
-		if bottom <= top then visualsOverlay.Visible = false return end
-		visualsOverlay.Position = UDim2.new(0, innocentRow.AbsolutePosition.X - cx - VOVERLAY_PAD, 0, top - cy)
-		visualsOverlay.Size = UDim2.new(0, innocentRow.AbsoluteSize.X + VOVERLAY_PAD * 2, 0, bottom - top)
-		visualsOverlay.Visible = true
-		local divY = (bottom - page.AbsolutePosition.Y) + 8
-		objectiveDivider.Position = UDim2.new(0, 0, 0, divY)
-		objectiveHeader.Position = UDim2.new(0, 0, 0, divY + 7)
-	end
-	page:GetPropertyChangedSignal("Visible"):Connect(function() task.defer(refreshVisualsOverlay) end)
-	page:GetPropertyChangedSignal("CanvasPosition"):Connect(refreshVisualsOverlay)
-	page:GetPropertyChangedSignal("AbsoluteSize"):Connect(function() task.defer(refreshVisualsOverlay) end)
-	visualsLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() task.defer(refreshVisualsOverlay) end)
-	task.defer(refreshVisualsOverlay)
-	task.delay(1, refreshVisualsOverlay)
+	local visualsBoxStroke = Instance.new("UIStroke")
+	visualsBoxStroke.Color = BORDER
+	visualsBoxStroke.Thickness = 1
+	visualsBoxStroke.Parent = visualsBox
 
 	do
 		local lastSnap, lastPoll = "", 0
