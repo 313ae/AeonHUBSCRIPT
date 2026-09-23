@@ -1526,8 +1526,8 @@ do
 
 	local objectiveDivider = Instance.new("Frame")
 	objectiveDivider.Name = "ObjectiveDivider"
-	objectiveDivider.Size = UDim2.new(1, 0, 0, 1)
-	objectiveDivider.BackgroundColor3 = BORDER
+	objectiveDivider.Size = UDim2.new(1, 0, 0, 2)
+	objectiveDivider.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 	objectiveDivider.BorderSizePixel = 0
 	objectiveDivider.LayoutOrder = 7
 	objectiveDivider.Parent = page
