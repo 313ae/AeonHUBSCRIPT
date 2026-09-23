@@ -750,8 +750,7 @@ do
 	innocentRow.Parent = page
 
 	local innocentLabel = Instance.new("TextLabel")
-	innocentLabel.Size = UDim2.new(1, -50, 1, 0)
-	innocentLabel.Position = UDim2.new(0, 0, 0, 5)
+	innocentLabel.Position = UDim2.new(0, 0, 0, 10)
 	innocentLabel.BackgroundTransparency = 1
 	innocentLabel.Text = "Innocent ESP"
 	innocentLabel.Font = Enum.Font.GothamBold
@@ -762,7 +761,7 @@ do
 
 	local innocentTrack = Instance.new("TextButton")
 	innocentTrack.Size = UDim2.new(0, 38, 0, 20)
-	innocentTrack.Position = UDim2.new(1, -38, 0, 5)
+	innocentTrack.Position = UDim2.new(1, -38, 0, 10)
 	innocentTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 	innocentTrack.Text = ""
 	innocentTrack.AutoButtonColor = false
@@ -912,7 +911,7 @@ do
 
 	local sheriffLabel = Instance.new("TextLabel")
 	sheriffLabel.Size = UDim2.new(1, -50, 1, 0)
-	sheriffLabel.Position = UDim2.new(0, 0, 0, 5)
+	sheriffLabel.Position = UDim2.new(0, 0, 0, 10)
 	sheriffLabel.BackgroundTransparency = 1
 	sheriffLabel.Text = "Sheriff ESP"
 	sheriffLabel.Font = Enum.Font.GothamBold
@@ -923,7 +922,7 @@ do
 
 	local sheriffTrack = Instance.new("TextButton")
 	sheriffTrack.Size = UDim2.new(0, 38, 0, 20)
-	sheriffTrack.Position = UDim2.new(1, -38, 0, 5)
+	sheriffTrack.Position = UDim2.new(1, -38, 0, 10)
 	sheriffTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 	sheriffTrack.Text = ""
 	sheriffTrack.AutoButtonColor = false
@@ -1073,7 +1072,7 @@ do
 
 	local murderLabel = Instance.new("TextLabel")
 	murderLabel.Size = UDim2.new(1, -50, 1, 0)
-	murderLabel.Position = UDim2.new(0, 0, 0, 5)
+	murderLabel.Position = UDim2.new(0, 0, 0, 10)
 	murderLabel.BackgroundTransparency = 1
 	murderLabel.Text = "Murderer ESP"
 	murderLabel.Font = Enum.Font.GothamBold
@@ -1084,7 +1083,7 @@ do
 
 	local murderTrack = Instance.new("TextButton")
 	murderTrack.Size = UDim2.new(0, 38, 0, 20)
-	murderTrack.Position = UDim2.new(1, -38, 0, 5)
+	murderTrack.Position = UDim2.new(1, -38, 0, 10)
 	murderTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 	murderTrack.Text = ""
 	murderTrack.AutoButtonColor = false
@@ -1362,7 +1361,7 @@ do
 
 	local boxLabel = Instance.new("TextLabel")
 	boxLabel.Size = UDim2.new(1, -50, 1, 0)
-	boxLabel.Position = UDim2.new(0, 0, 0, 5)
+	boxLabel.Position = UDim2.new(0, 0, 0, 10)
 	boxLabel.BackgroundTransparency = 1
 	boxLabel.Text = "Box ESP"
 	boxLabel.Font = Enum.Font.GothamBold
@@ -1373,7 +1372,7 @@ do
 
 	local boxTrack = Instance.new("TextButton")
 	boxTrack.Size = UDim2.new(0, 38, 0, 20)
-	boxTrack.Position = UDim2.new(1, -38, 0, 5)
+	boxTrack.Position = UDim2.new(1, -38, 0, 10)
 	boxTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 	boxTrack.Text = ""
 	boxTrack.AutoButtonColor = false
@@ -1494,7 +1493,7 @@ do
 
 	local nameLabel = Instance.new("TextLabel")
 	nameLabel.Size = UDim2.new(1, -50, 1, 0)
-	nameLabel.Position = UDim2.new(0, 0, 0, 5)
+	nameLabel.Position = UDim2.new(0, 0, 0, 10)
 	nameLabel.BackgroundTransparency = 1
 	nameLabel.Text = "Name ESP"
 	nameLabel.Font = Enum.Font.GothamBold
@@ -1505,7 +1504,7 @@ do
 
 	local nameTrack = Instance.new("TextButton")
 	nameTrack.Size = UDim2.new(0, 38, 0, 20)
-	nameTrack.Position = UDim2.new(1, -38, 0, 5)
+	nameTrack.Position = UDim2.new(1, -38, 0, 10)
 	nameTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 	nameTrack.Text = ""
 	nameTrack.AutoButtonColor = false
@@ -1607,7 +1606,7 @@ do
 		local top = innocentRow.AbsolutePosition.Y
 		local bottom = nameRow.AbsolutePosition.Y + nameRow.AbsoluteSize.Y
 		if bottom <= top then return end
-		visualsOverlay.Position = UDim2.new(0, innocentRow.AbsolutePosition.X - cx - VOVERLAY_PAD, 0, top - cy - VOVERLAY_PAD + 5)
+		visualsOverlay.Position = UDim2.new(0, innocentRow.AbsolutePosition.X - cx - VOVERLAY_PAD, 0, top - cy - VOVERLAY_PAD + 10)
 		visualsOverlay.Size = UDim2.new(0, innocentRow.AbsoluteSize.X + VOVERLAY_PAD * 2, 0, (bottom - top) + VOVERLAY_PAD * 2)
 		visualsOverlay.Visible = true
 	end
