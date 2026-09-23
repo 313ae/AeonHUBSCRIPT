@@ -1203,7 +1203,7 @@ do
 		Players.PlayerAdded:Connect(function(p)
 			p.CharacterAdded:Connect(function() noteSpawn() end)
 		end)
-	end)
+	end
 
 	local boxOn = false
 	local boxes = {}
