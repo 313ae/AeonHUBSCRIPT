@@ -750,6 +750,7 @@ do
 	innocentRow.Parent = page
 
 	local innocentLabel = Instance.new("TextLabel")
+	innocentLabel.Size = UDim2.new(1, -50, 1, 0)
 	innocentLabel.Position = UDim2.new(0, 0, 0, 10)
 	innocentLabel.BackgroundTransparency = 1
 	innocentLabel.Text = "Innocent ESP"
