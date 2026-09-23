@@ -1607,11 +1607,12 @@ do
 		local cx, cy = content.AbsolutePosition.X, content.AbsolutePosition.Y
 		local spanTop = innocentRow.AbsolutePosition.Y + 1
 		local spanBottom = nameRow.AbsolutePosition.Y + nameRow.AbsoluteSize.Y + 19
-		local h = spanBottom - spanTop
-		if h <= 0 then visualsOverlay.Visible = false return end
-		local top = math.max(spanTop, page.AbsolutePosition.Y)
+		local pageTop = page.AbsolutePosition.Y
+		local top = math.max(spanTop, pageTop)
+		local bottom = math.min(spanBottom, pageTop + page.AbsoluteSize.Y)
+		if bottom <= top then visualsOverlay.Visible = false return end
 		visualsOverlay.Position = UDim2.new(0, innocentRow.AbsolutePosition.X - cx - VOVERLAY_PAD, 0, top - cy)
-		visualsOverlay.Size = UDim2.new(0, innocentRow.AbsoluteSize.X + VOVERLAY_PAD * 2, 0, h)
+		visualsOverlay.Size = UDim2.new(0, innocentRow.AbsoluteSize.X + VOVERLAY_PAD * 2, 0, bottom - top)
 		visualsOverlay.Visible = true
 	end
 	page:GetPropertyChangedSignal("Visible"):Connect(function() task.defer(refreshVisualsOverlay) end)
