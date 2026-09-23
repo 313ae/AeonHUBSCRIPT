@@ -1573,6 +1573,9 @@ do
 		visualsOverlay.Position = UDim2.new(0, innocentRow.AbsolutePosition.X - cx - VOVERLAY_PAD, 0, top - cy)
 		visualsOverlay.Size = UDim2.new(0, innocentRow.AbsoluteSize.X + VOVERLAY_PAD * 2, 0, bottom - top)
 		visualsOverlay.Visible = true
+		local divY = (bottom - page.AbsolutePosition.Y) + 8
+		objectiveDivider.Position = UDim2.new(0, 0, 0, divY)
+		objectiveHeader.Position = UDim2.new(0, 0, 0, divY + 7)
 	end
 	page:GetPropertyChangedSignal("Visible"):Connect(function() task.defer(refreshVisualsOverlay) end)
 	page:GetPropertyChangedSignal("CanvasPosition"):Connect(refreshVisualsOverlay)
