@@ -30,6 +30,7 @@ local function alive() return _G.__mm2Gen == MY_GEN end
 for _, g in ipairs(playerGui:GetChildren()) do
 	if g.Name == "AeonHub" and g ~= screenGui then pcall(function() g:Destroy() end) end
 end
+print("[Aeon] MM2 b14 loaded")
 
 -- Intro
 local introFrame = Instance.new("Frame")
