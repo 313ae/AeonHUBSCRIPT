@@ -487,6 +487,17 @@ do
 
 	-- manual positions below, no UIListLayout
 
+	local playerHeader = Instance.new("TextLabel")
+	playerHeader.Size = UDim2.new(1, 0, 0, 14)
+	playerHeader.Position = UDim2.new(0, 0, 0, 0)
+	playerHeader.BackgroundTransparency = 1
+	playerHeader.TextColor3 = TEXT_SECONDARY
+	playerHeader.Font = Enum.Font.GothamBold
+	playerHeader.TextSize = 11
+	playerHeader.TextXAlignment = Enum.TextXAlignment.Left
+	playerHeader.Text = "Player"
+	playerHeader.Parent = page
+
 	end
 
 -- Misc page with Mobility section
