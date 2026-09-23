@@ -490,7 +490,7 @@ do
 	visualsLayout.Padding = UDim.new(0, 12)
 	visualsLayout.Parent = page
 	visualsLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-		page.CanvasSize = UDim2.new(0, 0, 0, visualsLayout.AbsoluteContentSize.Y + 31)
+		page.CanvasSize = UDim2.new(0, 0, 0, visualsLayout.AbsoluteContentSize.Y + 31 + 300)
 	end)
 
 	local playerHeader = Instance.new("TextLabel")
