@@ -571,6 +571,7 @@ do
 	end
 	local function innocentAdd(p)
 		if not alive() then return end
+		do return end
 		if p == player then return end
 		if innocentIsDead(p) then return end
 		if innocentHasTool(p, "Knife") or innocentHasTool(p, "Gun") or innocentHasTool(p, "Revolver") then return end
@@ -688,7 +689,7 @@ do
 	do
 		local lastSync = 0
 		RunService.Heartbeat:Connect(function()
-			if not alive() then return end
+			if true then return end
 			if not innocentESPEnabled then return end
 			if os.clock() - lastSync < 1 then return end
 			lastSync = os.clock()
@@ -749,6 +750,7 @@ do
 	local sheriffOn = false
 	local function sheriffAdd(p)
 		if not alive() then return end
+		do return end
 		if p == player then return end
 		if innocentIsDead(p) then return end
 		if not isSheriff(p) then return end
@@ -844,7 +846,7 @@ do
 	do
 		local lastSync = 0
 		RunService.Heartbeat:Connect(function()
-			if not alive() then return end
+			if true then return end
 			if not sheriffOn then return end
 			if os.clock() - lastSync < 1 then return end
 			lastSync = os.clock()
@@ -905,6 +907,7 @@ do
 	local murderOn = false
 	local function murderAdd(p)
 		if not alive() then return end
+		do return end
 		if p == player then return end
 		if innocentIsDead(p) then return end
 		if not isMurderer(p) then return end
@@ -1000,7 +1003,7 @@ do
 	do
 		local lastSync = 0
 		RunService.Heartbeat:Connect(function()
-			if not alive() then return end
+			if true then return end
 			if not murderOn then return end
 			if os.clock() - lastSync < 1 then return end
 			lastSync = os.clock()
@@ -1054,6 +1057,95 @@ do
 		else
 			TweenService:Create(murderTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = Color3.fromRGB(60, 60, 60) }):Play()
 			TweenService:Create(murderKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(0, 2, 0, 2), BackgroundColor3 = TEXT_SECONDARY }):Play()
+		end
+	end)
+
+	local espHighlights = {}
+	local function espRole(p)
+		local char = p.Character
+		if not char then return nil end
+		local hasKnife, hasGun = false, false
+		local bp = p:FindFirstChild("Backpack")
+		if bp then
+			for _, tool in ipairs(bp:GetChildren()) do
+				if tool:IsA("Tool") then
+					local n = tool.Name:lower()
+					if n:find("knife") or n:find("murderer") then hasKnife = true end
+					if n:find("gun") or n:find("revolver") or n:find("sheriff") then hasGun = true end
+				end
+			end
+		end
+		local ct = char:FindFirstChildOfClass("Tool")
+		if ct then
+			local n = ct.Name:lower()
+			if n:find("knife") or n:find("murderer") then hasKnife = true end
+			if n:find("gun") or n:find("revolver") or n:find("sheriff") then hasGun = true end
+		end
+		if hasKnife then return "Murderer" end
+		if hasGun then return "Sheriff" end
+		return "Innocent"
+	end
+	local function espColor(role)
+		if role == "Murderer" then return Color3.fromRGB(255, 50, 50) end
+		if role == "Sheriff" then return Color3.fromRGB(50, 50, 255) end
+		return Color3.fromRGB(50, 210, 70)
+	end
+	local function espWanted(role)
+		if role == "Murderer" then return murderOn end
+		if role == "Sheriff" then return sheriffOn end
+		return innocentESPEnabled
+	end
+	for _, d in ipairs(workspace:GetDescendants()) do
+		if d:IsA("Highlight") then
+			local n = d.Name
+			if n == "InnocentESP" or n == "MurderESP" or n == "SheriffESP" or n:match("ESP_%d+$") then
+				pcall(function() d:Destroy() end)
+			end
+		end
+	end
+	RunService.RenderStepped:Connect(function()
+		if not alive() then return end
+		for _, p in ipairs(Players:GetPlayers()) do
+			if p == player then
+				local old = espHighlights[p]
+				if old then pcall(function() old:Destroy() end) espHighlights[p] = nil end
+			else
+				local role = espRole(p)
+				if role and espWanted(role) and p.Character then
+					local col = espColor(role)
+					local hl = espHighlights[p]
+					if not hl or not hl.Parent then
+						if hl then espHighlights[p] = nil end
+						local char = p.Character
+						local nhl = Instance.new("Highlight")
+						nhl.FillColor = col
+						nhl.OutlineColor = col
+						nhl.FillTransparency = 0
+						nhl.OutlineTransparency = 0
+						nhl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+						nhl.Adornee = char
+						local okP = pcall(function() nhl.Parent = char end)
+						if okP and nhl.Parent == char then
+							espHighlights[p] = nhl
+						else
+							pcall(function() nhl:Destroy() end)
+						end
+					elseif hl.FillColor ~= col or hl.OutlineColor ~= col then
+						hl.FillColor = col
+						hl.OutlineColor = col
+					end
+				else
+					local hl = espHighlights[p]
+					if hl then pcall(function() hl:Destroy() end) espHighlights[p] = nil end
+				end
+			end
+		end
+		for k in pairs(espHighlights) do
+			if not k.Parent then
+				local hl = espHighlights[k]
+				if hl then pcall(function() hl:Destroy() end) end
+				espHighlights[k] = nil
+			end
 		end
 	end)
 
@@ -1428,7 +1520,7 @@ do
 			return isSheriff(p)
 		end
 		RunService.Heartbeat:Connect(function()
-			if not alive() then return end
+			if true then return end
 			if os.clock() - lastFix < fixInt then return end
 			lastFix = os.clock()
 			for _, p in ipairs(Players:GetPlayers()) do
