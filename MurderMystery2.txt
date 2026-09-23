@@ -1565,7 +1565,7 @@ do
 		if not page.Visible then visualsOverlay.Visible = false return end
 		local cx, cy = content.AbsolutePosition.X, content.AbsolutePosition.Y
 		local spanTop = innocentRow.AbsolutePosition.Y + 1
-		local spanBottom = nameRow.AbsolutePosition.Y + nameRow.AbsoluteSize.Y + 19
+		local spanBottom = nameRow.AbsolutePosition.Y + nameRow.AbsoluteSize.Y + 6
 		local pageTop = page.AbsolutePosition.Y
 		local top = math.max(spanTop, pageTop)
 		local bottom = math.min(spanBottom, pageTop + page.AbsoluteSize.Y)
