@@ -1605,17 +1605,14 @@ do
 	local function refreshVisualsOverlay()
 		if not page.Visible then visualsOverlay.Visible = false return end
 		local cx, cy = content.AbsolutePosition.X, content.AbsolutePosition.Y
-		local pageTop = page.AbsolutePosition.Y
-		local pageBottom = pageTop + page.AbsoluteSize.Y
-		local top = math.max(innocentRow.AbsolutePosition.Y - 3, pageTop) + 4
-		local bottom = math.min(nameRow.AbsolutePosition.Y + nameRow.AbsoluteSize.Y + 15, pageBottom) + 4
-		if bottom <= top then visualsOverlay.Visible = false return end
+		local top = innocentRow.AbsolutePosition.Y + 1
+		local bottom = nameRow.AbsolutePosition.Y + nameRow.AbsoluteSize.Y + 19
+		if bottom - top - 52 <= 0 then visualsOverlay.Visible = false return end
 		visualsOverlay.Position = UDim2.new(0, innocentRow.AbsolutePosition.X - cx - VOVERLAY_PAD, 0, top - cy)
-		visualsOverlay.Size = UDim2.new(0, innocentRow.AbsoluteSize.X + VOVERLAY_PAD * 2, 0, bottom - top)
+		visualsOverlay.Size = UDim2.new(0, innocentRow.AbsoluteSize.X + VOVERLAY_PAD * 2, 0, (bottom - top) - 52)
 		visualsOverlay.Visible = true
 	end
 	page:GetPropertyChangedSignal("Visible"):Connect(function() task.defer(refreshVisualsOverlay) end)
-	page:GetPropertyChangedSignal("CanvasPosition"):Connect(refreshVisualsOverlay)
 	page:GetPropertyChangedSignal("AbsoluteSize"):Connect(function() task.defer(refreshVisualsOverlay) end)
 	visualsLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() task.defer(refreshVisualsOverlay) end)
 	task.defer(refreshVisualsOverlay)
