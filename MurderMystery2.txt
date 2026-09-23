@@ -531,12 +531,22 @@ do
 		end
 		return murderCache
 	end
-	local function innocentRole(p)
+	local function lookupRole(name)
+		local pd = getRoundData()
+		if pd then
+			local e = pd[name]
+			if type(e) == "table" and type(e.Role) == "string" then return e.Role end
+		end
 		local data = getPlayerData()
 		if data then
-			local e = data[p.Name]
-			if e and (e.Role == "Murderer" or e.Role == "Sheriff" or e.Role == "Hero") then return e.Role end
+			local e2 = data[name]
+			if type(e2) == "table" and type(e2.Role) == "string" then return e2.Role end
 		end
+		return nil
+	end
+	local function innocentRole(p)
+		local role = lookupRole(p.Name)
+		if role == "Murderer" or role == "Sheriff" or role == "Hero" then return role end
 		return nil
 	end
 
@@ -792,12 +802,8 @@ do
 	local sheriffHighlights = {}
 	local sheriffOn = false
 	local function isSheriff(name)
-		local data = getPlayerData()
-		if data then
-			local entry = data[name]
-			if entry and (entry.Role == "Sheriff" or entry.Role == "Hero") then return true end
-		end
-		return false
+		local role = lookupRole(name)
+		return role == "Sheriff" or role == "Hero"
 	end
 	local function sheriffAdd(p)
 		if not alive() then return end
@@ -950,12 +956,7 @@ do
 	local murderHighlights = {}
 	local murderOn = false
 	local function isMurderer(name)
-		local data = getPlayerData()
-		if data then
-			local entry = data[name]
-			if entry and entry.Role == "Murderer" then return true end
-		end
-		return false
+		return lookupRole(name) == "Murderer"
 	end
 	local function murderAdd(p)
 		if not alive() then return end
