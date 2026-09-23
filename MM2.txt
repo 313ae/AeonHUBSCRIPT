@@ -514,11 +514,18 @@ do
 			invoking = true
 			task.delay(5, function() invoking = false end)
 			task.spawn(function()
-				local ok, data = pcall(function() return GetCurrentPlayerData:InvokeServer() end)
+				local ok, data = pcall(function()
+					local rs = game:GetService("ReplicatedStorage")
+					local remotes = rs:FindFirstChild("Remotes")
+					local gp = remotes and remotes:FindFirstChild("Gameplay")
+					local rf = gp and gp:FindFirstChild("GetCurrentPlayerData")
+					if not rf then error("no remote") end
+					return rf:InvokeServer()
+				end)
 				invoking = false
+				murderCacheAt = os.clock()
 				if ok and type(data) == "table" then
 					murderCache = data
-					murderCacheAt = os.clock()
 				end
 			end)
 		end
