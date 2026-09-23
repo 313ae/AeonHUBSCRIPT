@@ -533,11 +533,31 @@ do
 	local function innocentIsDead(p)
 		return false
 	end
+	local function hasExactTool(p, ...)
+		local names = { ... }
+		local char = p.Character
+		if char then
+			for _, c in ipairs(char:GetChildren()) do
+				for _, n in ipairs(names) do
+					if c.Name == n then return true end
+				end
+			end
+		end
+		local bp = p:FindFirstChild("Backpack")
+		if bp then
+			for _, c in ipairs(bp:GetChildren()) do
+				for _, n in ipairs(names) do
+					if c.Name == n then return true end
+				end
+			end
+		end
+		return false
+	end
 	local function hasKnife(p)
-		return innocentHasTool(p, "Knife")
+		return hasExactTool(p, "Knife")
 	end
 	local function hasGun(p)
-		return innocentHasTool(p, "Gun") or innocentHasTool(p, "Revolver")
+		return hasExactTool(p, "Gun", "Revolver")
 	end
 	local function isMurderer(p)
 		return hasKnife(p)
