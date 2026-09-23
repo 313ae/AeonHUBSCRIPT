@@ -1469,6 +1469,59 @@ do
 			end
 		end)
 	end
+
+	do
+		local lastFix, fixInt = 0, 0.5
+		local function wantInnocent(p)
+			if not innocentESPEnabled or p == player then return false end
+			local char = p.Character
+			if not char then return false end
+			if innocentDirectTool(p) then return false end
+			if innocentRole(p) then return false end
+			return true
+		end
+		local function wantMurderer(p)
+			if not murderOn or p == player then return false end
+			if not p.Character then return false end
+			return isMurderer(p.Name)
+		end
+		local function wantSheriff(p)
+			if not sheriffOn or p == player then return false end
+			if not p.Character then return false end
+			local r = lookupRole(p.Name)
+			return r == "Sheriff" or r == "Hero"
+		end
+		RunService.Heartbeat:Connect(function()
+			if not alive() then return end
+			if os.clock() - lastFix < fixInt then return end
+			lastFix = os.clock()
+			for _, p in ipairs(Players:GetPlayers()) do
+				local ihl = innocentHighlights[p]
+				if wantInnocent(p) then
+					if not ihl or not ihl.Parent then innocentAdd(p) end
+				elseif ihl then
+					innocentRemove(p)
+				end
+				local mhl = murderHighlights[p]
+				if wantMurderer(p) then
+					if not mhl or not mhl.Parent then murderAdd(p) end
+				elseif mhl then
+					murderRemove(p)
+				end
+				local shl = sheriffHighlights[p]
+				if wantSheriff(p) then
+					if not shl or not shl.Parent then sheriffAdd(p) end
+				elseif shl then
+					sheriffRemove(p)
+				end
+				local g = nameGuis[p]
+				if g then
+					local lbl = g:FindFirstChildOfClass("TextLabel")
+					if lbl then lbl.TextColor3 = boxColor(p) end
+				end
+			end
+		end)
+	end
 end
 
 -- Misc page with Mobility section
