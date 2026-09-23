@@ -624,6 +624,21 @@ do
 	local function setInnocentESP(state)
 		innocentESPEnabled = state
 		if state then innocentApply() task.delay(0.5, function() if innocentESPEnabled and alive() then innocentApply() end end) else innocentClear() end
+		if state then
+			task.delay(1, function()
+				for _, p in ipairs(Players:GetPlayers()) do
+					local char = p.Character
+					local parts = "NOCHAR"
+					if char then
+						parts = char:FindFirstChild("HumanoidRootPart") and "HRP" or char:FindFirstChild("UpperTorso") and "UT" or char:FindFirstChild("Torso") and "T" or "NOPARTS"
+					end
+					local tools = (innocentHasTool(p, "Knife") and "K" or "") .. (innocentHasTool(p, "Gun") and "G" or "") .. (innocentHasTool(p, "Revolver") and "R" or "")
+					if tools == "" then tools = "-" end
+					local has = (innocentHighlights[p] and innocentHighlights[p].Parent) and "SHOWN" or "DARK"
+					print("[Aeon] " .. p.Name .. " parts=" .. parts .. " tools=" .. tools .. " role=" .. tostring(innocentRole(p)) .. " " .. has)
+				end
+			end)
+		end
 	end
 	local function innocentTrack(p)
 		p:GetPropertyChangedSignal("Team"):Connect(function() if innocentESPEnabled then innocentSync(p) end end)
