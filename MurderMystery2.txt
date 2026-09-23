@@ -723,7 +723,7 @@ do
 
 	local innocentLabel = Instance.new("TextLabel")
 	innocentLabel.Size = UDim2.new(1, -50, 0, 20)
-	innocentLabel.Position = UDim2.new(0, 0, 0, 50)
+	innocentLabel.Position = UDim2.new(0, 0, 0, 38)
 	innocentLabel.BackgroundTransparency = 1
 	innocentLabel.Text = "Innocent ESP"
 	innocentLabel.Font = Enum.Font.GothamBold
@@ -734,7 +734,7 @@ do
 
 	local innocentTrack = Instance.new("TextButton")
 	innocentTrack.Size = UDim2.new(0, 38, 0, 20)
-	innocentTrack.Position = UDim2.new(1, -38, 0, 50)
+	innocentTrack.Position = UDim2.new(1, -38, 0, 38)
 	innocentTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 	innocentTrack.Text = ""
 	innocentTrack.AutoButtonColor = false
