@@ -568,14 +568,49 @@ do
 	local function hasGun(p)
 		return hasExactTool(p, "Gun", "Revolver")
 	end
+	local roundMod = nil
+	local function serverRole(name)
+		if not roundMod then
+			pcall(function()
+				for _, d in ipairs(game:GetService("ReplicatedStorage"):GetDescendants()) do
+					if d.Name == "CurrentRoundClient" and d:IsA("ModuleScript") then
+						roundMod = d
+						break
+					end
+				end
+			end)
+		end
+		if roundMod then
+			local ok, role = pcall(function()
+				local tbl = require(roundMod)
+				if type(tbl) == "table" and type(tbl.PlayerData) == "table" then
+					local e = tbl.PlayerData[name]
+					if type(e) == "table" and type(e.Role) == "string" then return e.Role end
+				end
+				return nil
+			end)
+			if ok then return role end
+		end
+		return nil
+	end
+	local function detectRole(p)
+		local r = serverRole(p.Name)
+		if r == "Murderer" or r == "Sheriff" or r == "Hero" then
+			return r == "Hero" and "Sheriff" or r
+		end
+		if r ~= nil then return nil end
+		if hasKnife(p) then return "Murderer" end
+		if hasGun(p) then return "Sheriff" end
+		return nil
+	end
 	local function isMurderer(p)
-		return hasKnife(p)
+		return detectRole(p) == "Murderer"
 	end
 	local function isSheriff(p)
-		return hasGun(p) and not hasKnife(p)
+		return detectRole(p) == "Sheriff"
 	end
 	local function innocentRole(p)
-		if hasKnife(p) or hasGun(p) then return "Armed" end
+		if detectRole(p) then return "Armed" end
 		return nil
 	end
 	local function innocentAdd(p)
@@ -1080,28 +1115,9 @@ do
 
 	local espHighlights = {}
 	local function espRole(p)
-		local char = p.Character
-		if not char then return nil end
-		local hasKnife, hasGun = false, false
-		local bp = p:FindFirstChild("Backpack")
-		if bp then
-			for _, tool in ipairs(bp:GetChildren()) do
-				if tool:IsA("Tool") then
-					local n = tool.Name:lower()
-					if n:find("knife") or n:find("murderer") then hasKnife = true end
-					if n:find("gun") or n:find("revolver") or n:find("sheriff") then hasGun = true end
-				end
-			end
-		end
-		local ct = char:FindFirstChildOfClass("Tool")
-		if ct then
-			local n = ct.Name:lower()
-			if n:find("knife") or n:find("murderer") then hasKnife = true end
-			if n:find("gun") or n:find("revolver") or n:find("sheriff") then hasGun = true end
-		end
-		if hasKnife then return "Murderer" end
-		if hasGun then return "Sheriff" end
-		return "Innocent"
+		if not p.Character then return nil end
+		local r = detectRole(p)
+		return r or "Innocent"
 	end
 	local function espColor(role)
 		if role == "Murderer" then return Color3.fromRGB(255, 50, 50) end
