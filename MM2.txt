@@ -1079,6 +1079,176 @@ do
 		end
 	end)
 
+	local boxOn = false
+	local boxes = {}
+	local hasDrawing = typeof(Drawing) == "table" and typeof(Drawing.new) == "function"
+	local function boxColor(p)
+		if hasKnife(p) then return Color3.fromRGB(255, 50, 50) end
+		if hasGun(p) then return Color3.fromRGB(50, 50, 255) end
+		return Color3.fromRGB(50, 210, 70)
+	end
+	local function boxAdd(p)
+		if not alive() then return end
+		if p == player then return end
+		if not hasDrawing then return end
+		if boxes[p] then return end
+		if innocentIsDead(p) then return end
+		local char = p.Character
+		if not char then return end
+		local ok, box = pcall(Drawing.new, "Square")
+		if not ok or not box then return end
+		box.Visible = false
+		box.Color = boxColor(p)
+		box.Thickness = 1
+		box.Filled = false
+		box.Transparency = 1
+		boxes[p] = box
+	end
+	local function boxRemove(p)
+		local box = boxes[p]
+		if box then pcall(function() box:Remove() end) boxes[p] = nil end
+	end
+	local function boxSync(p)
+		boxRemove(p)
+		if boxOn then boxAdd(p) end
+	end
+	local function boxApply()
+		for _, plr in ipairs(Players:GetPlayers()) do boxSync(plr) end
+	end
+	local function boxClear()
+		local ps = {}
+		for p, _ in pairs(boxes) do ps[#ps + 1] = p end
+		for _, p in ipairs(ps) do boxRemove(p) end
+	end
+	local function setBoxESP(state)
+		boxOn = state
+		if state then boxApply() else boxClear() end
+	end
+	local function boxTrack(p)
+		p.CharacterAdded:Connect(function()
+			if boxOn then
+				task.wait(0.5)
+				boxSync(p)
+			end
+		end)
+		p:GetPropertyChangedSignal("Team"):Connect(function()
+			if not boxOn then return end
+			boxSync(p)
+		end)
+	end
+	for _, plr in ipairs(Players:GetPlayers()) do boxTrack(plr) end
+	Players.PlayerAdded:Connect(function(plr)
+		boxTrack(plr)
+		if boxOn and plr.Character then
+			boxSync(plr)
+		end
+	end)
+	Players.PlayerRemoving:Connect(function(plr) boxRemove(plr) end)
+	pcall(function()
+		local rs = game:GetService("ReplicatedStorage")
+		local remotes = rs:FindFirstChild("Remotes")
+		local gp = remotes and remotes:FindFirstChild("Gameplay")
+		local ev = gp and gp:FindFirstChild("PlayerDataChanged")
+		if ev then
+			ev.OnClientEvent:Connect(function()
+				if boxOn then boxApply() end
+			end)
+		end
+	end)
+	do
+		local lastBoxSync = 0
+		RunService.Heartbeat:Connect(function()
+			if not alive() then return end
+			if not boxOn then return end
+			if os.clock() - lastBoxSync < 3 then return end
+			lastBoxSync = os.clock()
+			boxApply()
+		end)
+	end
+	RunService.RenderStepped:Connect(function()
+		if not alive() then return end
+		if not boxOn then
+			for _, box in pairs(boxes) do box.Visible = false end
+			return
+		end
+		local cam = workspace.CurrentCamera
+		if not cam then return end
+		local viewSize = cam.ViewportSize
+		for p, box in pairs(boxes) do
+			local visible = false
+			if p ~= player and not innocentIsDead(p) then
+				local char = p.Character
+				local rootPart = char and (char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("UpperTorso") or char:FindFirstChild("Torso") or char:FindFirstChildWhichIsA("BasePart"))
+				if rootPart then
+					local torso = char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso") or char:FindFirstChild("Head")
+					local topPos = (torso and torso.Position or rootPart.Position) + Vector3.new(0, 4.8, 0)
+					local bottomPos = rootPart.Position - Vector3.new(0, 4.8, 0)
+					local top, topOnScreen = cam:WorldToViewportPoint(topPos)
+					local bottom, botOnScreen = cam:WorldToViewportPoint(bottomPos)
+					if topOnScreen or botOnScreen then
+						local screenSize = math.max(bottom.Y - top.Y, 10)
+						local boxWidth = screenSize * 0.65
+						if boxWidth < viewSize.X and screenSize < viewSize.Y then
+							local px = math.clamp(top.X - boxWidth / 2, 0, viewSize.X - boxWidth)
+							local py = math.clamp(top.Y, 0, viewSize.Y - screenSize)
+							px, py = math.floor(px + 0.5), math.floor(py + 0.5)
+							boxWidth, screenSize = math.floor(boxWidth + 0.5), math.floor(screenSize + 0.5)
+							box.Size = Vector2.new(boxWidth, screenSize)
+							box.Position = Vector2.new(px, py)
+							box.Color = boxColor(p)
+							visible = true
+						end
+					end
+				end
+			end
+			box.Visible = visible
+		end
+	end)
+
+	local boxLabel = Instance.new("TextLabel")
+	boxLabel.Size = UDim2.new(1, -50, 0, 20)
+	boxLabel.Position = UDim2.new(0, 0, 0, 128)
+	boxLabel.BackgroundTransparency = 1
+	boxLabel.Text = "Box ESP"
+	boxLabel.Font = Enum.Font.GothamBold
+	boxLabel.TextSize = 13
+	boxLabel.TextColor3 = TEXT_PRIMARY
+	boxLabel.TextXAlignment = Enum.TextXAlignment.Left
+	boxLabel.Parent = page
+
+	local boxTrack = Instance.new("TextButton")
+	boxTrack.Size = UDim2.new(0, 38, 0, 20)
+	boxTrack.Position = UDim2.new(1, -38, 0, 128)
+	boxTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	boxTrack.Text = ""
+	boxTrack.AutoButtonColor = false
+	boxTrack.Parent = page
+
+	local boxTrackCorner = Instance.new("UICorner")
+	boxTrackCorner.CornerRadius = UDim.new(1, 0)
+	boxTrackCorner.Parent = boxTrack
+
+	local boxKnob = Instance.new("Frame")
+	boxKnob.Size = UDim2.new(0, 16, 0, 16)
+	boxKnob.Position = UDim2.new(0, 2, 0, 2)
+	boxKnob.BackgroundColor3 = TEXT_SECONDARY
+	boxKnob.Parent = boxTrack
+
+	local boxKnobCorner = Instance.new("UICorner")
+	boxKnobCorner.CornerRadius = UDim.new(1, 0)
+	boxKnobCorner.Parent = boxKnob
+
+	boxTrack.MouseButton1Click:Connect(function()
+		setBoxESP(not boxOn)
+		if boxOn then
+			TweenService:Create(boxTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = LIME }):Play()
+			TweenService:Create(boxKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(1, -18, 0, 2), BackgroundColor3 = BG_DARKER }):Play()
+		else
+			TweenService:Create(boxTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = Color3.fromRGB(60, 60, 60) }):Play()
+			TweenService:Create(boxKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(0, 2, 0, 2), BackgroundColor3 = TEXT_SECONDARY }):Play()
+		end
+	end)
+
 	end
 
 -- Misc page with Mobility section
