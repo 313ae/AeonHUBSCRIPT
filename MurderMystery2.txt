@@ -1545,6 +1545,13 @@ do
 	objectiveHeader.LayoutOrder = 8
 	objectiveHeader.Parent = page
 
+	local function shiftObjective()
+		objectiveDivider.Position = UDim2.new(0, 0, 0, 20)
+		objectiveHeader.Position = UDim2.new(0, 0, 0, 20)
+	end
+	visualsLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() task.defer(shiftObjective) end)
+	task.defer(shiftObjective)
+
 	local visualsOverlay = Instance.new("Frame")
 	visualsOverlay.Name = "VisualsOverlay"
 	visualsOverlay.BackgroundColor3 = BG_DARKER
