@@ -557,7 +557,7 @@ do
 		if innocentRole(p) then return end
 		local char = p.Character
 		if not char or not char.Parent then return end
-		if not char:FindFirstChild("HumanoidRootPart") and not char:FindFirstChild("UpperTorso") and not char:FindFirstChild("Torso") then return end
+		if not char:FindFirstChild("HumanoidRootPart") and not char:FindFirstChild("UpperTorso") and not char:FindFirstChild("Torso") and not char:FindFirstChildWhichIsA("BasePart", true) then return end
 		local existing = char:FindFirstChild("InnocentESP_" .. MY_GEN)
 		if existing and existing:IsA("Highlight") then innocentHighlights[p] = existing return end
 		if innocentHighlights[p] then return end
@@ -623,63 +623,26 @@ do
 	end
 	local function setInnocentESP(state)
 		innocentESPEnabled = state
-		if state then innocentApply() task.delay(0.5, function() if innocentESPEnabled and alive() then innocentApply() end end) else innocentClear() end
-		if state then
-			task.delay(1, function()
-				for _, p in ipairs(Players:GetPlayers()) do
-					local char = p.Character
-					local parts = "NOCHAR"
-					if char then
-						parts = char:FindFirstChild("HumanoidRootPart") and "HRP" or char:FindFirstChild("UpperTorso") and "UT" or char:FindFirstChild("Torso") and "T" or "NOPARTS"
-					end
-					local tools = (innocentHasTool(p, "Knife") and "K" or "") .. (innocentHasTool(p, "Gun") and "G" or "") .. (innocentHasTool(p, "Revolver") and "R" or "")
-					if tools == "" then tools = "-" end
-					local has = (innocentHighlights[p] and innocentHighlights[p].Parent) and "SHOWN" or "DARK"
-					print("[Aeon] " .. p.Name .. " parts=" .. parts .. " tools=" .. tools .. " role=" .. tostring(innocentRole(p)) .. " " .. has)
-				end
-			end)
-		end
+		if state then innocentApply() else innocentClear() end
 	end
 	local function innocentTrack(p)
-		p:GetPropertyChangedSignal("Team"):Connect(function() if innocentESPEnabled then innocentSync(p) end end)
-		pcall(function() p:GetAttributeChangedSignal("Dead"):Connect(function() if innocentESPEnabled then innocentSync(p) end end) end)
-		pcall(function() p:GetAttributeChangedSignal("IsDead"):Connect(function() if innocentESPEnabled then innocentSync(p) end end) end)
-		pcall(function() p:GetAttributeChangedSignal("Role"):Connect(function() if innocentESPEnabled then innocentSync(p) end end) end)
-		pcall(function() p:GetAttributeChangedSignal("RoleID"):Connect(function() if innocentESPEnabled then innocentSync(p) end end) end)
-		pcall(function() p:GetAttributeChangedSignal("CurrentRole"):Connect(function() if innocentESPEnabled then innocentSync(p) end end) end)
-		local function hookDied(char)
-			task.spawn(function()
-				local hum = char and (char:FindFirstChildOfClass("Humanoid") or char:WaitForChild("Humanoid", 5))
-				if hum then
-					hum.Died:Connect(function() if innocentESPEnabled then innocentSync(p) end end)
-				end
-			end)
-		end
-		p.CharacterAdded:Connect(function(char)
-			hookDied(char)
-			task.spawn(function()
-				char:WaitForChild("HumanoidRootPart", 6)
-				task.wait(0.3)
-				if innocentESPEnabled then innocentSync(p) end
-				scheduleRoundResync()
-			end)
+		p.CharacterAdded:Connect(function()
+			if innocentESPEnabled then
+				task.wait(0.5)
+				innocentSync(p)
+			end
 		end)
-		if p.Character then
-			hookDied(p.Character)
-			p.Character.ChildAdded:Connect(function() if innocentESPEnabled then innocentSync(p) end end)
-			p.Character.ChildRemoved:Connect(function() if innocentESPEnabled then innocentSync(p) end end)
-		end
-		local bp = p:FindFirstChild("Backpack")
-		if bp then
-			bp.ChildAdded:Connect(function() if innocentESPEnabled then innocentSync(p) end end)
-			bp.ChildRemoved:Connect(function() if innocentESPEnabled then innocentSync(p) end end)
-		end
+		p:GetPropertyChangedSignal("Team"):Connect(function()
+			if not innocentESPEnabled then return end
+			innocentSync(p)
+		end)
 	end
 	for _, plr in ipairs(Players:GetPlayers()) do innocentTrack(plr) end
 	Players.PlayerAdded:Connect(function(plr)
 		innocentTrack(plr)
-		task.wait(0.5)
-		if innocentESPEnabled then innocentSync(plr) end
+		if innocentESPEnabled and plr.Character then
+			innocentSync(plr)
+		end
 	end)
 	Players.PlayerRemoving:Connect(function(plr) innocentRemove(plr) end)
 	pcall(function()
@@ -771,7 +734,7 @@ do
 		if not isSheriff(p) then return end
 		local char = p.Character
 		if not char or not char.Parent then return end
-		if not char:FindFirstChild("HumanoidRootPart") and not char:FindFirstChild("UpperTorso") and not char:FindFirstChild("Torso") then return end
+		if not char:FindFirstChild("HumanoidRootPart") and not char:FindFirstChild("UpperTorso") and not char:FindFirstChild("Torso") and not char:FindFirstChildWhichIsA("BasePart", true) then return end
 		local existing = char:FindFirstChild("SheriffESP_" .. MY_GEN)
 		if existing and existing:IsA("Highlight") then sheriffHighlights[p] = existing return end
 		if sheriffHighlights[p] then return end
@@ -827,20 +790,23 @@ do
 		if state then sheriffApply() task.delay(0.5, function() if sheriffOn and alive() then sheriffApply() end end) else sheriffClear() end
 	end
 	local function sheriffTrack(p)
-		p:GetPropertyChangedSignal("Team"):Connect(function() if sheriffOn then sheriffSync(p) end end)
 		p.CharacterAdded:Connect(function()
-			task.wait(0.5)
-			if sheriffOn then sheriffSync(p) end
+			if sheriffOn then
+				task.wait(0.5)
+				sheriffSync(p)
+			end
 		end)
-		if p.Character then
-			p.Character.ChildAdded:Connect(function() if sheriffOn then sheriffSync(p) end end)
-		end
+		p:GetPropertyChangedSignal("Team"):Connect(function()
+			if not sheriffOn then return end
+			sheriffSync(p)
+		end)
 	end
 	for _, plr in ipairs(Players:GetPlayers()) do sheriffTrack(plr) end
 	Players.PlayerAdded:Connect(function(plr)
 		sheriffTrack(plr)
-		task.wait(0.5)
-		if sheriffOn then sheriffSync(plr) end
+		if sheriffOn and plr.Character then
+			sheriffSync(plr)
+		end
 	end)
 	Players.PlayerRemoving:Connect(function(plr) sheriffRemove(plr) end)
 	pcall(function()
@@ -924,7 +890,7 @@ do
 		if not isMurderer(p) then return end
 		local char = p.Character
 		if not char or not char.Parent then return end
-		if not char:FindFirstChild("HumanoidRootPart") and not char:FindFirstChild("UpperTorso") and not char:FindFirstChild("Torso") then return end
+		if not char:FindFirstChild("HumanoidRootPart") and not char:FindFirstChild("UpperTorso") and not char:FindFirstChild("Torso") and not char:FindFirstChildWhichIsA("BasePart", true) then return end
 		local existing = char:FindFirstChild("MurderESP_" .. MY_GEN)
 		if existing and existing:IsA("Highlight") then murderHighlights[p] = existing return end
 		if murderHighlights[p] then return end
@@ -980,20 +946,23 @@ do
 		if state then murderApply() task.delay(0.5, function() if murderOn and alive() then murderApply() end end) else murderClear() end
 	end
 	local function murderTrack(p)
-		p:GetPropertyChangedSignal("Team"):Connect(function() if murderOn then murderSync(p) end end)
 		p.CharacterAdded:Connect(function()
-			task.wait(0.5)
-			if murderOn then murderSync(p) end
+			if murderOn then
+				task.wait(0.5)
+				murderSync(p)
+			end
 		end)
-		if p.Character then
-			p.Character.ChildAdded:Connect(function() if murderOn then murderSync(p) end end)
-		end
+		p:GetPropertyChangedSignal("Team"):Connect(function()
+			if not murderOn then return end
+			murderSync(p)
+		end)
 	end
 	for _, plr in ipairs(Players:GetPlayers()) do murderTrack(plr) end
 	Players.PlayerAdded:Connect(function(plr)
 		murderTrack(plr)
-		task.wait(0.5)
-		if murderOn then murderSync(plr) end
+		if murderOn and plr.Character then
+			murderSync(plr)
+		end
 	end)
 	Players.PlayerRemoving:Connect(function(plr) murderRemove(plr) end)
 	pcall(function()
