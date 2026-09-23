@@ -1120,7 +1120,7 @@ do
 						local nhl = Instance.new("Highlight")
 						nhl.FillColor = col
 						nhl.OutlineColor = col
-						nhl.FillTransparency = 0
+						nhl.FillTransparency = 1
 						nhl.OutlineTransparency = 0
 						nhl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
 						nhl.Adornee = char
