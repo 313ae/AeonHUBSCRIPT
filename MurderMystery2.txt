@@ -1392,6 +1392,25 @@ do
 	visualsBoxStroke.Thickness = 1
 	visualsBoxStroke.Parent = visualsBox
 
+	local objectiveDivider = Instance.new("Frame")
+	objectiveDivider.Name = "ObjectiveDivider"
+	objectiveDivider.Size = UDim2.new(1, 0, 0, 2)
+	objectiveDivider.Position = UDim2.new(0, 0, 0, 211)
+	objectiveDivider.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+	objectiveDivider.BorderSizePixel = 0
+	objectiveDivider.Parent = page
+
+	local objectiveHeader = Instance.new("TextLabel")
+	objectiveHeader.Size = UDim2.new(1, 0, 0, 14)
+	objectiveHeader.Position = UDim2.new(0, 0, 0, 219)
+	objectiveHeader.BackgroundTransparency = 1
+	objectiveHeader.TextColor3 = TEXT_SECONDARY
+	objectiveHeader.Font = Enum.Font.GothamBold
+	objectiveHeader.TextSize = 11
+	objectiveHeader.TextXAlignment = Enum.TextXAlignment.Left
+	objectiveHeader.Text = "Objective"
+	objectiveHeader.Parent = page
+
 	end
 
 -- Misc page with Mobility section
