@@ -504,15 +504,6 @@ do
 	playerHeader.LayoutOrder = 1
 	playerHeader.Parent = page
 
-	local saveESPFlags
-	local loadedESPFlags = nil
-	pcall(function()
-		if typeof(readfile) == "function" and typeof(isfile) == "function" and isfile("AeonHubMM2_ESP.txt") then
-			loadedESPFlags = {}
-			for s in string.gmatch(readfile("AeonHubMM2_ESP.txt"), "[^,]+") do loadedESPFlags[#loadedESPFlags + 1] = s end
-		end
-	end)
-
 	local innocentESPEnabled = false
 	local innocentHighlights = {}
 	local function innocentHasTool(p, name)
@@ -784,7 +775,6 @@ do
 
 	innocentTrack.MouseButton1Click:Connect(function()
 		setInnocentESP(not innocentESPEnabled)
-		saveESPFlags()
 		if innocentESPEnabled then
 			TweenService:Create(innocentTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = LIME }):Play()
 			TweenService:Create(innocentKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(1, -18, 0, 2), BackgroundColor3 = BG_DARKER }):Play()
@@ -945,7 +935,6 @@ do
 
 	sheriffTrack.MouseButton1Click:Connect(function()
 		setSheriffESP(not sheriffOn)
-		saveESPFlags()
 		if sheriffOn then
 			TweenService:Create(sheriffTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = LIME }):Play()
 			TweenService:Create(sheriffKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(1, -18, 0, 2), BackgroundColor3 = BG_DARKER }):Play()
@@ -1106,7 +1095,6 @@ do
 
 	murderTrack.MouseButton1Click:Connect(function()
 		setMurderESP(not murderOn)
-		saveESPFlags()
 		if murderOn then
 			TweenService:Create(murderTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = LIME }):Play()
 			TweenService:Create(murderKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(1, -18, 0, 2), BackgroundColor3 = BG_DARKER }):Play()
@@ -1396,7 +1384,6 @@ do
 
 	boxTrack.MouseButton1Click:Connect(function()
 		setBoxESP(not boxOn)
-		saveESPFlags()
 		if boxOn then
 			TweenService:Create(boxTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = LIME }):Play()
 			TweenService:Create(boxKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(1, -18, 0, 2), BackgroundColor3 = BG_DARKER }):Play()
@@ -1528,7 +1515,6 @@ do
 
 	nameTrack.MouseButton1Click:Connect(function()
 		setNameESP(not nameOn)
-		saveESPFlags()
 		if nameOn then
 			TweenService:Create(nameTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = LIME }):Play()
 			TweenService:Create(nameKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(1, -18, 0, 2), BackgroundColor3 = BG_DARKER }):Play()
@@ -1537,52 +1523,6 @@ do
 			TweenService:Create(nameKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(0, 2, 0, 2), BackgroundColor3 = TEXT_SECONDARY }):Play()
 		end
 	end)
-
-	saveESPFlags = function()
-		pcall(function()
-			if typeof(writefile) == "function" then
-				writefile("AeonHubMM2_ESP.txt",
-					(innocentESPEnabled and "1" or "0") .. "," ..
-					(murderOn and "1" or "0") .. "," ..
-					(sheriffOn and "1" or "0") .. "," ..
-					(boxOn and "1" or "0") .. "," ..
-					(nameOn and "1" or "0"))
-			end
-		end)
-	end
-	if loadedESPFlags then
-		if loadedESPFlags[1] then innocentESPEnabled = loadedESPFlags[1] == "1" end
-		if loadedESPFlags[2] then murderOn = loadedESPFlags[2] == "1" end
-		if loadedESPFlags[3] then sheriffOn = loadedESPFlags[3] == "1" end
-		if loadedESPFlags[4] then boxOn = loadedESPFlags[4] == "1" end
-		if loadedESPFlags[5] then nameOn = loadedESPFlags[5] == "1" end
-		local function syncToggleVisual(track, knob, on)
-			track.BackgroundColor3 = on and LIME or Color3.fromRGB(60, 60, 60)
-			knob.Position = on and UDim2.new(1, -18, 0, 2) or UDim2.new(0, 2, 0, 2)
-			knob.BackgroundColor3 = on and BG_DARKER or TEXT_SECONDARY
-		end
-		syncToggleVisual(innocentTrack, innocentKnob, innocentESPEnabled)
-		syncToggleVisual(sheriffTrack, sheriffKnob, sheriffOn)
-		syncToggleVisual(murderTrack, murderKnob, murderOn)
-		syncToggleVisual(boxTrack, boxKnob, boxOn)
-		syncToggleVisual(nameTrack, nameKnob, nameOn)
-		if boxOn then boxApply() end
-		if nameOn then nameApply() end
-	else
-		innocentESPEnabled, murderOn, sheriffOn, boxOn, nameOn = true, true, true, true, true
-		local function syncToggleVisual2(track, knob, on)
-			track.BackgroundColor3 = on and LIME or Color3.fromRGB(60, 60, 60)
-			knob.Position = on and UDim2.new(1, -18, 0, 2) or UDim2.new(0, 2, 0, 2)
-			knob.BackgroundColor3 = on and BG_DARKER or TEXT_SECONDARY
-		end
-		syncToggleVisual2(innocentTrack, innocentKnob, true)
-		syncToggleVisual2(sheriffTrack, sheriffKnob, true)
-		syncToggleVisual2(murderTrack, murderKnob, true)
-		syncToggleVisual2(boxTrack, boxKnob, true)
-		syncToggleVisual2(nameTrack, nameKnob, true)
-		boxApply()
-		nameApply()
-	end
 
 	local visualsOverlay = Instance.new("Frame")
 	visualsOverlay.Name = "VisualsOverlay"
