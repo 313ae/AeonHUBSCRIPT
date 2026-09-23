@@ -1263,7 +1263,7 @@ do
 			local visible = false
 			if p ~= player and not innocentIsDead(p) then
 				local char = p.Character
-				local rootPart = char and char:FindFirstChild("HumanoidRootPart")
+				local rootPart = char and (char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("UpperTorso") or char:FindFirstChild("Torso") or char:FindFirstChildWhichIsA("BasePart"))
 				if rootPart then
 					local torso = char:FindFirstChild("Torso") or char:FindFirstChild("UpperTorso") or char:FindFirstChild("Head")
 					local topPos = (torso and torso.Position or rootPart.Position) + Vector3.new(0, 4.8, 0)
