@@ -1601,7 +1601,7 @@ do
 	visualsOverlayStroke.Thickness = 1
 	visualsOverlayStroke.Parent = visualsOverlay
 
-	local VOVERLAY_PAD = 8
+	local VOVERLAY_PAD = 10.5
 	local function refreshVisualsOverlay()
 		if not page.Visible then visualsOverlay.Visible = false return end
 		local cx, cy = content.AbsolutePosition.X, content.AbsolutePosition.Y
