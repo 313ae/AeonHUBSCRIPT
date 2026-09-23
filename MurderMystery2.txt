@@ -1546,7 +1546,7 @@ do
 	objectiveHeader.Parent = page
 
 	local function positionObjective()
-		local y = nameRow.Position.Y.Offset + nameRow.Size.Y.Offset + 44
+		local y = nameRow.Position.Y.Offset + nameRow.Size.Y.Offset + 49
 		objectiveDivider.Position = UDim2.new(0, 0, 0, y)
 		objectiveHeader.Position = UDim2.new(0, 0, 0, y + 7)
 	end
