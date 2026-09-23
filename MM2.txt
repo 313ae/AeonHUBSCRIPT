@@ -1249,6 +1249,131 @@ do
 		end
 	end)
 
+	local nameOn = false
+	local nameGuis = {}
+	local function nameRemove(p)
+		local g = nameGuis[p]
+		if g then pcall(function() g:Destroy() end) nameGuis[p] = nil end
+	end
+	local function nameAdd(p)
+		if not alive() then return end
+		if p == player then return end
+		if innocentIsDead(p) then return end
+		if nameGuis[p] then return end
+		local char = p.Character
+		if not char then return end
+		local hrp = char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("UpperTorso") or char:FindFirstChild("Torso")
+		if not hrp or not hrp.Parent then return end
+		local bg = Instance.new("BillboardGui")
+		bg.Name = "NameESP"
+		bg.Size = UDim2.new(0, 200, 0, 20)
+		bg.StudsOffsetWorldSpace = Vector3.new(0, -5.6, 0)
+		bg.AlwaysOnTop = true
+		bg.Adornee = hrp
+		local okBg = pcall(function() bg.Parent = char end)
+		if not okBg or bg.Parent ~= char then pcall(function() bg:Destroy() end) return end
+		local lbl = Instance.new("TextLabel")
+		lbl.Size = UDim2.new(1, 0, 1, 0)
+		lbl.BackgroundTransparency = 1
+		lbl.Text = p.Name
+		lbl.TextColor3 = boxColor(p)
+		lbl.TextStrokeTransparency = 0
+		lbl.TextStrokeColor3 = Color3.new(0, 0, 0)
+		lbl.Font = Enum.Font.Arcade
+		lbl.TextSize = 15
+		lbl.Parent = bg
+		nameGuis[p] = bg
+	end
+	local function nameSync(p)
+		nameRemove(p)
+		if nameOn then nameAdd(p) end
+	end
+	local function nameApply()
+		for _, plr in ipairs(Players:GetPlayers()) do nameSync(plr) end
+	end
+	local function nameClear()
+		local ps = {}
+		for p, _ in pairs(nameGuis) do ps[#ps + 1] = p end
+		for _, p in ipairs(ps) do nameRemove(p) end
+	end
+	local function setNameESP(state)
+		nameOn = state
+		if state then nameApply() else nameClear() end
+	end
+	local function nameTrack(p)
+		p:GetPropertyChangedSignal("Team"):Connect(function() if nameOn then nameSync(p) end end)
+		p.CharacterAdded:Connect(function()
+			task.wait(0.5)
+			if nameOn then nameSync(p) end
+		end)
+	end
+	for _, plr in ipairs(Players:GetPlayers()) do nameTrack(plr) end
+	Players.PlayerAdded:Connect(function(plr)
+		nameTrack(plr)
+		task.wait(0.5)
+		if nameOn then nameSync(plr) end
+	end)
+	Players.PlayerRemoving:Connect(function(plr) nameRemove(plr) end)
+	pcall(function()
+		local rs = game:GetService("ReplicatedStorage")
+		local remotes = rs:FindFirstChild("Remotes")
+		local gp = remotes and remotes:FindFirstChild("Gameplay")
+		local ev = gp and gp:FindFirstChild("PlayerDataChanged")
+		if ev then
+			ev.OnClientEvent:Connect(function()
+				if not nameOn then return end
+				for p, g in pairs(nameGuis) do
+					local lbl = g:FindFirstChildOfClass("TextLabel")
+					if lbl then lbl.TextColor3 = boxColor(p) end
+				end
+			end)
+		end
+	end)
+
+	local nameLabel = Instance.new("TextLabel")
+	nameLabel.Size = UDim2.new(1, -50, 0, 20)
+	nameLabel.Position = UDim2.new(0, 0, 0, 158)
+	nameLabel.BackgroundTransparency = 1
+	nameLabel.Text = "Name ESP"
+	nameLabel.Font = Enum.Font.GothamBold
+	nameLabel.TextSize = 13
+	nameLabel.TextColor3 = TEXT_PRIMARY
+	nameLabel.TextXAlignment = Enum.TextXAlignment.Left
+	nameLabel.Parent = page
+
+	local nameTrack = Instance.new("TextButton")
+	nameTrack.Size = UDim2.new(0, 38, 0, 20)
+	nameTrack.Position = UDim2.new(1, -38, 0, 158)
+	nameTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	nameTrack.Text = ""
+	nameTrack.AutoButtonColor = false
+	nameTrack.Parent = page
+
+	local nameTrackCorner = Instance.new("UICorner")
+	nameTrackCorner.CornerRadius = UDim.new(1, 0)
+	nameTrackCorner.Parent = nameTrack
+
+	local nameKnob = Instance.new("Frame")
+	nameKnob.Size = UDim2.new(0, 16, 0, 16)
+	nameKnob.Position = UDim2.new(0, 2, 0, 2)
+	nameKnob.BackgroundColor3 = TEXT_SECONDARY
+	nameKnob.Parent = nameTrack
+
+	local nameKnobCorner = Instance.new("UICorner")
+	nameKnobCorner.CornerRadius = UDim.new(1, 0)
+	nameKnobCorner.Parent = nameKnob
+
+	nameTrack.MouseButton1Click:Connect(function()
+		setNameESP(not nameOn)
+		if nameOn then
+			TweenService:Create(nameTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = LIME }):Play()
+			TweenService:Create(nameKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(1, -18, 0, 2), BackgroundColor3 = BG_DARKER }):Play()
+		else
+			TweenService:Create(nameTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = Color3.fromRGB(60, 60, 60) }):Play()
+			TweenService:Create(nameKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(0, 2, 0, 2), BackgroundColor3 = TEXT_SECONDARY }):Play()
+		end
+	end)
+
 	end
 
 -- Misc page with Mobility section
