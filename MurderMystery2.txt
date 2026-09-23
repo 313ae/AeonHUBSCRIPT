@@ -503,72 +503,6 @@ do
 	playerHeader.LayoutOrder = 1
 	playerHeader.Parent = page
 
-	local ReplicatedStorage = game:GetService("ReplicatedStorage")
-	local GetCurrentPlayerData = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Gameplay"):WaitForChild("GetCurrentPlayerData")
-	local murderCache = nil
-	local murderCacheAt = 0
-	local invoking = false
-	local function getPlayerData()
-		if murderCache and os.clock() - murderCacheAt < 2 then return murderCache end
-		if not invoking then
-			invoking = true
-			task.delay(5, function() invoking = false end)
-			task.spawn(function()
-				local ok, data = pcall(function()
-					local rs = game:GetService("ReplicatedStorage")
-					local remotes = rs:FindFirstChild("Remotes")
-					local gp = remotes and remotes:FindFirstChild("Gameplay")
-					local rf = gp and gp:FindFirstChild("GetCurrentPlayerData")
-					if not rf then error("no remote") end
-					return rf:InvokeServer()
-				end)
-				invoking = false
-				murderCacheAt = os.clock()
-				if ok and type(data) == "table" then
-					murderCache = data
-				end
-			end)
-		end
-		return murderCache
-	end
-	local roundModCache, roundModAt = nil, 0
-	local function getRoundData()
-		local now = os.clock()
-		if not roundModCache or now - roundModAt > 5 then
-			roundModAt = now
-			pcall(function()
-				for _, d in ipairs(game:GetService("ReplicatedStorage"):GetDescendants()) do
-					if d.Name == "CurrentRoundClient" and d:IsA("ModuleScript") then
-						roundModCache = require(d)
-						break
-					end
-				end
-			end)
-		end
-		if type(roundModCache) == "table" and type(roundModCache.PlayerData) == "table" then
-			return roundModCache.PlayerData
-		end
-		return nil
-	end
-	local function lookupRole(name)
-		local pd = getRoundData()
-		if pd then
-			local e = pd[name]
-			if type(e) == "table" and type(e.Role) == "string" then return e.Role end
-		end
-		local data = getPlayerData()
-		if data then
-			local e2 = data[name]
-			if type(e2) == "table" and type(e2.Role) == "string" then return e2.Role end
-		end
-		return nil
-	end
-	local function innocentRole(p)
-		local role = lookupRole(p.Name)
-		if role == "Murderer" or role == "Sheriff" or role == "Hero" then return role end
-		return nil
-	end
-
 	local innocentESPEnabled = false
 	local innocentHighlights = {}
 	local function innocentHasTool(p, name)
@@ -597,6 +531,22 @@ do
 	end
 	local function innocentIsDead(p)
 		return false
+	end
+	local function hasKnife(p)
+		return innocentHasTool(p, "Knife")
+	end
+	local function hasGun(p)
+		return innocentHasTool(p, "Gun") or innocentHasTool(p, "Revolver")
+	end
+	local function isMurderer(p)
+		return hasKnife(p)
+	end
+	local function isSheriff(p)
+		return hasGun(p) and not hasKnife(p)
+	end
+	local function innocentRole(p)
+		if hasKnife(p) or hasGun(p) then return "Armed" end
+		return nil
 	end
 	local function innocentAdd(p)
 		if not alive() then return end
@@ -792,15 +742,11 @@ do
 
 	local sheriffHighlights = {}
 	local sheriffOn = false
-	local function isSheriff(name)
-		local role = lookupRole(name)
-		return role == "Sheriff" or role == "Hero"
-	end
 	local function sheriffAdd(p)
 		if not alive() then return end
 		if p == player then return end
 		if innocentIsDead(p) then return end
-		if not isSheriff(p.Name) then return end
+		if not isSheriff(p) then return end
 		local char = p.Character
 		if not char or not char.Parent or sheriffHighlights[p] then return end
 		if not char:FindFirstChild("HumanoidRootPart") and not char:FindFirstChild("UpperTorso") and not char:FindFirstChild("Torso") then return end
@@ -832,7 +778,7 @@ do
 		local ok, err = pcall(function()
 			local hl = sheriffHighlights[p]
 			if hl and hl.Parent then
-				if sheriffOn and not innocentIsDead(p) and isSheriff(p.Name) then return end
+				if sheriffOn and isSheriff(p) then return end
 				sheriffRemove(p)
 			else
 				if hl then sheriffHighlights[p] = nil end
@@ -946,14 +892,11 @@ do
 
 	local murderHighlights = {}
 	local murderOn = false
-	local function isMurderer(name)
-		return lookupRole(name) == "Murderer"
-	end
 	local function murderAdd(p)
 		if not alive() then return end
 		if p == player then return end
 		if innocentIsDead(p) then return end
-		if not isMurderer(p.Name) then return end
+		if not isMurderer(p) then return end
 		local char = p.Character
 		if not char or not char.Parent or murderHighlights[p] then return end
 		if not char:FindFirstChild("HumanoidRootPart") and not char:FindFirstChild("UpperTorso") and not char:FindFirstChild("Torso") then return end
@@ -985,7 +928,7 @@ do
 		local ok, err = pcall(function()
 			local hl = murderHighlights[p]
 			if hl and hl.Parent then
-				if murderOn and not innocentIsDead(p) and isMurderer(p.Name) then return end
+				if murderOn and isMurderer(p) then return end
 				murderRemove(p)
 			else
 				if hl then murderHighlights[p] = nil end
@@ -1101,8 +1044,8 @@ do
 	local boxes = {}
 	local hasDrawing = typeof(Drawing) == "table" and typeof(Drawing.new) == "function"
 	local function boxColor(p)
-		if isMurderer(p.Name) then return Color3.fromRGB(255, 50, 50) end
-		if isSheriff(p.Name) then return Color3.fromRGB(50, 50, 255) end
+		if isMurderer(p) then return Color3.fromRGB(255, 50, 50) end
+		if isSheriff(p) then return Color3.fromRGB(50, 50, 255) end
 		return Color3.fromRGB(50, 210, 70)
 	end
 	local function boxAdd(p)
@@ -1407,43 +1350,21 @@ do
 	end)
 
 	do
-		local lastDead = {}
-		RunService.Heartbeat:Connect(function()
-			if not alive() then return end
-			if not innocentESPEnabled and not murderOn and not sheriffOn and not boxOn then return end
-			for _, p in ipairs(Players:GetPlayers()) do
-				local d = innocentIsDead(p)
-				if lastDead[p] == nil then
-					lastDead[p] = d
-				elseif lastDead[p] ~= d then
-					lastDead[p] = d
-					if innocentESPEnabled then innocentSync(p) end
-					if murderOn then murderSync(p) end
-					if sheriffOn then sheriffSync(p) end
-					if boxOn then boxSync(p) end
-					if nameOn then nameSync(p) end
-				end
-			end
-			for p, _ in pairs(lastDead) do
-				if not p.Parent then lastDead[p] = nil end
-			end
-		end)
-	end
-
-	do
 		local lastSnap, lastPoll = "", 0
 		RunService.Heartbeat:Connect(function()
 			if not alive() then return end
 			if os.clock() - lastPoll < 1 then return end
 			lastPoll = os.clock()
 			local ok, snap = pcall(function()
-				local pd = getRoundData()
-				if not pd then return "" end
 				local parts = {}
-				for name, d in pairs(pd) do
-					if type(d) == "table" then
-						parts[#parts + 1] = name .. ":" .. tostring(d.Role) .. ":" .. tostring(d.Dead)
-					end
+				for _, plr in ipairs(Players:GetPlayers()) do
+					local names = {}
+					local ch = plr.Character
+					if ch then for _, c in ipairs(ch:GetChildren()) do names[#names + 1] = c.Name end end
+					local bpk = plr:FindFirstChild("Backpack")
+					if bpk then for _, c in ipairs(bpk:GetChildren()) do names[#names + 1] = c.Name end end
+					table.sort(names)
+					parts[#parts + 1] = plr.Name .. ":" .. table.concat(names, ",")
 				end
 				table.sort(parts)
 				return table.concat(parts, "|")
@@ -1452,7 +1373,6 @@ do
 			if lastSnap == "" then lastSnap = snap return end
 			if snap ~= lastSnap then
 				lastSnap = snap
-				murderCache = nil
 				task.delay(0.4, function()
 					if not alive() then return end
 					if innocentESPEnabled then innocentApply() end
@@ -1483,13 +1403,12 @@ do
 		local function wantMurderer(p)
 			if not murderOn or p == player then return false end
 			if not p.Character then return false end
-			return isMurderer(p.Name)
+			return isMurderer(p)
 		end
 		local function wantSheriff(p)
 			if not sheriffOn or p == player then return false end
 			if not p.Character then return false end
-			local r = lookupRole(p.Name)
-			return r == "Sheriff" or r == "Hero"
+			return isSheriff(p)
 		end
 		RunService.Heartbeat:Connect(function()
 			if not alive() then return end
