@@ -556,8 +556,11 @@ do
 		if innocentHasTool(p, "Knife") or innocentHasTool(p, "Gun") or innocentHasTool(p, "Revolver") then return end
 		if innocentRole(p) then return end
 		local char = p.Character
-		if not char or not char.Parent or innocentHighlights[p] then return end
+		if not char or not char.Parent then return end
 		if not char:FindFirstChild("HumanoidRootPart") and not char:FindFirstChild("UpperTorso") and not char:FindFirstChild("Torso") then return end
+		local existing = char:FindFirstChild("InnocentESP_" .. MY_GEN)
+		if existing and existing:IsA("Highlight") then innocentHighlights[p] = existing return end
+		if innocentHighlights[p] then return end
 		local hl = Instance.new("Highlight")
 		hl.Name = "InnocentESP_" .. MY_GEN
 		hl.FillTransparency = 1
@@ -749,8 +752,11 @@ do
 		if innocentIsDead(p) then return end
 		if not isSheriff(p) then return end
 		local char = p.Character
-		if not char or not char.Parent or sheriffHighlights[p] then return end
+		if not char or not char.Parent then return end
 		if not char:FindFirstChild("HumanoidRootPart") and not char:FindFirstChild("UpperTorso") and not char:FindFirstChild("Torso") then return end
+		local existing = char:FindFirstChild("SheriffESP_" .. MY_GEN)
+		if existing and existing:IsA("Highlight") then sheriffHighlights[p] = existing return end
+		if sheriffHighlights[p] then return end
 		local hl = Instance.new("Highlight")
 		hl.Name = "SheriffESP_" .. MY_GEN
 		hl.FillTransparency = 1
@@ -899,8 +905,11 @@ do
 		if innocentIsDead(p) then return end
 		if not isMurderer(p) then return end
 		local char = p.Character
-		if not char or not char.Parent or murderHighlights[p] then return end
+		if not char or not char.Parent then return end
 		if not char:FindFirstChild("HumanoidRootPart") and not char:FindFirstChild("UpperTorso") and not char:FindFirstChild("Torso") then return end
+		local existing = char:FindFirstChild("MurderESP_" .. MY_GEN)
+		if existing and existing:IsA("Highlight") then murderHighlights[p] = existing return end
+		if murderHighlights[p] then return end
 		local hl = Instance.new("Highlight")
 		hl.Name = "MurderESP_" .. MY_GEN
 		hl.FillTransparency = 1
