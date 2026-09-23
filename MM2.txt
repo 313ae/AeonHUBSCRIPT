@@ -1607,8 +1607,8 @@ do
 		local cx, cy = content.AbsolutePosition.X, content.AbsolutePosition.Y
 		local pageTop = page.AbsolutePosition.Y
 		local pageBottom = pageTop + page.AbsoluteSize.Y
-		local top = math.max(innocentRow.AbsolutePosition.Y - 5, pageTop) + 5
-		local bottom = math.min(nameRow.AbsolutePosition.Y + nameRow.AbsoluteSize.Y + 5, pageBottom) + 5
+		local top = math.max(innocentRow.AbsolutePosition.Y - 10, pageTop)
+		local bottom = math.min(nameRow.AbsolutePosition.Y + nameRow.AbsoluteSize.Y + 15, pageBottom)
 		if bottom <= top then visualsOverlay.Visible = false return end
 		visualsOverlay.Position = UDim2.new(0, innocentRow.AbsolutePosition.X - cx - VOVERLAY_PAD, 0, top - cy)
 		visualsOverlay.Size = UDim2.new(0, innocentRow.AbsoluteSize.X + VOVERLAY_PAD * 2, 0, bottom - top)
