@@ -1445,8 +1445,71 @@ do
 	gunKnobCorner.Parent = gunKnob
 
 	local gunOn = false
+	local gunHighlight = nil
+	local function findGunDrop()
+		local ok, house = pcall(function() return workspace:FindFirstChild("House2") end)
+		if ok and house then
+			return house:FindFirstChild("GunDrop", true)
+		end
+		return nil
+	end
+	local function gunRemove()
+		if gunHighlight then pcall(function() gunHighlight:Destroy() end) gunHighlight = nil end
+		for _, d in ipairs(workspace:GetDescendants()) do
+			if d:IsA("Highlight") and d.Name == "GunESP" then pcall(function() d:Destroy() end) end
+		end
+	end
+	local function gunApply()
+		gunRemove()
+		if not gunOn then return end
+		local drop = findGunDrop()
+		if not drop then return end
+		local hl = Instance.new("Highlight")
+		hl.Name = "GunESP"
+		hl.FillTransparency = 1
+		hl.OutlineTransparency = 0
+		hl.OutlineColor = Color3.fromRGB(255, 200, 50)
+		hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+		hl.Adornee = drop
+		local container = (drop:IsA("BasePart") or drop:IsA("Model")) and drop or workspace
+		local okP = pcall(function() hl.Parent = container end)
+		if okP and hl.Parent == container then
+			gunHighlight = hl
+		else
+			pcall(function() hl:Destroy() end)
+		end
+	end
+	local function setGunESP(state)
+		gunOn = state
+		if state then gunApply() else gunRemove() end
+	end
+	local function gunTrackHouse()
+		local ok, house = pcall(function() return workspace:FindFirstChild("House2") end)
+		if ok and house then
+			house.DescendantAdded:Connect(function(d)
+				if gunOn and d.Name == "GunDrop" then task.wait(0.5) gunApply() end
+			end)
+			house.DescendantRemoving:Connect(function(d)
+				if gunOn and d.Name == "GunDrop" then gunApply() end
+			end)
+		end
+	end
+	gunTrackHouse()
+	workspace.ChildAdded:Connect(function(c)
+		if c.Name == "House2" then gunTrackHouse() end
+	end)
+	do
+		local lastGun = 0
+		RunService.Heartbeat:Connect(function()
+			if not alive() then return end
+			if not gunOn then return end
+			if os.clock() - lastGun < 3 then return end
+			lastGun = os.clock()
+			gunApply()
+		end)
+	end
 	gunTrack.MouseButton1Click:Connect(function()
-		gunOn = not gunOn
+		setGunESP(not gunOn)
 		if gunOn then
 			TweenService:Create(gunTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = LIME }):Play()
 			TweenService:Create(gunKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(1, -18, 0, 2), BackgroundColor3 = BG_DARKER }):Play()
