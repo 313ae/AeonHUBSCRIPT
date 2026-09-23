@@ -31,6 +31,11 @@ for _, g in ipairs(playerGui:GetChildren()) do
 	if g.Name == "AeonHub" and g ~= screenGui then pcall(function() g:Destroy() end) end
 end
 print("[Aeon] MM2 b14 loaded")
+local espFolder = workspace:FindFirstChild("AeonESP")
+if espFolder then pcall(function() espFolder:Destroy() end) end
+espFolder = Instance.new("Folder")
+espFolder.Name = "AeonESP"
+espFolder.Parent = workspace
 
 -- Intro
 local introFrame = Instance.new("Frame")
@@ -1123,6 +1128,11 @@ do
 	end
 	RunService.RenderStepped:Connect(function()
 		if not alive() then return end
+		if not espFolder or not espFolder.Parent then
+			espFolder = Instance.new("Folder")
+			espFolder.Name = "AeonESP"
+			espFolder.Parent = workspace
+		end
 		for _, p in ipairs(Players:GetPlayers()) do
 			if p == player then
 				local old = espHighlights[p]
@@ -1141,8 +1151,8 @@ do
 						nhl.FillTransparency = 1
 						nhl.OutlineTransparency = 0
 						nhl.Adornee = char
-						local okP = pcall(function() nhl.Parent = char end)
-						if okP and nhl.Parent == char then
+						local okP = pcall(function() nhl.Parent = espFolder end)
+						if okP and nhl.Parent == espFolder then
 							espHighlights[p] = nhl
 						else
 							pcall(function() nhl:Destroy() end)
