@@ -735,7 +735,7 @@ do
 		RunService.Heartbeat:Connect(function()
 			if not alive() then return end
 			if not innocentESPEnabled then return end
-			if os.clock() - lastSync < 3 then return end
+			if os.clock() - lastSync < 1 then return end
 			lastSync = os.clock()
 			innocentApply()
 		end)
