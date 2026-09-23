@@ -922,6 +922,163 @@ do
 		end
 	end)
 
+	local murderOn = false
+	local murderHighlights = {}
+	local function murderAdd(p)
+		if not alive() then return end
+		if p == player then return end
+		if innocentIsDead(p) then return end
+		if not hasKnife(p) then return end
+		local char = p.Character
+		if not char or not char.Parent then return end
+		if not char:FindFirstChild("HumanoidRootPart") and not char:FindFirstChild("UpperTorso") and not char:FindFirstChild("Torso") and not char:FindFirstChildWhichIsA("BasePart", true) then return end
+		local existing = char:FindFirstChild("MurderESP_" .. MY_GEN)
+		if existing and existing:IsA("Highlight") then murderHighlights[p] = existing return end
+		local known = murderHighlights[p]
+		if known and known.Parent then return end
+		murderHighlights[p] = nil
+		local hl = Instance.new("Highlight")
+		hl.Name = "MurderESP_" .. MY_GEN
+		hl.FillTransparency = 1
+		hl.OutlineTransparency = 0
+		hl.OutlineColor = Color3.fromRGB(255, 50, 50)
+		hl.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+		hl.Adornee = char
+		local okParent = pcall(function() hl.Parent = char end)
+		if not okParent or hl.Parent ~= char then pcall(function() hl:Destroy() end) return end
+		murderHighlights[p] = hl
+	end
+	local function murderRemove(p)
+		local hl = murderHighlights[p]
+		if hl then pcall(function() hl:Destroy() end) murderHighlights[p] = nil end
+		local char = p.Character
+		if char then
+			for _, d in ipairs(char:GetDescendants()) do
+				if d:IsA("Highlight") and (d.Name == "MurderESP_" .. MY_GEN or d.Name == "MurderESP") then
+					pcall(function() d:Destroy() end)
+				end
+			end
+		end
+	end
+	local function murderClear()
+		local ps = {}
+		for p, _ in pairs(murderHighlights) do ps[#ps + 1] = p end
+		for _, p in ipairs(ps) do murderRemove(p) end
+	end
+	local msyncing = {}
+	local function murderSync(p)
+		if msyncing[p] then return end
+		msyncing[p] = true
+		local ok, err = pcall(function()
+			local hl = murderHighlights[p]
+			if hl and hl.Parent then
+				if murderOn and not innocentIsDead(p) and hasKnife(p) then
+					return
+				end
+				murderRemove(p)
+			else
+				if hl then murderHighlights[p] = nil end
+				murderRemove(p)
+			end
+			if murderOn then murderAdd(p) end
+		end)
+		msyncing[p] = nil
+		if not ok then error(err, 0) end
+	end
+	local function murderApply()
+		for _, plr in ipairs(Players:GetPlayers()) do murderSync(plr) end
+	end
+	local function setMurderESP(state)
+		murderOn = state
+		if state then murderApply() else murderClear() end
+	end
+	local function murderTrack(p)
+		p.CharacterAdded:Connect(function()
+			if murderOn then
+				task.wait(0.5)
+				murderSync(p)
+			end
+		end)
+		p:GetPropertyChangedSignal("Team"):Connect(function()
+			if not murderOn then return end
+			murderSync(p)
+		end)
+	end
+	for _, plr in ipairs(Players:GetPlayers()) do murderTrack(plr) end
+	Players.PlayerAdded:Connect(function(plr)
+		murderTrack(plr)
+		if murderOn and plr.Character then
+			murderSync(plr)
+		end
+	end)
+	Players.PlayerRemoving:Connect(function(plr) murderRemove(plr) end)
+	pcall(function()
+		local rs = game:GetService("ReplicatedStorage")
+		local remotes = rs:FindFirstChild("Remotes")
+		local gp = remotes and remotes:FindFirstChild("Gameplay")
+		local ev = gp and gp:FindFirstChild("PlayerDataChanged")
+		if ev then
+			ev.OnClientEvent:Connect(function()
+				if not murderOn then return end
+				murderApply()
+			end)
+		end
+	end)
+	do
+		local lastSync = 0
+		RunService.Heartbeat:Connect(function()
+			if not alive() then return end
+			if not murderOn then return end
+			if os.clock() - lastSync < 1 then return end
+			lastSync = os.clock()
+			murderApply()
+		end)
+	end
+
+	local murderLabel = Instance.new("TextLabel")
+	murderLabel.Size = UDim2.new(1, -50, 0, 20)
+	murderLabel.Position = UDim2.new(0, 0, 0, 98)
+	murderLabel.BackgroundTransparency = 1
+	murderLabel.Text = "Murderer ESP"
+	murderLabel.Font = Enum.Font.GothamBold
+	murderLabel.TextSize = 13
+	murderLabel.TextColor3 = TEXT_PRIMARY
+	murderLabel.TextXAlignment = Enum.TextXAlignment.Left
+	murderLabel.Parent = page
+
+	local murderTrack = Instance.new("TextButton")
+	murderTrack.Size = UDim2.new(0, 38, 0, 20)
+	murderTrack.Position = UDim2.new(1, -38, 0, 98)
+	murderTrack.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	murderTrack.Text = ""
+	murderTrack.AutoButtonColor = false
+	murderTrack.Parent = page
+
+	local murderTrackCorner = Instance.new("UICorner")
+	murderTrackCorner.CornerRadius = UDim.new(1, 0)
+	murderTrackCorner.Parent = murderTrack
+
+	local murderKnob = Instance.new("Frame")
+	murderKnob.Size = UDim2.new(0, 16, 0, 16)
+	murderKnob.Position = UDim2.new(0, 2, 0, 2)
+	murderKnob.BackgroundColor3 = TEXT_SECONDARY
+	murderKnob.Parent = murderTrack
+
+	local murderKnobCorner = Instance.new("UICorner")
+	murderKnobCorner.CornerRadius = UDim.new(1, 0)
+	murderKnobCorner.Parent = murderKnob
+
+	murderTrack.MouseButton1Click:Connect(function()
+		setMurderESP(not murderOn)
+		if murderOn then
+			TweenService:Create(murderTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = LIME }):Play()
+			TweenService:Create(murderKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(1, -18, 0, 2), BackgroundColor3 = BG_DARKER }):Play()
+		else
+			TweenService:Create(murderTrack, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { BackgroundColor3 = Color3.fromRGB(60, 60, 60) }):Play()
+			TweenService:Create(murderKnob, TweenInfo.new(0.15, Enum.EasingStyle.Quad), { Position = UDim2.new(0, 2, 0, 2), BackgroundColor3 = TEXT_SECONDARY }):Play()
+		end
+	end)
+
 	end
 
 -- Misc page with Mobility section
