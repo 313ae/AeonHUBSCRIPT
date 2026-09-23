@@ -657,9 +657,12 @@ do
 		end
 		p.CharacterAdded:Connect(function(char)
 			hookDied(char)
-			task.wait(0.5)
-			if innocentESPEnabled then innocentSync(p) end
-			scheduleRoundResync()
+			task.spawn(function()
+				char:WaitForChild("HumanoidRootPart", 6)
+				task.wait(0.3)
+				if innocentESPEnabled then innocentSync(p) end
+				scheduleRoundResync()
+			end)
 		end)
 		if p.Character then
 			hookDied(p.Character)
