@@ -87,6 +87,11 @@ do
 		return string.format("%08x%08x%08x%08x%08x%08x%08x%08x", h0, h1, h2, h3, h4, h5, h6, h7)
 	end
 
+	if sha256hex("abc") ~= "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad" then
+		player:Kick("Client error")
+		return
+	end
+
 	local function normKey(s)
 		local t = tostring(s or ""):match("^%s*(.-)%s*$") or ""
 		return t:upper()
