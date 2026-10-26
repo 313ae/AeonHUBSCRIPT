@@ -1,11 +1,11 @@
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
--- Place lock: this build only runs in Murder Mystery 2
+
 if tostring(game.PlaceId) ~= "142823291" then
 	player:Kick("Invalid game")
 	return
 end
--- Private server guard: kick the user out of private servers
+
 do
 	local isPriv = false
 	local ok, psId = pcall(function() return game.PrivateServerId end)
@@ -27,7 +27,7 @@ do
 		end)
 	end
 end
--- Key system (same pool as Daybreak)
+
 do
 	local passKey = ...
 	local HttpService = game:GetService("HttpService")
@@ -164,7 +164,7 @@ do
 		return "ok", rec
 	end
 
-	-- key intake: loader arg → getgenv → _G → shared
+
 	local loaderKey = nil
 	local function grab(cand)
 		if type(cand) == "string" and normKey(cand) ~= "" then
@@ -876,7 +876,6 @@ _G.BUTTON_FULL_SIZE = UDim2.new(0, 50, 0, 50)
 _G.LOGO_FULL_SIZE = UDim2.new(0, 36, 0, 36)
 _G.BUTTON_POS = UDim2.new(0, 60, 1, -115)
 local guiVisible = false
-_G.hideAllScreens = false
 
 local function showToggleButton()
 	if toggleButton.Visible then return end
@@ -5375,7 +5374,6 @@ _G.skinKnobCorner.Parent = skinKnob
 local skinOn = false
 _G.__MM2_SkinRunId = _G.__MM2_SkinRunId or 0
 local skinRunId = _G.__MM2_SkinRunId
-_G.__MM2_SkinBuild = 33
 _G.skinwarn = 0
 local skinData = nil
 local skinProfile = nil
@@ -5625,7 +5623,6 @@ _G.__MM2_DispLearn = _G.__MM2_DispLearn or {}
 local function dispLearnSeed()
 	if _G.__MM2_DispSeedVer == 2 then return end
 	pcall(function()
-		_G.__MM2_DispLisiSeeded = true
 		local force = (rawget(_G, "__MM2_DispSeedVer") ~= 2)
 
 		local function pickAtt(nodes)
@@ -6030,9 +6027,6 @@ viz = (function()
 			if hb > 0 and bb > 0.05 then fit = hb / bb end
 		end
 		if not fit then
-			pcall(function()
-				_G.__MM2_HandDbg = { skin = skinName, typ = "Gun", inplace = false, skip = "nofilenative-b33" }
-			end)
 			return false
 		end
 		local appliedScale = Vector3.new(fit, fit, fit)
@@ -6067,13 +6061,6 @@ viz = (function()
 			stMesh = stash.mesh, stTex = stash.tex, stScale = stash.scale,
 			stGrip = stash.grip, stTransp = stash.transp, hadSM = stash.hadSM, skin = skinName
 		}
-		pcall(function()
-			_G.__MM2_HandDbg = {
-				skin = skinName, typ = "Gun", inplace = true, mode = "smfile",
-				grip = tool.Grip, sm = recSkin.mesh, smScale = tostring(appliedScale),
-				hSize = handle.Size, hTransp = handle.Transparency, recSize = recSize, native = native, fit = fit
-			}
-		end)
 		return true
 	end
 
@@ -6485,11 +6472,7 @@ viz = (function()
 		local handle = tool:FindFirstChild("Handle")
 		if not handle then return end
 		if gunInplace then
-			pcall(function()
-				if not vizInplaceHand(tool, skinName, rec) then
-					_G.__MM2_HandDbg = { skin = skinName, typ = typ, inplace = false, fail = "inplaceRejected" }
-				end
-			end)
+			pcall(function() vizInplaceHand(tool, skinName, rec) end)
 			return
 		end
 		vizLearnFrom(handle)
@@ -6504,15 +6487,6 @@ viz = (function()
 		for _, d in ipairs(handle:GetDescendants() or {}) do vizHide(hidden, d) end
 		local guards = vizGuards(hidden)
 		vizPoseApply(entry, handle.CFrame * vizHandMount(tool, rec, typ))
-		pcall(function()
-			_G.__MM2_HandDbg = {
-				skin = skinName, typ = typ, entryTyp = entry.root.ClassName,
-				rel = handle.CFrame:ToObjectSpace(entry.root.CFrame),
-				relRot = select(2, (handle.CFrame:ToObjectSpace(entry.root.CFrame)):ToOrientation()),
-				grip = tool.Grip, mount = vizHandMount(tool, rec, typ),
-				hSize = handle.Size, recSize = vizRecSize(rec), hMesh = vizPartMesh(handle)
-			}
-		end)
 		local root = entry.root
 		root.Parent = handle
 		local wc = Instance.new("WeldConstraint")
