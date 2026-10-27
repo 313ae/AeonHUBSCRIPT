@@ -222,5 +222,15 @@
     "note": "",
     "created": 1793134264,
     "lastReset": 0
+  },
+  "b2232ffe2b67da6e0fc2c2738cc41832ecc763d806adfd3f979d83194a3cf5ba": {
+    "key": "5ca1c35d4fac513c3508d223f0c0d5a1:b956a418408a7ac0b7cee921b234d80d9e9cb5b8ee7f8e06868a2e026e52f60f",
+    "expires": null,
+    "banned": false,
+    "hwidHash": null,
+    "discordId": null,
+    "note": "",
+    "created": 1793140952,
+    "lastReset": 0
   }
 }
