@@ -53,16 +53,6 @@
     "bannedAt": null,
     "expiredAt": 1792325676
   },
-  "df3c3c9db66c553fddc5c74e77fe8698b207608dacd36b2539699c346a80287c": {
-    "key": "ec7e490cfbb999fafa437dab24365623:211ca6eecd93bba5ea902685f751286adce0c35840169ac555f28ef3f485bd82",
-    "expires": null,
-    "banned": false,
-    "hwidHash": "d223dc8fb8a9ae98c130ee34c3de90bf0b5fb2303828d0311f189e0d7a512a1a",
-    "discordId": "1502752758971895918",
-    "note": "",
-    "created": 1789683819,
-    "lastReset": 0
-  },
   "3022db11b2adc4a95b2ceea1c23b6ab297a56726a7b9ec6f8c4e658c344441dd": {
     "key": "1e94e97755d83061b86a00e412bb6871:ec2985775fab0bd0c32f8f2d11f522701779c9179579f0074e3b69f19182ae6f",
     "expires": null,
