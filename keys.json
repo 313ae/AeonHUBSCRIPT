@@ -1,1 +1,12 @@
-{}
+{
+  "235c99b68aa39c1f0a3c7f3a16847af8c2f15c263330fb7a9c0a1045919630e6": {
+    "key": "495fc3aae9b44f7305e1f67e21626ca5:f452acaba9088b42109c15fbb5fe942aacd9fc58d3aa3ac6e9a8261bfe0f6a90",
+    "expires": null,
+    "banned": false,
+    "hwidHash": null,
+    "discordId": null,
+    "note": "",
+    "created": 1794861742,
+    "lastReset": 0
+  }
+}
